@@ -1,7 +1,7 @@
 function HTMLixArray(node, containerHTML, rootLink, pathToComponent){
 
 
-		       			this.htmlLink = node, 
+		    this.htmlLink = node, 
 			this.data = [],
 			this.rootLink = rootLink,
 			this.pathToComponent = pathToComponent,
@@ -449,9 +449,9 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 																htmlLinkToProp = this.state[key].htmlLink.querySelector(selector);
 
 																if(htmlLinkToProp == undefined)console.log("error не возможно найти селектор для свойства "+selector+" массива "+key+" проверьте правильность селектора");
+																continue;
 
-
-																							}			 
+														}			 
 							this.state[key]["props"][ string ] = new Prop(htmlLinkToProp, key,	StateMap[key]["arrayProps"][t], 
 							                                                        StateMap[key]["arrayMethods"][  string ],
 																						key,
@@ -693,8 +693,8 @@ function Prop(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parent
 
   if(this.type == undefined){
 
-	   	 console.log("error - свойство data-"+keyData1+"-"+keyData2+" в html коде не найдено для контейнера "+pathToContainer+", index= "+this.parentContainer.index);
-
+	   	 console.log("error - свойство data-"+keyData1+"-"+keyData2+" в html коде не найдено для компонента "+pathToContainer+", index= "+this.parentContainer.index);
+           throw "Не определен тип свойства";
 	   }
 
   if(this.isEvent(this.type) != false && eventMethod != undefined ){
