@@ -122,14 +122,15 @@ var StateMap = {
 	page: {
 		container: "page",
 												
-			props: ["paragraf", "my_class", "btn_click"],     //создали три свойства в контейнере page
+			props: ["paragraf", "my_class", "btn_click"],  //создали три свойства в контейнере page
 			methods: {							
 							
 				btn_click: function(){   //одноименный метод для свойства - события;
 							
 					console.log(this);							
 								
-					this.parent.props.paragraf.setProp("Новый текст");  //this.parent - доступ из конкретного свойства в контейнер со всеми свойствами
+					this.parent.props.paragraf.setProp("Новый текст");
+					//this.parent - доступ из конкретного свойства в контейнер со всеми свойствами
 								
 					this.parent.props.my_class.setProp("new_class");
 							
@@ -181,14 +182,16 @@ this - в методе указывает на свойство к которо�
 
 
 ```html
-<div data-pages="array" style="border: 1px solid red; padding: 10px;"> <!-- создали массив pages и поместили в него два одинаковых контейнера page -->
+<div data-pages="array" style="border: 1px solid red; padding: 10px;">
+<!-- создали массив pages и поместили в него два одинаковых контейнера page --> 
 	
 	<div data-page="container" style="border: 1px solid green"> 
 
 		<p data-page-paragraf="text" data-page-my_class="class">текст<p>
 		<button data-page-btn_click="click">Кнопка</button>	
 			
-		<button data-page-remove="click">Удалить</button> <!-- добавили кнопку удаления для контейнера page -->
+		<button data-page-remove="click">Удалить</button> 
+		<!-- добавили кнопку удаления для контейнера page -->
 	
 	</div>
 	<div data-page="container" style="border: 1px solid green"> 
@@ -215,7 +218,7 @@ var StateMap = {
 	container: "page", //названия контейнеров не поменялись
 						
 												
-	props: ["paragraf", "my_class", "btn_click", "remove"],     //добавили свойство "remove"
+	props: ["paragraf", "my_class", "btn_click", "remove"], //добавили свойство "remove"
 	methods: {							
 							
 		btn_click: function(){                       
@@ -274,14 +277,20 @@ var StateMap = {
  Для этого создадим новый компонент - форму в которой будем создавать новые контейнеры:
  
  ```html
- <form data-create_page="container" style="border: 1px solid blue; padding: 10px; margin: 10px;">  <!-- создали новый компонент create_page -->
+ <!-- создали новый компонент create_page -->
+ <form data-create_page="container" style="border: 1px solid blue; padding: 10px; margin: 10px;">  
 			
 	<div class="form-group">
 		<label for="container_text">текст записи</label>
-			<textarea data-create_page-text="inputvalue"  name="container_text" id="container_text" rows="1"></textarea> <!-- свойство text с типом данных "inputvalue"  -->
+		
+			<textarea data-create_page-text="inputvalue"  name="container_text" id="container_text" rows="1"></textarea> 
+			<!-- свойство text с типом данных "inputvalue"  -->
+			
 		</div>
 			
-		<button data-create_page-create="click">Создать</button> <!-- свойство create с типом данных "click"  -->
+		<button data-create_page-create="click">Создать</button> 
+		<!-- свойство create с типом данных "click"  -->
+		
 </form>
 		
 <div data-pages="array" style="border: 1px solid red; padding: 10px;">
@@ -305,10 +314,11 @@ var StateMap = {
 											
 				event.preventDefault(); // отменяем перезагрузку страници 
 											
-				var text = this.parent.props.text.getProp(); // получаем данные свойства находящегося в том же контейнере 
+				var text = this.parent.props.text.getProp(); 
+				// получаем данные свойства находящегося в том же контейнере
 											
-				this.rootLink.state["pages"].add({paragraf: text}); // создаем новый контейнер в компоненте pages с полученными данными формы 
-								
+				this.rootLink.state["pages"].add({paragraf: text});  
+				// создаем новый контейнер в компоненте pages с полученными данными формы				
 			}						
 		}
 	},
@@ -342,24 +352,31 @@ var StateMap = {
 
 <form data-create_page="container" style="border: 1px solid blue; padding: 10px; margin: 10px;> <!-- ...... --> </form>
 
-<div data-pages="array" style="border: 1px solid red; padding: 10px;"> 	
-	<div data-page="container" data-page-listener_create_page="emiter-create-page" style="border: 1px solid green"> <!-- добавили свойство - слушателя события "emiter-create-page" -->
-
+<div data-pages="array" style="border: 1px solid red; padding: 10px;"> 
+	
+	<div data-page="container" data-page-listener_create_page="emiter-create-page" style="border: 1px solid green"> 
+	<!-- добавили свойство - слушателя события "emiter-create-page" -->
+	
 		<p data-page-paragraf="text" data-page-my_class="class">текст<p>
 			
-		<p>index= <span data-page-page_index="text" > 0</span> </p> <!-- добавили свойство page_index для отображения меняющихся данных -->
+		<p>index= <span data-page-page_index="text" > 0</span> </p> 
+		<!-- добавили свойство page_index для отображения меняющихся данных -->
 			
 		<button data-page-btn_click="click">Кнопка</button>	
 			
 		<button data-page-remove="click">Удалить</button> 
 	
 	</div>
-	<div data-page="container" data-page-listener_create_page="emiter-create-page" style="border: 1px solid green"> <!-- добавили свойство - слушателя события "emiter-create-page" -->
-
+	<div data-page="container" data-page-listener_create_page="emiter-create-page" style="border: 1px solid green"> 
+    <!-- добавили свойство - слушателя события "emiter-create-page" -->
+	
+	
 		<p data-page-paragraf="text" data-page-my_class="class">текст<p>
 			
-		<p>index= <span data-page-page_index="text" > 1</span> </p> <!-- добавили свойство page_index для отображения меняющихся данных -->
-			
+		<p>index= <span data-page-page_index="text" > 1</span> </p> 
+		<!-- добавили свойство page_index для отображения меняющихся данных -->
+
+		
 		<button data-page-btn_click="click">Кнопка</button>	
 			
 		<button data-page-remove="click">Удалить</button>
@@ -389,16 +406,17 @@ var StateMap = {
 											
 					this.rootLink.state["pages"].add({paragraf: text}); 
 											
-					this.rootLink.eventProps["emiter-create-page"].emit(); //вызвали пользовательское событие "emiter-create-page"
-								
+					this.rootLink.eventProps["emiter-create-page"].emit();
+					//вызвали пользовательское событие "emiter-create-page"		
 					}						
 				}
 	},
 ```
 ```	javascript
 	pages: {  					
-		container: "page", 							
-		props: ["paragraf", "my_class", "btn_click", "remove", "page_index", "listener_create_page"], //добавили свойства "page_index" и "listener_create_page"
+		container: "page", 	
+		//добавили свойства "page_index" и "listener_create_page"
+		props: ["paragraf", "my_class", "btn_click", "remove", "page_index", "listener_create_page"], 
 			methods: {							
 							
 				btn_click: function(){                       
@@ -411,13 +429,15 @@ var StateMap = {
 				remove: function(){ 		
 							
 					this.parent.remove();
-					this.rootLink.eventProps["emiter-create-page"].emit(); //вызвали пользовательское событие "emiter-create-page"
+					this.rootLink.eventProps["emiter-create-page"].emit(); 
+					//вызвали пользовательское событие "emiter-create-page"
 							
 				},
-				listener_create_page: function(){ // добавили обработчик события "emiter-create-page" для свойства listener_create_page всех контейнеров
+				// добавили обработчик события "emiter-create-page" для свойства listener_create_page всех контейнеров
+				listener_create_page: function(){ 
 									
-					this.parent.props.page_index.setProp( this.parent.index ); //обновили интерфейс всех контейнеров на основе меняющегося index
-							
+					this.parent.props.page_index.setProp( this.parent.index );
+					 //обновили интерфейс всех контейнеров на основе меняющегося index		
 				}
 			}			
 	},
@@ -435,7 +455,132 @@ var StateMap = {
 Теперь если создать новый контейнер он получит индек равный 2, азатем удалить нулевой контейнер с инедексом 0 то созданный нами контейнер изменит индекс с 2 на 1 и мы с помощью пользовательского события обновим его интерфейс.
 Также можно передавать новые данные в пользовательское событие которые затем получат все слушатели, давайте разберем подробнее все методы объекта eventProps["emiter-name"]
 
+
 # Методы пользовательских событий
+
+Доступ из любой точки приложения осуществляется по имени пользовательского события: 
+this.rootLink.eventProps["emiter-имя-события"]
+
+* `.emit()` - вызывает событие для всех слушателей;
+* `.setEventProp("новые данные")` - вызывает событие для всех слушателей и меняет переменную this.rootLink.eventProps["emiter-имя-события"].prop на новые данные
+получить новые данные в слушателе события можно с помощью this.emiter.prop или this.emiter.getEventProp();
+* `.getEventProp()` - получает данные пользовательского события;
+
+
+Слушателями пользовательских событий могут быть, как свойства Prop контейнера Container, так и свойства Массива Array;
+
+# Свойства Массива Array
+
+Массив кроме того что содержит в себе набор однотипных контейнеров, также может содержать в себе и различные свойства.
+В html коде они создаются также как и для контейнера, только в место имени контейнера идет имя массива а затем имя свойства после знака "-",
+однако не обязательно создавать все свойства в html коде, можно создать их в описании приложения и указать селектор для их поиска в html;
+
+Давайте создадим свойство listener_create_page однако теперь уже не в контейнере а в массиве;
+
+В html коде удалим data-page-listener_create_page="emiter-create-page" со всех контейнеров, теперь мы по другому будем указывать свойства с пользовательскими событиями,
+контейнеры массива pages будут слушать события "emiter-remove-page" и "emiter-create-page" а сам массив только "emiter-create-page";
+
+
+```javascript
+
+var StateMap = {
+					
+	create_page: { 
+		container: "create_page", 
+		props: ["text", "create"], 
+		methods: {
+			create: function(){ 
+											
+					event.preventDefault(); 
+											
+					var text = this.parent.props.text.getProp();  
+											
+					//удалили создание контейнера в компоненте create_page
+											
+					this.rootLink.eventProps["emiter-create-page"].setEventProp(text);					
+					//заменили .emit()	на  .setEventProp(text) чтобы передать данные в событие
+					}						
+				}
+	},
+```
+Теперь мы в пользовательское событие передаем данные формы а массив pages будет слушателем события ["emiter-create-page"] и при его наступлении создаст новый контейнер
+
+```	javascript
+	pages: {
+		arrayProps: [  ["listener_create_page", "emiter-create-page", ""] ], 
+		//одно свойство этомассив где первым идет название свойства, вторым тип свойства, а третьим селектор для поиска свойства относительно массива
+		//если оставить селектор пустым "" то приложение просто возьмет тот-же тег что и у массива pages - data-pages="array"
+		//теперь его не обязательно обозначать в html коде, так можно писать любые свойства, не только пользовательские события
+		
+		arrayMethods: {
+		
+			//далее обработчик события для свойства "listener_create_page"
+			listener_create_page: function(){
+			
+					//здесь мы из свойства переходим в компонент-массив pages и вызываем метод .add() передав в него начальные данные для свойств paragraf и page_index
+					this.component().add({paragraf: this.emiter.getEventProp(),  page_index: 0 }, 0);
+					//теперь мы добавляем контейнер не в конец а в начало массива указав вторым параметром 0
+			}
+				 
+		
+		},
+		container: "page", 	
+		
+		//так как мы удалили свойство listener_create_page из html кода и разделили событие "emiter-create-page" на два  "emiter-create-page" и "emiter-remove-page"
+		//добавляем их с помощью двух массивов указав селектор "" для поиска относительно контейнера 
+		
+		props: ["paragraf", "my_class", "btn_click", "remove", "page_index", 
+		["listener_create_page", "emiter-create-page", ""], ["listener_remove_page", "emiter-remove-page", ""] ],
+
+		
+			methods: {							
+							
+				btn_click: function(){                       
+							
+					console.log(this);															
+					this.parent.props.paragraf.setProp("Новый текст");  							
+					this.parent.props.my_class.setProp("new_class");
+							
+				},
+				remove: function(){ 		
+							
+					this.parent.remove();
+					this.rootLink.eventProps["emiter-remove-page"].emit(); 
+					
+							
+				},
+				listener_create_page: function(){ 
+									
+					this.parent.props.page_index.setProp( this.parent.index );
+					 		
+				},
+				listener_remove_page: function(){ //добавили обработчик для события "emiter-remove-page" аналогичный предыдущему 
+									
+					this.parent.props.page_index.setProp( this.parent.index );
+					 		
+				}
+			}			
+	},
+	eventEmiters: { 
+					
+			["emiter-create-page"]: { 
+							
+					prop: "",
+			},
+			["emiter-remove-page"]: { //новое событие "emiter-remove-page"
+							
+					prop: "",
+			}
+	}
+}
+```
+
+
+Итак теперь у нас есть два события "emiter-create-page" и "emiter-remove-page" массив pages слушает  "emiter-create-page" исоздает новые контейнеры при его наступлении, 
+а его контейнеры page слушают оба события и обновляют сой интерфейс (page_index) при наступлении любого из них;
+
+
+
 
 
 

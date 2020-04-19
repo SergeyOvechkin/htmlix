@@ -641,7 +641,7 @@ Container.prototype.setAllProps = function(properties){
 }
 Container.prototype.component = function(){
 	
-	return this.rootLink[this.pathToComponent];
+	return this.rootLink.state[this.pathToCоmponent];
 }
 
 
@@ -766,8 +766,8 @@ function Prop(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parent
 }
 
 Prop.prototype.component = function(){
-	
-	return this.rootLink[this.pathToComponent];
+
+	return this.rootLink.state[this.pathToCоmponent];
 }
 
 Prop.prototype.initRenderVariant = function(){
