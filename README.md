@@ -35,10 +35,10 @@
 
 var StateMap = {
 
-		page: {                    //название компонента
+		page: {                  //название компонента
 			container: "page", 	//название контейнера
-			props: [],		//массив свойств
-			methods: {					//методы для свойств - обработчиков событий
+			props: [],		   //массив свойств
+			methods: {		  //методы для свойств - обработчиков событий
 			}			
 		}
 }
@@ -125,11 +125,11 @@ var StateMap = {
 			props: ["paragraf", "my_class", "btn_click"],     //создали три свойства в контейнере page
 			methods: {							
 							
-				btn_click: function(){                          //одноименный метод для свойства - события;
+				btn_click: function(){   //одноименный метод для свойства - события;
 							
 					console.log(this);							
 								
-					this.parent.props.paragraf.setProp("Новый текст");           //this.parent - доступ из конкретного свойства в контейнер со всеми свойствами
+					this.parent.props.paragraf.setProp("Новый текст");  //this.parent - доступ из конкретного свойства в контейнер со всеми свойствами
 								
 					this.parent.props.my_class.setProp("new_class");
 							
@@ -225,7 +225,7 @@ var StateMap = {
 			this.parent.props.my_class.setProp("new_class");
 							
 		},
-		remove: function(){ 		//обработчик события для свойства "remove"
+		remove: function(){  //обработчик события для свойства "remove"
 							
 			this.parent.remove(); //получаем доступ к контейнеру из свойства, а затем удаляем контейнер 
 							
@@ -394,9 +394,11 @@ var StateMap = {
 					}						
 				}
 	},
+```
+```	javascript
 	pages: {  					
 		container: "page", 							
-		props: ["paragraf", "my_class", "btn_click", "remove", "page_index", "listener_create_page"],     //добавили свойства "page_index" и "listener_create_page"
+		props: ["paragraf", "my_class", "btn_click", "remove", "page_index", "listener_create_page"], //добавили свойства "page_index" и "listener_create_page"
 			methods: {							
 							
 				btn_click: function(){                       
@@ -427,8 +429,6 @@ var StateMap = {
 			}
 	}
 }
-
-
 ```
 
 Итак после каждого создания либо удаления контейнера page мы вызываем событие "emiter-create-page" и все подписчики обновляют свои данные;
