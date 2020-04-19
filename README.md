@@ -184,14 +184,14 @@ this - в методе указывает на свойство к которо�
 
 ```html
 
-	<div data-pages="array"> /* создали массив pages и поместили в него два одинаковых контейнера page */
+	<div data-pages="array"> <!-- создали массив pages и поместили в него два одинаковых контейнера page -->
 	
 		<div data-page="container" style="border: 1px solid green"> 
 
 			<p data-page-paragraf="text" data-page-my_class="class">текст<p>
 			<button data-page-btn_click="click">Кнопка</button>	
 			
-			<button data-page-remove="click">Удалить</button> /* добавили кнопку удаления для контейнера page */
+			<button data-page-remove="click">Удалить</button> <!-- добавили кнопку удаления для контейнера page -->
 	
 		</div>
 		<div data-page="container" style="border: 1px solid green"> 
