@@ -4,7 +4,7 @@
 ## Javascript Frontend Framework
 
 
-**Htmlix** - яваскрипт фреймворк основаный на data- свойствах html документа. 
+**Htmlix** - яваскрипт фреймворк основанный на data- свойствах html документа. 
 
 ## Создание приложения
 
@@ -85,12 +85,9 @@ window.onload = function(){
 
 
 Свойства это объекты имеющие доступ к свойствам html страницы, также свойства могут быть слушателями событий. Для создания свойства необходимо указать его
-имя после имени контейнера, а также указать тип данного свойства. Давайте создадим несколько свойств в контейнере page.
+имя после имени контейнера, а также указать тип данного свойства. Давайте создадим несколько свойств: my_class, paragraf и btn_click в контейнере page:
 
 
-Название свойства в html идет после названия контейнера и знака "-"  (page-), в самом названии свойства знак "-" использовать нельзя.
-Далее после знака = идет тип свойсва, у нас три разных типа это "text", "class" и "click".
-Если тип свойства является событием то в описании приложения в объекте methods для данного свойства необходимо указать одноименный метод с обработчиком события.
 
 ```html
 <style type="text/css">
@@ -109,6 +106,11 @@ window.onload = function(){
 	
 </div>
 ```
+
+Название свойства в html идет после названия контейнера и знака "-"  (page-), в самом названии свойства знак "-" использовать нельзя.
+Далее после знака = идет тип свойсва, у нас три разных типа это "text", "class" и "click".
+Если тип свойства является событием то в описании приложения в объекте methods для данного свойства необходимо указать одноименный метод с обработчиком события.
+
 
 Далее в описании приложения:
 
@@ -531,10 +533,11 @@ var StateMap = {
 		
 		props: [	"paragraf", "my_class", "btn_click", "remove", "page_index", 
 		
-					//так как мы удалили свойство listener_create_page из html кода и разделили событие "emiter-create-page" на два:  "emiter-create-page" и "emiter-remove-page"
-					//добавляем их с помощью двух массивов указав селектор "" для поиска относительно контейнера 
+				//так как мы удалили свойство listener_create_page из html кода и разделили событие "emiter-create-page" на два: 
+				//"emiter-create-page" и "emiter-remove-page"
+				//добавляем их с помощью двух массивов указав селектор "" для поиска относительно контейнера 
 					
-					["listener_create_page", "emiter-create-page", ""], ["listener_remove_page", "emiter-remove-page", ""] 
+				["listener_create_page", "emiter-create-page", ""], ["listener_remove_page", "emiter-remove-page", ""] 
 				
 				],
 
@@ -593,17 +596,278 @@ var StateMap = {
 
 * <a href="https://github.com/SergeyOvechkin/htmlix/wiki/1.-%D0%A3%D1%80%D0%BE%D0%BA-%E2%84%961---%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B3%D0%BE-%D0%BC%D0%B5%D0%BD%D1%8E.">Виртуальные массивы - создание простого меню</a>
 * <a href="https://github.com/SergeyOvechkin/htmlix/wiki/1.1-%D0%A3%D1%80%D0%BE%D0%BA-%E2%84%961.1-%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%B5%D0%BB%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BE%D0%B2-%D0%B4%D0%BB%D1%8F-%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0-%D1%81%D0%B2%D0%BE%D0%B9%D1%81%D1%82%D0%B2-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%B5,-%D1%81%D0%BC%D0%B5%D1%88%D0%B0%D0%BD%D0%BD%D0%BE%D0%B5-%D0%BC%D0%B5%D0%BD%D1%8E.">Селекторы для поиска свойства относительно контейнера - создание смешанного меню</a>
+* <a href="https://github.com/SergeyOvechkin/htmlix/wiki/2.1-%D0%A3%D1%80%D0%BE%D0%BA-%E2%84%962.1-%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D1%82%D0%BE%D1%82%D0%B8%D0%BF%D0%B0-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%81%D0%BA%D0%BE%D0%B9-%D1%87%D0%B0%D1%81%D1%82%D0%B8-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%BD%D0%B5%D1%82-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD%D0%B0-%D0%BD%D0%B0-htmlix">Роутер - создание прототипа клиентской части интернет магазина на htmlix</a>
+
+# Типы данных
+
+Для создания любого свойства Prop необходимо в описании приложения либо в html коде указать тип данного свойства.
+При инициализации приложение определит тип данного свойства и на основании его создаст объект Prop.
+Если тип свойства является стандартным событием например "click", 'mouseup' и т. д., то к нему будет присоединен обработчик события который необходимо создать
+в объекте method для данного контейнера в описании приложения.
+Если тип свойства является пользовательским событием, то также как и для обычного события создается обработчик.
+В обработчиках событий оператор this. указывает на данный конкретный экземпляр Prop, а далее с помощью навигации можно переходить к любым другим свойствам относительно данного.
+
+Методы **setProp("newProp")**, **getProp()** и **removeProp()** работают по разному в зависимости от типа своства.
 
 
+**Рассмотрим как работает метод getProp() для основных типов свойств:**
+
+* "text" - текстовые данные - возвращает this.htmlLink.textContent;
+* "inputvalue", "select" - данные форм возвращает - this.htmlLink.value;
+* "checkbox", "radio" - чекбоксы и радио возвращает tru или false - this.htmlLink.checked;
+* "class" - возвращает массив с классами this.htmlLink.classList;
+* "render-variant" - возвращает текущий отображаемый объект this.renderChild;
+* "group" - возвращает массив контейнеров из данной группы this.groupChild;
+* 'href', 'src', "id" и другие атрибуты возвращает данный атрибут this.htmlLink.getAttribute(this.type);
+* для событий обычно не используется, возвращает this.type;
+
+тип **data** - т. к. в данных с типом дата после знака =  идут какие либо данные, то для создания данного типа после 
+имени массива или контейнера пишется имя data а далее уже какие либо данные, например: data-page-data="какие либо данные",
+здесь тип данных определяется по имени свойства оно всегда должно называться data после названия контейнера.
+
+* "data" - возвращает this.htmlLink.dataset[ this.parent.name + "Data" ] тоесть данные после знака "=";
+
+Методы **setProp("newProp")** и **removeProp()** работают аналогично, см. исходный код объектов Prop.prototype.removeProp, Prop.prototype.setProp
 
 
+# Виртуальный массив
+
+Виртуальный массив это массив в котором нет ссылки на html тег.
+Он нужен для создания контейнеров не сгрупированных в одном html элементе а разбросаных по разным свойсвам group разных контейнеров.
+
+Например у нас есть три контейнера и в каждом есть свойство с типом group
+
+```html
+<div data-pages=array>
+
+	<div data-page="container">
+		<div data-page-some_group="group">
+		</div>
+	</div>
+	<div data-page="container">
+		<div data-page-some_group="group">
+		</div>
+	</div>
+	<div data-page="container">
+		<div data-page-some_group="group">
+		</div>
+	</div>	
+</div> 
 
 
+```
+
+```javscript
+	
+	var StateMap ={
+			pages: {
+				container: "page",
+				props: ["some_group"],
+				methods: {
+				
+				
+				}			
+			}				
+	}
+
+```
+
+Теперь в каждом свойстве "some_group" мы хотим поместить различное количество пунктов меню data-item="container" например в первом 1, во втором 2, в третьем 3
+если использовать обычные массивы то нам прийдется создать три одинаковых массива с различным набором data-item="container" и одинаковой функциональностью.
+Чтобы этого не делать мы создадим один виртуальный массив items а его контейнеры мы распределим между свойствами "some_group"
+
+Итак html код будет выглядеть так:
+
+```html
+<div data-pages=array>
+
+	<div data-page="container">
+		<div data-page-some_group="group">
+		
+			<div data-item="container" data-item-text="text">текст 1</div> <!-- добавили контейнер item -->
+			
+		</div>
+	</div>
+	<div data-page="container">
+		<div data-page-some_group="group">
+		
+			<div data-item="container" data-item-text="text">текст 1</div>
+			<div data-item="container" data-item-text="text">текст 2</div>
+		
+		</div>
+	</div>
+	<div data-page="container">
+		<div data-page-some_group="group">
+		
+			<div data-item="container" data-item-text="text">текст 1</div>
+			<div data-item="container" data-item-text="text">текст 2</div>
+			<div data-item="container" data-item-text="text">текст 3</div>			
+		
+		</div>
+	</div>	
+</div> 
 
 
+```
 
+Теперь добавим виртуальный массив items в javascript код: 
+
+```javscript
+	
+	var StateMap ={
+			pages: {
+				container: "page",
+				props: ["some_group"],
+				methods: {
+				
+				
+				}			
+			},
+			
+		virtualArrayComponents: {	//объект для хранения виртуальных массивов
+		
+			items: { //виртуальный массив
+				container: "item", //контейнер виртуального массива
+				props: ["text"],
+				methods: {
+				
+				
+				}			
+			}
+		}	
+			
+	}
+
+```
+
+Теперь открыв в консоли экземпляр приложения можно увидеть что всего в массиве state.items.data у нас 6 контейнеров "item",
+а в свойстве  some_group.groupChild первого контейнера "page" - один, второго - два, третьего - три.
+
+Таким образом с помощью свойства с типом "group" мы сгрупировали в трех контейнрах "page" массива "pages" различное количество контейнеров "item" из массива 'items'
+
+Заметьте что index контейнера в массиве отличается от индекса контейнера в группе groupId
+Теперь если мы захотим удалить контейнер из группы, с помощью метода .removeFromGroup(groupID) то он также удалится из виртуального массива.
+
+# Group
+
+
+Открыв в консоли свойство с типом "group" можно увидеть следующие поля:
+
+* `groupArray` - ссылка на виртуальный массив контейнеров данной группы;
+* `groupChild` - массив контейнеров из виртуального массива, порядковый номер совпадает с полем groupId конкретного контейнера группы.
+
+Также у свойства с типом "group" имеются дополнительные методы:
+
+* `.removeFromGroup(groupID)` - удаляетконтейнер из группы а также из виртуального массива, где groupID - индекс контейнера в группе;
+* `.clearGroup()` -  удаляет все контейнеры из данного свойства а также из виртуального массива;
+* `.addToGroup(container, insertLocation)` - добавляет контейнер в группу и создает в нем поля **.groupId** - индекс группы, **.groupParent** - ссылка на свойство в котором находится контейнер
+где container - сам контейнер, insertLocation - позиция для всавки, если не указать то вставит в конец группы;
+
+
+# Render-variant
+
+Свойства с типом "render-variant" используются для отображения в себе одних и скрытия других компонентов;
+
+Например у нас есть компонент page с кнопкой click и сойство variant с типом "render-variant",
+а также еще два компонента variant1 и variant2
 
 
  
+```html
+<div data-page="container">
+	<div data-page-variant="render-variant"> 
+	
+			<div data-variant1="container" data-variant1-style="style">текст первого варианта</div>
+	
+	</div>
+	<button data-page-click="click">сменить вариант</button>
+</div> 
+
+<div data-variant2="container" data-variant2-style="style" style="display: none;">текст второго варианта<div>
+```
+
+
+```javscript
+	
+	var StateMap ={
+			page: {
+				container: "page",
+				props: ["variant", "click"],
+				methods: {
+					
+					click: function(){
+					
+						var variant = this.parent.props.variant; //получаем ссылку на свойство вариант из свойства click;
+						
+						console.log(variant);
+						
+						var newVariant = "variant2"; //имя нового компонента для отображения
+						
+						if(variant.renderChild.pathToCоmponent == "variant2") newVariant = "variant1" //если текущий компонент для отображения "variant2" меняем его на "variant1"
+
+						variant.setProp(newVariant); //отображаем новый вариант
+						
+						variant.renderChild.props.style.setProp('dysplay: "" '); //убираем display none у скрытого варианта
+					}
+				
+				}			
+			},
+			variant1: {
+				container: "variant1",
+				props: [],
+				methods: {				
+				}			
+			},
+			variant2: {
+				container: "variant2",
+				props: ["style"],
+				methods: {				
+				}			
+			}			
+			
+	}
+
+```
+
+При построении реального приложения неотображаемые варианты обычно догружаются в fetch запросе поэтому их нет надобности скрывать с помощью стилей display none,
+поэтому код переключения вариантов значительно меньше.
+
+Итак посмотрим в консоли на свойство с типом render-variant в нем добавилось поле renderChild
+
+
+* `renderChild` - ссылка на текущий компонент отображаемый в данном свойстве;
+
+В отображаемом компоненте также добавилось поле renderParent
+
+* `renderParent` - ссылка на свойство в котором отображается данный компонент;
+
+Также у свойства с типом render-variant есть несколько дополнительных методов: 
+
+
+* `.render(nameComponent)` - отображает компонент с именем "nameComponent";
+* `.renderByContainer(containerLink)` - отображает компонент по ссылке;
+
+В прочем можно также использовать .setProp(newContainer) - метод сам определит тип данных и затем вызовет нужный из них для текста .render, а для объекта .renderByContainer
+
+**getProp()** - возвращает компонент который сейчас отображается,  а **removeProp()** - удаляет его если это контейнер в массиве (renderType == "container-inner");
+
+# Методы экземпляра приложения
+
+Методы экземпляра приложения можно вызвать из любой точки this.rootLink.nameMethod();
+
+* `.addContainer(stateNameProp, properties, insertLocation)` добавляет новый контейнер в компонент  stateNameProp с начальными свойствами properties, в указаную позицию insertLocation,
+если не указать позицию, добавит - в конец, если не указать какое либо свойство в объекте  properties то возьмет данные из шаблона.
+
+* `.removeAll(stateNameProp, widthChild)` - очищает массив stateNameProp, если указать widthChild=true удалит все дочерние компоненты со свойств с типами group и render-variant
+
+* `.removeByIndexes(stateNameProp, indexArray, widthChild )` - удаляет несколько контейнеров indexArray=[] из массива  stateNameProp;
+
+* `.removeByIndex(stateNameProp, index, widthChild )` - удаляет один контейнер из массива stateNameProp по индексу index;
+  
+
+# Роутер "router"
+
+
+
 
 
