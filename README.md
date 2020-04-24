@@ -590,13 +590,6 @@ var StateMap = {
 
 Это была основная информация о построении приложения на htmlix;
 
-# Дополнительные уроки
-
-Дополнительные уроки можно почитать по следующим ссылкам:
-
-* <a href="https://github.com/SergeyOvechkin/htmlix/wiki/1.-%D0%A3%D1%80%D0%BE%D0%BA-%E2%84%961---%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B3%D0%BE-%D0%BC%D0%B5%D0%BD%D1%8E.">Виртуальные массивы - создание простого меню</a>
-* <a href="https://github.com/SergeyOvechkin/htmlix/wiki/1.1-%D0%A3%D1%80%D0%BE%D0%BA-%E2%84%961.1-%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%B5%D0%BB%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BE%D0%B2-%D0%B4%D0%BB%D1%8F-%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0-%D1%81%D0%B2%D0%BE%D0%B9%D1%81%D1%82%D0%B2-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%B5,-%D1%81%D0%BC%D0%B5%D1%88%D0%B0%D0%BD%D0%BD%D0%BE%D0%B5-%D0%BC%D0%B5%D0%BD%D1%8E.">Селекторы для поиска свойства относительно контейнера - создание смешанного меню</a>
-* <a href="https://github.com/SergeyOvechkin/htmlix/wiki/2.1-%D0%A3%D1%80%D0%BE%D0%BA-%E2%84%962.1-%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D1%82%D0%BE%D1%82%D0%B8%D0%BF%D0%B0-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%81%D0%BA%D0%BE%D0%B9-%D1%87%D0%B0%D1%81%D1%82%D0%B8-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%BD%D0%B5%D1%82-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD%D0%B0-%D0%BD%D0%B0-htmlix">Роутер - создание прототипа клиентской части интернет магазина на htmlix</a>
 
 # Типы данных
 
