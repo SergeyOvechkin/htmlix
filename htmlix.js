@@ -1616,7 +1616,7 @@ function HTMLixRouter(state, routes){
 
 										if(nameArrComp == null){
 
-												console.log("router error - не удается найти указанный путь проверьте правильность пути ссылки")
+												console.log("router error - не удается найти совпадающий rout для маршрута "+window.location.pathname)
 				                        }
 											
 					}
@@ -1696,7 +1696,7 @@ function HTMLixRouter(state, routes){
 
 										if(nameArrComp == null){
 
-									console.log("router error - не удается найти указанный путь проверьте правильность пути ссылки")
+									console.log("router error - не удается найти совпадающий rout для маршрута "+window.location.pathname)
 				}	
 				this.findRouters(nameArrComp);
 				this.setHtml(nameArrComp);
