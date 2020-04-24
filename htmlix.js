@@ -1565,7 +1565,7 @@ function HTMLixRouter(state, routes){
 
 
 						console.log("error- маршрут не найден убедитесь в правильности запроса");
-	}
+	             }
 ///изменение структуры state для загрузки шаблонов для других страниц в fetch запросе
 	for (var key2 in state){
 
@@ -1616,7 +1616,7 @@ function HTMLixRouter(state, routes){
 
 										if(nameArrComp == null){
 
-												console.log("не удается найти указанный путь проверьте правильность пути ссылки")
+												console.log("router error - не удается найти указанный путь проверьте правильность пути ссылки")
 				                        }
 											
 					}
@@ -1629,7 +1629,7 @@ function HTMLixRouter(state, routes){
 						if(this.component[key2] == undefined){
 							var component = this.rootLink.state[key2];
 							this.component[key2] = component;
-							//console.log(key2);
+							if(component == undefined)console.log("router error - не удается найти компонент "+key2+" в описании приложения, проверьте правильность написания ключей в параметре routes для HTMLixRouter");
 							//console.log(key);
 						}
 						
@@ -1696,7 +1696,7 @@ function HTMLixRouter(state, routes){
 
 										if(nameArrComp == null){
 
-									console.log("не удается найти указанный путь проверьте правильность пути ссылки")
+									console.log("router error - не удается найти указанный путь проверьте правильность пути ссылки")
 				}	
 				this.findRouters(nameArrComp);
 				this.setHtml(nameArrComp);
