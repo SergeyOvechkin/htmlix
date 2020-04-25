@@ -544,7 +544,7 @@ var StateMap = {
 				container: "item", //название контейнера
 				
 				props: [ "class_item",  "text_item"], // свойства контейнера
-			    methods: {
+				methods: {
 				
 				}
 			},
@@ -565,10 +565,10 @@ window.onload = function(){
 	
 	window.setTimeout( function(){ 
 	
-							HM.eventProps["emiter-load-page"].setEventProp( {text_item: "новый текст"} );
-							console.log(HM);
+		HM.eventProps["emiter-load-page"].setEventProp( {text_item: "новый текст"} );
+		console.log(HM);
 							
-						}, 3000 );
+	}, 3000 );
 			
 }	
 
