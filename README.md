@@ -536,7 +536,8 @@ var StateMap = {
 				
 						listener_load_page: function() { //обработчик события для свойства массива
 						
-								this.parent.add( this.emiter.getEventProp() ); //this.parent указывает на массив
+								this.parent.add( this.emiter.getEventProp() ); 
+								//this.parent указывает на массив
 						
 						}
 				},
