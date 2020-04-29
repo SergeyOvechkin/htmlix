@@ -579,7 +579,7 @@ function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, r
   this.htmlLink = htmlLink;
   this.rootLink = rootLink;
   this.props = {};
-  this.methods = {};
+  //this.methods = {};
 
     /*this.id = id;*/
   this.index = id;
@@ -639,15 +639,11 @@ function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, r
 
 
 		 								}
-	if(methods == undefined){
+       if(methods.createdContainer != undefined ){ 
 
-				methods = {};
+				this.createdContainer = methods.createdContainer.bind(this)
 
-			}else if(methods.createdContainer != undefined ){ 
-
-				this.methods.createdContainer = methods.createdContainer.bind(this)
-
-		if(isRuncreatedContainer==undefined || isRuncreatedContainer!=false)this.methods.createdContainer();
+		if(isRuncreatedContainer==undefined || isRuncreatedContainer!=false)this.createdContainer();
 	}
 
 	}
@@ -981,7 +977,7 @@ Prop.prototype.initGroup = function(containerName, propName){
 						this.groupArray = this.rootLink.state[nameVirtualArray];
 						//console.log(this.groupArray);
 						container.groupId  = this.groupChild.length - 1; 
-						if(container.methods.createdContainer != undefined)container.methods.createdContainer();
+						if(container.createdContainer != undefined)container.createdContainer();
 
 									        }else{
 						 if(typeof keyData2 != "string"){ 
