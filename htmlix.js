@@ -33,6 +33,39 @@ HTMLixArray.prototype.removeAll = function( widthChild){
 		this.rootLink.removeAll(this.pathToComponent, widthChild)
 
 	}
+	
+HTMLixArray.prototype.reuseAll = function(arrayWithObjects){
+	
+	var newArrLength = arrayWithObjects.length;
+	var oldArrLength = this.data.length;
+	
+	var add = 0;
+	var remove =0;
+	
+	if(newArrLength > oldArrLength) add = newArrLength - oldArrLength;
+	if(newArrLength < oldArrLength) remove =  oldArrLength - newArrLength;
+	
+	for(var i=0; i<this.data.length; i++){
+		
+		this.data[i].setAllProps(arrayWithObjects[i]);
+		
+	}
+	
+	if(add > 0){
+		for (var t=0; t<add; t++){
+			
+			this.add(arrayWithObjects[oldArrLength + t]);
+		}	
+	}
+    if(remove > 0){
+		for (var f=0; f<remove; f++){
+			
+			this.removeIndex([this.data.length - 1], true);
+		}	
+	}
+	
+	
+}	
 
 
 function HTMLixState(StateMap){
@@ -395,9 +428,11 @@ HTMLixState.prototype.createContainerInArr = function(stateNameProp, properties,
 	}
 	return container;
 }
+
 HTMLixState.prototype.removeAll = function(stateNameProp, widthChild){	
 	this.clearContainer(stateNameProp, widthChild);
 }
+
 HTMLixState.prototype.clearContainer = function(stateNameProp, widthChild){
 
 		if(this.state[stateNameProp].type != "array")return;
