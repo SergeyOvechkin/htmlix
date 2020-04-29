@@ -624,9 +624,9 @@ window.onload = function(){
 
 Из примера выше свойства можно указать так:
 
-* для свойств массива: `arrayProps:[ ["class_menu", "class", ""], [ "listener_load_page", "emiter-load-page"  ] ]` - тотже тег что и у массива;
+* для свойств массива: `arrayProps:[ ["class_menu", "class", ""], [ "listener_load_page", "emiter-load-page", "" ] ]` - тотже тег что и у массива;
 
-* для свойств контейнера: `props:[ ["class_item", "class", ""], ["text_item", "text", "a:first-of-type"] ]`
+* для свойств контейнера: `props:[ ["class_item", "class", ""], ["text_item", "text", "a:first-of-type"] ]`  a:first-of-type - селектор относительно контейнера
 
 Теперь в html разметке у нас останется только массив и два контейнера:
 
