@@ -7,7 +7,7 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector){
 			this.pathToComponent = pathToComponent,
 			this.type = "array",
 			this.templateData = containerHTML.cloneNode(true),
-			this.id = null, 
+			/*this.id = null, */
 			this.index = null,
 			this.renderType = "array",
 			this.selector = selector
@@ -52,13 +52,6 @@ function HTMLixState(StateMap){
 
 		 }
 	}		
-	if(StateMap.firstInitComponents != undefined){ 
-
-				for (var key23 in StateMap.firstInitComponents){ 
-
-								initStandartComponents(this, StateMap.firstInitComponents, key23);
-			}	
-	}	
 	for (var key in StateMap){
 
 						if(key == "stateSettings"){ 
@@ -76,17 +69,18 @@ function HTMLixState(StateMap){
 			this.stateProperties = StateMap[key];
 			continue;				
 		}		
-		if(key == 'eventEmiters' || key ==  'virtualArrayComponents' || key ==  'firstInitComponents'){
+		if(key == 'eventEmiters' || key ==  'virtualArrayComponents'){
 
 						continue;
 		}
 		if(key == "fetchComponents"){
 
 						var context = this;
-			var StateMap1 = StateMap.fetchComponents;
-			 var urlPath = "/template/template.html";
-
-			 			 if(StateMap.stateSettings != undefined && StateMap.stateSettings.templatePath != undefined)urlPath = StateMap.stateSettings.templatePath;
+			  var StateMap1 = StateMap.fetchComponents;
+			 
+			 if(StateMap.stateSettings == undefined)StateMap.stateSettings = {};
+              if (StateMap.stateSettings.templatePath == undefined) StateMap.stateSettings.templatePath = "/template/template.html";
+                			 
 
 						this.fetchTemplates(function(divEl){
 				for(var key10 in StateMap1){
@@ -112,8 +106,10 @@ function HTMLixState(StateMap){
 
 					}					
 				}
+				
+				context.verifyFetchComponents(divEl);
 
-							},  urlPath);
+							},  StateMap.stateSettings.templatePath);
 
 						continue;
 		}
@@ -146,270 +142,11 @@ function HTMLixState(StateMap){
 	    }	
 }
 
-
-HTMLixState.prototype.addContainer=  function (stateNameProp, properties, insertLocation){
-
-		var container = this.createContainerInArr(stateNameProp, properties, insertLocation);
-	return container;
-}
-HTMLixState.prototype.createContainerInArr = function(stateNameProp, properties, insertLocation){
-
-		if(this.state[stateNameProp] == undefined)console.log("не получается найти компонент"+stateNameProp+"в this.state")
-
-		var stateArray = this.state[stateNameProp];
-		
-		//console.log(stateArray);
-
-		if(stateArray.type != "array"){
-
-				console.log("создать контейнер можно только в массиве array");
-		return;		
-	}
-	if( insertLocation != undefined  && insertLocation != "and" && isNaN(insertLocation)){
-
-				console.log("Введите корректную позицию для вставки контейнера в массив "+stateNameProp);
-		return;
-	}
-	var index = 0;
-
-		if(insertLocation == undefined || insertLocation == "and"  ){ 
-
-			index = stateArray.data.length;
-
-			}else if(typeof insertLocation == 'number' ){
-
-				if(insertLocation > stateArray.data.length) insertLocation = stateArray.data.length;
-
-				index = insertLocation;
-
-			}
-	var Link = stateArray.templateData.cloneNode(true);	
-
-									       var desc =this.description[stateNameProp];
-										   
-										   //console.log(this.description);
-
-	   	   if(desc == undefined){ 
-
-		    if(this.description.virtualArrayComponents != undefined && this.description.virtualArrayComponents[stateNameProp] != undefined){ 
-
-
-										desc = this.description.virtualArrayComponents[stateNameProp];
-							   
-		   }else {
-
-			   		   if(this.description.fetchComponents !=undefined && this.description.fetchComponents[stateNameProp] != undefined){
-
-			   						 desc = this.description.fetchComponents[stateNameProp];
-			   }else{
-
-				   				   console.log("eror- не получается найти описание для компонета "+stateNameProp+" проверьте существуют ли обьекты fetchComponents, virtualArrayComponents в описании параметре StateMap");
-			   }			  
-		   }
-	   }
-
-				var container = new Container(Link, desc.container,  desc.props,
-									desc.methods, index, stateNameProp, this);
-
-											container.renderType = "container-inner";
-
-				var htmlLink = stateArray.htmlLink;
-				
-				if(stateArray.selector != undefined ){
-					
-					htmlLink = htmlLink.querySelector(stateArray.selector);
-					
-					if(htmlLink == null || htmlLink == undefined)console.log("error - не удается найти селектор "+stateArray.selector+" для массива "+stateNameProp);
-					
-				}
-
-	if(insertLocation == undefined || insertLocation == "and" ){ 
-
-				if(this.description.virtualArrayComponents == undefined){ 
-
-						htmlLink.appendChild(Link);
-
-					}else{	
-
-					if(this.description.virtualArrayComponents[stateNameProp] == undefined)htmlLink.appendChild(Link);
-		}	
-		stateArray.data.push(container);
-	}else if(typeof insertLocation == 'number'){
-
-				if(this.description.virtualArrayComponents == undefined ){
-
-				            htmlLink.insertBefore(Link, htmlLink.children[insertLocation]);
-		}else{
-
-
-									if(this.description.virtualArrayComponents[stateNameProp] == undefined)htmlLink.insertBefore(Link, htmlLink.children[insertLocation]);
-		}
-		stateArray.data.splice(insertLocation, 0, container);
-
-		for(var i=insertLocation ; i < stateArray.data.length; i++){
-
-			stateArray.data[i].index = i;
-		}		
-	}		
-	for(key in properties){
-
-				if(container.props[key]!= undefined){
-
-						container.props[key].setProp(properties[key]);
-		}
-	}
-	return container;
-}
-HTMLixState.prototype.removeAll = function(stateNameProp, widthChild){	
-	this.clearContainer(stateNameProp, widthChild);
-}
-HTMLixState.prototype.clearContainer = function(stateNameProp, widthChild){
-
-		if(this.state[stateNameProp].type != "array")return;
-
-		for (var index =0; index < this.state[stateNameProp].data.length; index++){
-
-					for (key in  this.state[stateNameProp].data[index].props){
-
-							if(this.state[stateNameProp].data[index].props[key].emiterKey != undefined){
-							this.eventProps[this.state[stateNameProp].data[index].props[key].type].removeListener(this.state[stateNameProp].data[index].props[key].htmlLink);
-					}
-					else if(this.state[stateNameProp].data[index].props[key].events != undefined){
-
-												for(key1 in this.state[stateNameProp].data[index].props[key].events){
-							this.state[stateNameProp].data[index].props[key].htmlLink.removeEventListener(key1, this.state[stateNameProp].data[index].props[key].events[key1]);		
-							delete this.state[stateNameProp].data[index].props[key].events[key1]
-
-													}
-					}else if(widthChild != undefined && widthChild == true && this.state[stateNameProp].data[index].props[key].renderChild  != undefined && this.state[stateNameProp].data[index].props[key].renderChild.renderType == "container-inner"){
-
-												this.state[stateNameProp].data[index].props[key].renderChild.remove(true);
-					}
-					else if(widthChild != undefined && widthChild == true && this.state[stateNameProp].data[index].props[key].groupChild != undefined && this.state[stateNameProp].data[index].props[key].groupChild.length > 0){
-
-						                    var indexesArr = [];						
-					for(var it =0; it < this.state[stateNameProp].data[index].props[key].groupChild.length; it++){
-						indexesArr.push(this.state[stateNameProp].data[index].props[key].groupChild[it].index);
-					}
-					this.removeByIndexes(this.state[stateNameProp].data[index].props[key].groupChild[0].pathToCоmponent,  indexesArr, true);				
-				}
-			}	
-			this.state[stateNameProp].data[index].htmlLink.remove();
-	}	
-	this.state[stateNameProp].data = [];
-
-}
-HTMLixState.prototype.removeByIndex = function(stateNameProp, index, widthChild){
-
-	this.removeByIndexes(stateNameProp, [index], widthChild);
-}
-HTMLixState.prototype.removeByIndexes = function(stateNameProp, indexArray, widthChild ){
-
-		if(this.state[stateNameProp].type != "array")return;
-	if(indexArray.length < 0 || typeof indexArray != "object" ){
-
-				console.log("error - некорректно задан второй аргумент для функции removeByIndexes, проверьте что это не пустой массив, а также номер эелемента для удаления" );
-		return;
-	}
-
-	for(var r = 0; r < indexArray.length; r++){
-
-				if(indexArray[r] > this.state[stateNameProp].data.length-1){
-
-						console.log("error - индекс для удаления больше количества элементов в массиве "+stateNameProp);
-			return;
-		}		
-			for (key in  this.state[stateNameProp].data[indexArray[r]].props){
-
-						if(this.state[stateNameProp].data[indexArray[r]].props[key].emiterKey != undefined){
-					this.eventProps[ this.state[stateNameProp].data[indexArray[r]].props[key].type ].removeListener(this.state[stateNameProp].data[indexArray[r]].props[key].htmlLink);
-				}
-				else if(this.state[stateNameProp].data[indexArray[r]].props[key].events != undefined){
-
-											for(key1 in this.state[stateNameProp].data[indexArray[r]].props[key].events){
-						this.state[stateNameProp].data[indexArray[r]].props[key].htmlLink.removeEventListener(key1, this.state[stateNameProp].data[indexArray[r]].props[key].events[key1]);		
-						delete this.state[stateNameProp].data[indexArray[r]].props[key].events[key1]							
-					}						
-				}
-				else if(widthChild != undefined && widthChild == true && this.state[stateNameProp].data[indexArray[r]].props[key].renderChild != undefined && this.state[stateNameProp].data[indexArray[r]].props[key].renderChild.renderType == "container-inner"){
-
-										this.state[stateNameProp].data[indexArray[r]].props[key].renderChild.remove(true);
-				}
-				else if(widthChild != undefined && widthChild == true && this.state[stateNameProp].data[indexArray[r]].props[key].groupChild != undefined && this.state[stateNameProp].data[indexArray[r]].props[key].groupChild.length > 0){
-
-						                    var indexesArr = [];						
-					for(var it =0; it < this.state[stateNameProp].data[indexArray[r]].props[key].groupChild.length; it++){
-						indexesArr.push(this.state[stateNameProp].data[indexArray[r]].props[key].groupChild[it].index);
-					}
-					this.removeByIndexes(this.state[stateNameProp].data[indexArray[r]].props[key].groupChild[0].pathToCоmponent,  indexesArr, true);					
-				}								
-		}
-		this.state[stateNameProp].data[indexArray[r]].htmlLink.remove();
-
-			}
-		var newData = this.state[stateNameProp].data.filter(  function(container, i) {
-
-									return ! indexArray.some(function(numb){ return numb == i });
-		});	
-		this.state[stateNameProp].data = newData;
-	for(var i=0 ; i < this.state[stateNameProp].data.length; i++){
-
-			this.state[stateNameProp].data[i].index = i;
-	}
-
-	}
-HTMLixState.prototype.removeByLink = function(stateNameProp, htmlLink, widthChild){
-
-						   for(var it=0; it< this.state[stateNameProp].data.length; it++){
-
-			   						   if(this.state[stateNameProp].data[it].htmlLink ==  htmlLink){
-
-							   							   this.removeByIndexes(stateNameProp, [it], widthChild);
-						   }
-					   }
-
-	}
-HTMLixState.prototype.getContainerByLink = function(stateNameProp, htmlLink){ 
-
-					   for(var it=0; it< this.state[stateNameProp].data.length; it++){
-
-						   			if(this.state[stateNameProp].data[it].htmlLink ==  htmlLink){
-
-							   							   return this.state[stateNameProp].data[it];
-						   }
-					   }
-};
-HTMLixState.prototype.fetchTemplates = function(callb, templatePath){
-
-			var urlPath = "/template/template.html";
-		if(templatePath != undefined)urlPath = templatePath;
-
-								fetch(urlPath)
-					.then((response) => {
-						if(response.ok) {
-							return response.text();
-						}	
-
-            						throw new Error('Network response was not ok');
-					})
-					.then((text) => {
-
-
-																		var div = document.createElement('div');
-						div.innerHTML = text;
-						callb(div);
-
-					})
-					.catch((error) => {
-							console.log(error);
-					});
-
-		}
-
 HTMLixState.prototype.containerInit = function(node, StateMap, key){
 
 		if(this.state[key] != undefined)return;
-	if(node == null)node = document.querySelectorAll('[data-'+key+']')[0]; 
+	if(node == null)node = document.querySelector('[data-'+key+']');
+    if(node == null || node == undefined)console.log("error в html разметке не найден контейнер "+key);	
 
 
 	if(StateMap[key]== undefined)console.log("error- проверьте корректность parent ключей в html - коде");
@@ -419,8 +156,9 @@ HTMLixState.prototype.containerInit = function(node, StateMap, key){
 HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 
 	       			if(this.state[key] != undefined)return;
-			if(node == null)node = document.querySelectorAll('[data-'+key+']')[0];
-
+			if(node == null)node = document.querySelector('[data-'+key+']');
+            if(node == null || node == undefined)console.log("error в html разметке не найден контейнер "+key);	
+			
 
 									var lengthChildren = node.children.length; 
 			if(StateMap[key].container == undefined)console.log("error- забыли указать контейнер для массива " +key);
@@ -519,8 +257,280 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 
 										console.log("warn - контейнеров "+StateMap[key].container+" в массиве "+key+" создано больше чем обьявлено в html, проверьте что контейнеры распологаются в массиве непосредственно, старайтесь избегать создания порежуточных тегов");
 				}	
+}
+
+HTMLixState.prototype.verifyFetchComponents = function(divEl){
+	
+	if(this.description.virtualArrayComponents != undefined){
+		
+		for(var key in this.description.virtualArrayComponents){
+			
+			if(this.state[ key ] == undefined){
+				
+				var containerHTML = divEl.querySelector('[data-'+this.description.virtualArrayComponents[key].container+']');
+				
+			      if(containerHTML == null || containerHTML == undefined){
+					  
+					  console.log("Error в шаблоне "+ this.stateSettings.templatePath+" не найдено компонента "+key+" - виртуального массива,  проверьте его наличие и правильность ключей в шаблоне");
+					  return;
+				  }
+				  this.state[ key ] = new HTMLixArray("virtuall array", containerHTML, this, key, undefined);
+				
+			}			
+		}	
+	}
+}
+
+
+HTMLixState.prototype.addContainer=  function (stateNameProp, properties, insertLocation){
+
+		var container = this.createContainerInArr(stateNameProp, properties, insertLocation);
+	return container;
+}
+HTMLixState.prototype.createContainerInArr = function(stateNameProp, properties, insertLocation){
+
+		if(this.state[stateNameProp] == undefined)console.log("не получается найти компонент"+stateNameProp+"в this.state");
+
+		var stateArray = this.state[stateNameProp];
+		
+		//console.log(stateArray);
+
+		if(stateArray.type != "array"){
+
+				console.log("создать контейнер можно только в массиве array");
+		return;		
+	}
+	if( insertLocation != undefined  && insertLocation != "and" && isNaN(insertLocation)){
+
+				console.log("Введите корректную позицию для вставки контейнера в массив "+stateNameProp);
+		return;
+	}
+	var index = 0;
+
+		if(insertLocation == undefined || insertLocation == "and"  ){ 
+
+			index = stateArray.data.length;
+
+			}else if(typeof insertLocation == 'number' ){
+
+				if(insertLocation > stateArray.data.length) insertLocation = stateArray.data.length;
+
+				index = insertLocation;
+
+			}
+	var Link = stateArray.templateData.cloneNode(true);	
+
+									       var desc =this.description[stateNameProp];
+										   
+										   //console.log(this.description);
+
+	   	   if(desc == undefined){ 
+
+		    if(this.description.virtualArrayComponents != undefined && this.description.virtualArrayComponents[stateNameProp] != undefined){ 
+
+
+										desc = this.description.virtualArrayComponents[stateNameProp];
+							   
+		   }else {
+
+			   		   if(this.description.fetchComponents !=undefined && this.description.fetchComponents[stateNameProp] != undefined){
+
+			   						 desc = this.description.fetchComponents[stateNameProp];
+			   }else{
+
+				   				   console.log("eror- не получается найти описание для компонета "+stateNameProp+" проверьте существуют ли обьекты fetchComponents, virtualArrayComponents в описании, параметре StateMap");
+			   }			  
+		   }
+	   }
+
+				var container = new Container(Link, desc.container,  desc.props,
+									desc.methods, index, stateNameProp, this);
+
+											container.renderType = "container-inner";
+
+				var htmlLink = stateArray.htmlLink;
+				
+				if(stateArray.selector != undefined ){
+					
+					htmlLink = htmlLink.querySelector(stateArray.selector);
+					
+					if(htmlLink == null || htmlLink == undefined)console.log("error - не удается найти селектор "+stateArray.selector+" для массива "+stateNameProp);
+					
+				}
+
+	if(insertLocation == undefined || insertLocation == "and" ){ 
+
+				if(this.description.virtualArrayComponents == undefined){ 
+
+						htmlLink.appendChild(Link);
+
+					}else{	
+
+					if(this.description.virtualArrayComponents[stateNameProp] == undefined)htmlLink.appendChild(Link);
+		}	
+		stateArray.data.push(container);
+	}else if(typeof insertLocation == 'number'){
+
+				if(this.description.virtualArrayComponents == undefined ){
+
+				            htmlLink.insertBefore(Link, htmlLink.children[insertLocation]);
+		}else{
+
+
+									if(this.description.virtualArrayComponents[stateNameProp] == undefined)htmlLink.insertBefore(Link, htmlLink.children[insertLocation]);
+		}
+		stateArray.data.splice(insertLocation, 0, container);
+
+		for(var i=insertLocation ; i < stateArray.data.length; i++){
+
+			stateArray.data[i].index = i;
+		}		
+	}		
+	for(key in properties){
+
+				if(container.props[key]!= undefined){
+
+						container.props[key].setProp(properties[key]);
+		}
+	}
+	return container;
+}
+HTMLixState.prototype.removeAll = function(stateNameProp, widthChild){	
+	this.clearContainer(stateNameProp, widthChild);
+}
+HTMLixState.prototype.clearContainer = function(stateNameProp, widthChild){
+
+		if(this.state[stateNameProp].type != "array")return;
+
+		for (var index =0; index < this.state[stateNameProp].data.length; index++){
+			
+			     this.clearContainerProps(stateNameProp, index, widthChild);
+
+			this.state[stateNameProp].data[index].htmlLink.remove();
+	}	
+	this.state[stateNameProp].data = [];
+
+}
+
+
+
+HTMLixState.prototype.removeByIndex = function(stateNameProp, index, widthChild){
+
+	this.removeByIndexes(stateNameProp, [index], widthChild);
+}
+
+
+HTMLixState.prototype.removeByIndexes = function(stateNameProp, indexArray, widthChild ){
+
+		if(this.state[stateNameProp].type != "array")return;
+	if(typeof indexArray != "object" ||   indexArray.length < 0 ){
+
+				console.log("error - некорректно задан второй аргумент для функции removeByIndexes, проверьте что это не пустой массив, а также номер эелемента для удаления" );
+		return;
+	}
+
+	for(var r = 0; r < indexArray.length; r++){
+
+				if(indexArray[r] > this.state[stateNameProp].data.length-1){
+
+						console.log("error - индекс для удаления "+indexArray[r]+" больше количества элементов в массиве "+stateNameProp);
+			return;
+		}		
+		           this.clearContainerProps(stateNameProp, indexArray[r], widthChild);
+
+		          this.state[stateNameProp].data[indexArray[r]].htmlLink.remove();
+
+			}
+		var newData = this.state[stateNameProp].data.filter(  function(container, i) {
+
+									return ! indexArray.some(function(numb){ return numb == i });
+		});	
+		this.state[stateNameProp].data = newData;
+	for(var i=0 ; i < this.state[stateNameProp].data.length; i++){
+
+			this.state[stateNameProp].data[i].index = i;
+	}
 
 	}
+	
+HTMLixState.prototype.clearContainerProps = function(stateNameProp, index, widthChild){
+	
+	                var container = this.state[stateNameProp].data[index];
+					
+					for (key in  container.props){
+
+							if(container.props[key].emiterKey != undefined){
+							this.eventProps[container.props[key].type].removeListener(container.props[key].htmlLink);
+					}
+					else if(container.props[key].events != undefined){
+
+												for(key1 in container.props[key].events){
+							container.props[key].htmlLink.removeEventListener(key1, container.props[key].events[key1]);		
+							delete container.props[key].events[key1]
+
+													}
+					}else if(widthChild != undefined && widthChild == true && container.props[key].renderChild  != undefined && container.props[key].renderChild.renderType == "container-inner"){
+
+												container.props[key].renderChild.remove(true);
+					}
+					else if(widthChild != undefined && widthChild == true && container.props[key].groupChild != undefined && container.props[key].groupChild.length > 0){
+
+						                    var indexesArr = [];						
+					for(var it =0; it < container.props[key].groupChild.length; it++){
+						indexesArr.push(container.props[key].groupChild[it].index);
+					}
+					this.removeByIndexes(container.props[key].groupChild[0].pathToCоmponent,  indexesArr, true);				
+				}
+			}
+}	
+HTMLixState.prototype.removeByLink = function(stateNameProp, htmlLink, widthChild){
+
+						   for(var it=0; it< this.state[stateNameProp].data.length; it++){
+
+			   						   if(this.state[stateNameProp].data[it].htmlLink ==  htmlLink){
+
+							   							   this.removeByIndexes(stateNameProp, [it], widthChild);
+						   }
+					   }
+	}
+HTMLixState.prototype.getContainerByLink = function(stateNameProp, htmlLink){ 
+
+					   for(var it=0; it< this.state[stateNameProp].data.length; it++){
+
+						   			if(this.state[stateNameProp].data[it].htmlLink ==  htmlLink){
+
+							   							   return this.state[stateNameProp].data[it];
+						   }
+					   }
+};
+HTMLixState.prototype.fetchTemplates = function(callb, templatePath){
+
+			
+		if(templatePath == undefined)console.log("error не указана дериктория для поиска шаблона в настройках .stateSettings.templatePath");
+
+								fetch(templatePath)
+					.then((response) => {
+						if(response.ok) {
+							return response.text();
+						}	
+
+            						throw new Error('Network response was not ok');
+					})
+					.then((text) => {
+
+
+																		var div = document.createElement('div');
+						div.innerHTML = text;
+						callb(div);
+
+					})
+					.catch((error) => {
+							console.log(error);
+					});
+
+		}
+
+
 HTMLixState.prototype.capitalizeFirstLetter = function(string){
 
 		return string.charAt(0).toUpperCase() + string.slice(1);
@@ -530,18 +540,13 @@ HTMLixState.prototype.capitalizeFirstLetter = function(string){
 
 
 
-
-
-
-
-
-function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, rootLink, isRunCraetedContainer) {
+function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, rootLink, isRuncreatedContainer) {
   this.htmlLink = htmlLink;
   this.rootLink = rootLink;
   this.props = {};
   this.methods = {};
 
-    this.id = id;
+    /*this.id = id;*/
   this.index = id;
 
   
@@ -581,10 +586,10 @@ function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, r
 
 					  						  if(htmlLinkToProp == undefined){
 												  
-												  console.log("error - не возможно найти селектор для свойства "+selector+" контейнера "+keyLevel_1+" проверьте правильность селектора")
+												  console.log("error - не возможно найти селектор для свойства "+selector+" контейнера "+keyLevel_1+" проверьте правильность селектора или наличие тега в html разметке");
 												  continue;
 											  }
-				}
+				                 }
 
 			     		 				      this.props[ string ] = new Prop(htmlLinkToProp, 
 				                                   keyLevel_1,	
@@ -603,11 +608,11 @@ function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, r
 
 				methods = {};
 
-			}else if(methods.craetedContainer != undefined ){ 
+			}else if(methods.createdContainer != undefined ){ 
 
-				this.methods.craetedContainer = methods.craetedContainer.bind(this)
+				this.methods.createdContainer = methods.createdContainer.bind(this)
 
-		if(isRunCraetedContainer==undefined || isRunCraetedContainer!=false)this.methods.craetedContainer();
+		if(isRuncreatedContainer==undefined || isRuncreatedContainer!=false)this.methods.createdContainer();
 	}
 
 	}
@@ -785,39 +790,41 @@ Prop.prototype.initRenderVariant = function(){
 					for (var key5 in objToFind){
 				if(objToFind[key5] == "array" ){
 
-										if(this.rootLink.state[key5] == undefined && this.rootLink.description[key5] != undefined)this.rootLink.arrayInit(null, this.rootLink.description, key5);
-					if(this.rootLink.state[key5] == undefined && this.rootLink.description[key5] == undefined && this.rootLink.description.fetchComponents != undefined && this.rootLink.description.fetchComponents[key5] != undefined)this.rootLink.arrayInit(null, this.rootLink.description.fetchComponents, key5);
+					if(this.rootLink.state[key5] == undefined && this.rootLink.description[key5] != undefined)this.rootLink.arrayInit(objIs, this.rootLink.description, key5);
+					if(this.rootLink.state[key5] == undefined && this.rootLink.description[key5] == undefined && this.rootLink.description.fetchComponents != undefined && this.rootLink.description.fetchComponents[key5] != undefined)this.rootLink.arrayInit(objIs, this.rootLink.description.fetchComponents, key5);
 					this.renderChild = this.rootLink.state[key5];
-	                this.rootLink.state[key5].renderParent = this;				
+	                this.renderChild.renderParent = this;				
 				}
 				if(objToFind[key5] == "container" ){
 
 						if(this.rootLink.description[key5] != undefined &&  this.rootLink.state[key5] == undefined){
 
-														this.rootLink.containerInit(null, this.rootLink.description, key5);	
+														this.rootLink.containerInit(objIs, this.rootLink.description, key5);	
 
 														if(this.rootLink.state[key5] != undefined){
 
 																		this.renderChild = this.rootLink.state[key5];
-										this.rootLink.state[key5].renderParent = this;
+																		this.renderChild.state[key5].renderParent = this;
 
 															}							
 
 																				}else if (this.rootLink.description[key5] != undefined &&  this.rootLink.state[key5] != undefined){
 
 														this.renderChild = this.rootLink.state[key5];
-							this.rootLink.state[key5].renderParent = this;
+														this.renderChild.renderParent = this;
 
 													}else if (this.rootLink.description[key5] == undefined &&  this.rootLink.state[key5] == undefined && this.rootLink.description.fetchComponents != undefined && this.rootLink.description.fetchComponents[key5] != undefined){
 
-														this.rootLink.containerInit(null, this.rootLink.description.fetchComponents, key5);	
-							this.renderChild = this.rootLink.state[key5];
-							this.rootLink.state[key5].renderParent = this;
+														this.rootLink.containerInit(objIs, this.rootLink.description.fetchComponents, key5);	
+															this.renderChild = this.rootLink.state[key5];
+															this.renderChild.renderParent = this;
+															
+														
 
 													}else{
 
 														var nameVirtualArray = null;
-							var  nameContainer = null;
+							                             var  nameContainer = null;
 
 														for(var key4 in this.rootLink.description.virtualArrayComponents){
 
@@ -887,7 +894,7 @@ Prop.prototype.initGroup = function(containerName, propName){
 
 						for(var i=0; i< groupItems.length; i++ ){
 
-						   objToFind  = groupItems[i].dataset;
+						  var objToFind  = groupItems[i].dataset;
 
 				                	var nameVirtualArray = null;
                     var nameContainer = null;					
@@ -912,11 +919,9 @@ Prop.prototype.initGroup = function(containerName, propName){
 
 											   	if(nameVirtualArray != null && this.rootLink.state[nameVirtualArray] ==  undefined){
 													
-														var selector = undefined;
-			
-														if(this.rootLink.description.virtualArrayComponents[nameVirtualArray].selector != undefined) selector = this.rootLink.description.virtualArrayComponents[nameVirtualArray].selector;
+												
 													
-													this.rootLink.state[nameVirtualArray] = new HTMLixArray("virtuall array", groupItems[i], this.rootLink, nameVirtualArray, selector);
+													this.rootLink.state[nameVirtualArray] = new HTMLixArray("virtuall array", groupItems[i], this.rootLink, nameVirtualArray, undefined);
 												}
 
 										
@@ -941,7 +946,7 @@ Prop.prototype.initGroup = function(containerName, propName){
 						this.groupArray = this.rootLink.state[nameVirtualArray];
 						//console.log(this.groupArray);
 						container.groupId  = this.groupChild.length - 1; 
-						if(container.methods.craetedContainer != undefined)container.methods.craetedContainer();
+						if(container.methods.createdContainer != undefined)container.methods.createdContainer();
 
 									        }else{
 						 if(typeof keyData2 != "string"){ 
@@ -1575,9 +1580,9 @@ function HTMLixRouter(state, routes){
 
 					if(key2 == routes[namePathInRoutes].first[t] || key2 == "stateSettings" || key2 ==  "stateMethods" ||
 
-					key2 == 'stateProperties' || key2 ==  "eventEmiters" ||  key2 ==  'virtualArrayComponents' || 
+					key2 == 'stateProperties' || key2 ==  "eventEmiters" ||  key2 ==  'virtualArrayComponents' || key2 ==  "fetchComponents"
 
-							key2 ==  'firstInitComponents' ||  key2 ==  "fetchComponents" ){
+							/* ||  key2 ==  'firstInitComponents' */ ){
 
 														toCare = false;
 
@@ -1653,10 +1658,7 @@ function HTMLixRouter(state, routes){
 						
 						if(this.htmlLink[key] == undefined || this.htmlLink[key] == null) console.log("error в html коде не найден роутер data-"+key);
 					}
-						
-					//console.log(this);	
-					
-				
+
 			},
 			setHtml: function (nameArrComp){
 				
@@ -1685,16 +1687,11 @@ function HTMLixRouter(state, routes){
 					url
 			);
 
-						//if(newComponent != undefined ){
 
-								//this.component = newComponent;
-
-			//}else{
-
-								var nameArrComp = this.matchRout(this.routes);
+				var nameArrComp = this.matchRout(this.routes);
 
 
-										if(nameArrComp == null){
+					if(nameArrComp == null){
 
 									console.log("router error - не удается найти совпадающий rout для маршрута "+window.location.pathname)
 				}	
