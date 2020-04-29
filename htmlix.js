@@ -426,6 +426,7 @@ HTMLixState.prototype.createContainerInArr = function(stateNameProp, properties,
 						container.props[key].setProp(properties[key]);
 		}
 	}
+	if(container.createdContainer != undefined)container.createdContainer();
 	return container;
 }
 
