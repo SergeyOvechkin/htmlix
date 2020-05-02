@@ -836,7 +836,7 @@ Prop.prototype.initRenderVariant = function(){
 														if(this.rootLink.state[key5] != undefined){
 
 																		this.renderChild = this.rootLink.state[key5];
-																		this.renderChild.state[key5].renderParent = this;
+																		this.renderChild.renderParent = this;
 
 															}							
 
@@ -1030,16 +1030,72 @@ Prop.prototype.clearGroup = function(){
 
 		this.groupChild= [];
 }
+Prop.prototype.reuseGroup = function(arrayWithObjects){
+	
+	  // console.log(arrayWithObjects);
+	
+		if(this.groupArray == undefined){
+		
+					console.log("error для использования метода .reuseGroup свойство должно иметь поле this.groupArray");
+					return		
+		}
+	
+		var newArrLength = arrayWithObjects.length;
+		var oldArrLength = this.groupChild.length;
+	
+	var add = 0;
+	var remove =0;
+	
+	if(newArrLength > oldArrLength) add = newArrLength - oldArrLength;
+	if(newArrLength < oldArrLength) remove =  oldArrLength - newArrLength;
+	
+	for(var i=0; i<this.groupChild.length; i++){
+		
+		this.groupChild[i].setAllProps(arrayWithObjects[i]);
+		
+	}	
+	if(add > 0){
+		for (var t=0; t<add; t++){
+			
+
+			
+			this.createInGroup(arrayWithObjects[oldArrLength + t]);
+		}	
+	}
+    if(remove > 0){
+		for (var f=0; f<remove; f++){
+			
+			this.removeFromGroup( this.groupChild.length - 1 );
+		}	
+	}
+		
+}
+Prop.prototype.createInGroup = function(props, insertLocation){
+	
+	if(this.groupArray == undefined){
+		
+		console.log("error для использования метода createInGroup свойство должно иметь поле this.groupArray");
+		return
+		
+	}
+
+	
+	var container =  this.groupArray.add(props);
+	
+	this.addToGroup(container, insertLocation);
+	
+}
+
 Prop.prototype.addToGroup = function(container, insertLocation){ 
 
-          		 var loc = "back";       
+          		 var loc = "and";       
           if(insertLocation == "front")loc = 0;
-		  if(insertLocation == "and")loc = "back"
-          if(typeof insertLocation == 'number')loc = insertLocation;  		  
-
+          if(typeof insertLocation == 'number' && insertLocation != null && insertLocation != undefined)loc = insertLocation;  		  
+                        
+						this.groupArray = this.rootLink.state[container.pathToCоmponent];
 						container.groupParent = this;
 
-				if( loc == "back"){
+				if( loc == "and"){
 
 						this.htmlLink.appendChild(container.htmlLink);
 
@@ -1060,6 +1116,7 @@ Prop.prototype.addToGroup = function(container, insertLocation){
 }
 
 
+
 Prop.prototype.setProp = function(value, eventMethod) {
 	if(this.type == "text"){
 
@@ -1076,7 +1133,14 @@ Prop.prototype.setProp = function(value, eventMethod) {
 		 		 this.htmlLink.checked = value;
 
 
-				}else if(this.type == "class"){
+				}
+				else if(this.type == "html"){
+
+				  this.htmlLink.innerHTML = value;
+
+			   }
+				
+				else if(this.type == "class"){
 
 				this.htmlLink.classList.add(value);
 
@@ -1109,13 +1173,33 @@ Prop.prototype.setProp = function(value, eventMethod) {
 	}else if(this.type == "group"){ 
 
 		    if(Array.isArray(value) ){
-
+				
+				//if(value.length == 0)return;
+				
+				if(value[0] != undefined && value[0].groupId != undefined){
+					
 						this.clearGroup();
-			this.groupChild = value;
+			            this.groupChild = value;
+					
+				}else {
+					
+					this.reuseGroup(value);
+				}
 
-					}else if(typeof value == "object"){
-
-								this.addToGroup(value);
+			}else if(typeof value == "object"){
+				
+				if(value.type != undefined && value.renderType == "container-inner"){
+					
+					this.addToGroup(value);
+					
+				}else{
+					
+					this.createInGroup(value, eventMethod);
+				}
+				
+		}else {
+			
+			console.log("не получается создать "+value+"в группе компонента"+this.pathToCоmponent);
 		}
 	}else if(this.type == "data"){ 
 			
@@ -1156,7 +1240,12 @@ Prop.prototype.getProp = function(value) {
 				return this.htmlLink.classList;
 
 
-	}else if(this.type == "render-variant"){
+	}else if(this.type == "html"){
+
+				  return this.htmlLink.innerHTML;
+
+    }	
+	else if(this.type == "render-variant"){
 
 				return  this.renderChild;
 
@@ -1164,10 +1253,10 @@ Prop.prototype.getProp = function(value) {
 
 					if(value == undefined){
 
-								return this.groupChild
+						return this.groupChild
 			}else{
 
-								return this.groupChild[value];
+						return this.groupChild[value];
 			}	 
 
 			}else if(this.isAttr(this.type) != false){
@@ -1198,7 +1287,11 @@ Prop.prototype.removeProp = function(value) {
 				this.htmlLink.classList.remove(value);
 
 
-	}else if(this.type == "checkbox" || this.type == "radio"){
+	}else if(this.type == "html"){
+
+				  this.htmlLink.innerHTML = "";
+
+    }else if(this.type == "checkbox" || this.type == "radio"){
 
 				 this.htmlLink.checked = false;
 
