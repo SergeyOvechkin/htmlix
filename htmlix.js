@@ -426,7 +426,8 @@ HTMLixState.prototype.createContainerInArr = function(stateNameProp, properties,
 						container.props[key].setProp(properties[key]);
 		}
 	}
-	if(container.createdContainer != undefined)container.createdContainer();
+	//console.log("ll");
+	//if(container.createdContainer != undefined)container.createdContainer();
 	return container;
 }
 
@@ -644,7 +645,11 @@ function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, r
 
 				this.createdContainer = methods.createdContainer.bind(this)
 
-		if(isRuncreatedContainer==undefined || isRuncreatedContainer!=false)this.createdContainer();
+		if(isRuncreatedContainer==undefined || isRuncreatedContainer!=false){
+			
+			this.createdContainer();
+			//console.log(this);
+		}
 	}
 
 	}
@@ -757,6 +762,7 @@ function Prop(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parent
      this.rootLink = rootLink;
   this.htmlLink = htmlLink;
   this.prop = null;
+  this.propName = keyData2;
 
 
   if(typeof keyData2 == "object"){
@@ -1030,12 +1036,34 @@ Prop.prototype.clearGroup = function(){
 
 		this.groupChild= [];
 }
+Prop.prototype.getGroupsArray = function(){
+	
+			if(this.groupArray == undefined){
+			
+			      if(this.component().type=="array"){
+					  
+					  for(var h=0; h<this.component().data.length; h++){
+						  
+						  if(this.component().data[h].props[this.propName].groupArray != undefined){
+							  
+							  this.groupArray = this.component().data[h].props[this.propName].groupArray;
+							  
+							  return this.groupArray;
+							  
+						  }
+					  }
+					  
+				  }					  	
+		}
+	return null;	
+}
+
 Prop.prototype.reuseGroup = function(arrayWithObjects){
 	
 	  // console.log(arrayWithObjects);
 	
-		if(this.groupArray == undefined){
-		
+		if(this.groupArray == undefined && this.getGroupsArray() == null){
+				
 					console.log("error для использования метода .reuseGroup свойство должно иметь поле this.groupArray");
 					return		
 		}
@@ -1072,7 +1100,7 @@ Prop.prototype.reuseGroup = function(arrayWithObjects){
 }
 Prop.prototype.createInGroup = function(props, insertLocation){
 	
-	if(this.groupArray == undefined){
+	if(this.groupArray == undefined && this.getGroupsArray() == null){
 		
 		console.log("error для использования метода createInGroup свойство должно иметь поле this.groupArray");
 		return
@@ -1153,7 +1181,7 @@ Prop.prototype.setProp = function(value, eventMethod) {
 
 						if(arguments.length == 1){
 							
-						//	console.log(value);
+							//console.log(value);
 
 						if(typeof value == "string" ){
 
@@ -1382,21 +1410,29 @@ Prop.prototype.enableEvent = function(value){
 Prop.prototype.render = function(nameComponent){
 
 
-				if(this.renderChild == undefined && nameComponent == undefined ){
+	if(this.renderChild == undefined && nameComponent == undefined ){
 
 			    console.log("не известен компонент для рендера");
 		return  "undefinit render-variant";
 	}
-	if(nameComponent != undefined)this.renderChild = this.rootLink.state[nameComponent];
+	if(nameComponent != undefined && this.rootLink.state[nameComponent] != undefined){
+		
+		this.renderChild = this.rootLink.state[nameComponent];
 		
 		//console.log(this.rootLink.state[nameComponent]);
-		this.renderChild.renderParent = this;		
+		this.rootLink.state[nameComponent].renderParent = this;		
 
 		this.htmlLink.innerHTML = "";
 
 		this.htmlLink.appendChild(this.renderChild.htmlLink);
+		
+	}else{
+				
+          console.log("не найден компонент "+nameComponent+" для рендера");
+		return  "undefinit render-variant";
+	}
 
-		}
+}
 Prop.prototype.renderByLink = function(nameComponent, htmlLinkContainer){
 
 			var container = this.rootLink.getContainerByLink(nameComponent, htmlLinkContainer);
@@ -1595,15 +1631,35 @@ function HTMLixRouter(state, routes){
 				
 
 			for(var key in routes){
-
+                    
+					var isCountSerchСoincide = true;
+					
 					var pathArrayFind = key.split("/");
+					
+					    
 							
 						var word = pathArrayFind.slice(-1)[0];  //поиск последнего слова в маршруте чтобы проверить есть ли у него в конце знак *
 						var paramWord = "";
 						
+					
+						
 						if( pathArrayFind.length>2 && word == ""){
 							 word = pathArrayFind.slice(-2)[0];
 							 pathArrayFind.pop();
+						}else if(pathArrayFind.length>2 && word == "*"){
+							
+							word = pathArrayFind.slice(-2)[0];
+							 pathArrayFind.pop();
+							isCountSerchСoincide = false;
+						}
+						
+				
+							
+						var word2 = pathArray.slice(-1)[0];  //поиск последнего слова в маршруте чтобы убрать пустую строку
+						
+						if( pathArray.length>2 && word2 == ""){
+							 //word2 = pathArrayFind.slice(-2)[0];
+							 pathArray.pop();
 						}
 							//console.log(pathArrayFind);
 						var searchInword = false;
@@ -1669,14 +1725,22 @@ function HTMLixRouter(state, routes){
 						
 						//console.log(pathArrayFind); console.log(pathArray);
 						
-			if(pathArrayFind.length == count){
+			if(isCountSerchСoincide == false){
+				if(pathArrayFind.length == count){
+					
+					namePathInRoutes = key;
+					return key;
+				}
+				
+			}								
+			if(pathArrayFind.length == count && pathArrayFind.length == pathArray.length){
 
 							namePathInRoutes = key;
 							
 
 				return key;
 
-							}
+			}
 		}		
 		return null;
 	}
