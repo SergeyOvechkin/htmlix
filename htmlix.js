@@ -1639,7 +1639,7 @@ function HTMLixRouter(state, routes){
 					    
 							
 						var word = pathArrayFind.slice(-1)[0];  //поиск последнего слова в маршруте чтобы проверить есть ли у него в конце знак *
-						var paramWord = "";
+						var paramWord = {};
 						
 					
 						
@@ -1664,7 +1664,7 @@ function HTMLixRouter(state, routes){
 							//console.log(pathArrayFind);
 						var searchInword = false;
 						
-						var searchInwordCount = "";
+						var searchInwordCount = {};
 						
 						var isParam = false;
 						
@@ -1674,13 +1674,13 @@ function HTMLixRouter(state, routes){
 								
 								searchInword = true;
 								word = pathArrayFind[y];
-								searchInwordCount = y;
+								searchInwordCount[y] = y;
 							}
 							
 							if(pathArrayFind[y][0] == ":" ){
 								
 								isParam = true;
-								paramWord = y;
+								paramWord[y] = y;
 								
 								//console.log(paramWord+" param word "+ pathArrayFind[y]);
 							}
@@ -1703,7 +1703,7 @@ function HTMLixRouter(state, routes){
 
 										count++;
 
-									}else if(searchInword == true && searchInwordCount == i){
+									}else if(searchInword == true && searchInwordCount[i] != undefined){
 
 
 															var search = pathArray[i].search(word);
@@ -1715,7 +1715,7 @@ function HTMLixRouter(state, routes){
 														count++;
 												//	console.log(search + " search  " +  word);
 										}
-									}else if(isParam == true && paramWord == i ){ 
+									}else if(isParam == true && paramWord[i] != undefined ){ 
 				
 											count++;
 									}
