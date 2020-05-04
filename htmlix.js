@@ -310,7 +310,9 @@ HTMLixState.prototype.verifyFetchComponents = function(divEl){
 				  this.state[ key ] = new HTMLixArray("virtuall array", containerHTML, this, key, undefined);
 				
 			}			
-		}	
+		}
+
+       		if(this.stateMethods != undefined && this.stateMethods.onLoadAll != undefined)this.stateMethods.onLoadAll.bind(this)();
 	}
 }
 
@@ -682,6 +684,7 @@ Container.prototype.setAllProps = function(properties){
 	
 }
 Container.prototype.component = function(){
+	
 	
 	return this.rootLink.state[this.pathToCоmponent];
 }
