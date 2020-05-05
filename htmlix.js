@@ -258,6 +258,8 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 
 						var i = 0;
 			if(containerHTML[0].dataset[StateMap[key].container] == "template"){
+				                 
+								 containerHTML[0].dataset[StateMap[key].container] = "container";
 
 								containerHTML[0].setAttribute('style', "");
 
@@ -301,11 +303,12 @@ HTMLixState.prototype.verifyFetchComponents = function(divEl){
 			if(this.state[ key ] == undefined){
 				
 				var containerHTML = divEl.querySelector('[data-'+this.description.virtualArrayComponents[key].container+']');
-				
-			      if(containerHTML == null || containerHTML == undefined){
+
+			      if(containerHTML == null ){
 					  
 					  console.log("Error в шаблоне "+ this.stateSettings.templatePath+" не найдено компонента "+key+" - виртуального массива,  проверьте его наличие и правильность ключей в шаблоне");
 					  return;
+					  
 				  }
 				  this.state[ key ] = new HTMLixArray("virtuall array", containerHTML, this, key, undefined);
 				
@@ -942,7 +945,7 @@ Prop.prototype.initGroup = function(containerName, propName){
 
 				   				   for (var key5 in objToFind){
 
-					   					  if(objToFind[key5] == "container"){
+					   					  if(objToFind[key5] == "container" || objToFind[key5] == "template"){
 
 						  						  for(var key57 in this.rootLink.description.virtualArrayComponents){
 
@@ -967,7 +970,7 @@ Prop.prototype.initGroup = function(containerName, propName){
 
 										
 
-										if(nameVirtualArray != null && nameContainer != null){
+					if(nameVirtualArray != null && nameContainer != null && objToFind[key5] == "container"){
 						var container = new Container(groupItems[i], 
 					                                 nameContainer, 
 						                          this.rootLink.description.virtualArrayComponents[nameVirtualArray].props, 
@@ -989,8 +992,23 @@ Prop.prototype.initGroup = function(containerName, propName){
 						container.groupId  = this.groupChild.length - 1; 
 						if(container.createdContainer != undefined)container.createdContainer();
 
-									        }else{
-						 if(typeof keyData2 != "string"){ 
+				 }else if(objToFind[key5] == "template"){
+					 
+					 this.groupArray = this.rootLink.state[nameVirtualArray];
+					 
+					 groupItems[i].setAttribute('style', "");
+					 groupItems[i].dataset[key5] = "container";
+
+
+					this.rootLink.state[nameVirtualArray].templateData = groupItems[i].cloneNode(true);
+
+					groupItems[i].remove();
+					 
+					 
+					 
+					 
+				 }else{
+						 if(typeof propName != "string"){ 
 
 						 						     console.log("error- проверьте правельность селектора для ключа "+propName[0]+" в контейнере "+containerName);
 
@@ -999,7 +1017,7 @@ Prop.prototype.initGroup = function(containerName, propName){
 							 							 console.log("error- контейнера с ключем "+key5+" не найдено проверьте правельность названия ключей после data- в html коде")
 						 }
 
-						 					}
+				}
 				 }
 			   }	
 		    }
