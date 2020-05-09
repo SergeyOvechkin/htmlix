@@ -1167,7 +1167,7 @@ Prop.prototype.addToGroup = function(container, insertLocation){
 
 
 Prop.prototype.setProp = function(value, eventMethod) {
-	if(this.type == "text"){
+			if(this.type == "text"){
 
 				this.htmlLink.textContent = value;
 
@@ -1190,8 +1190,26 @@ Prop.prototype.setProp = function(value, eventMethod) {
 			   }
 				
 				else if(this.type == "class"){
+					
+					if(Array.isArray(value)){
 
-				this.htmlLink.classList.add(value);
+						
+						for(var u=0; u < this.htmlLink.classList.length; u++){
+							
+							this.htmlLink.classList.remove(this.htmlLink.classList[u]);
+						}
+						
+						for(var k=0; k < value.length; k++){
+							
+							this.htmlLink.classList.add(value[k]);
+						}
+						
+					}else{
+						
+						this.htmlLink.classList.add(value);
+					}
+
+				
 
 			}else if(this.isAttr(this.type) != false){
 
@@ -1239,7 +1257,7 @@ Prop.prototype.setProp = function(value, eventMethod) {
 				
 				if(value.type != undefined && value.renderType == "container-inner"){
 					
-					this.addToGroup(value);
+					this.addToGroup(value, eventMethod);
 					
 				}else{
 					
@@ -1315,10 +1333,16 @@ Prop.prototype.getProp = function(value) {
 
 	}else if(this.isEvent(this.type) != false){ 
 
-			console.log("get for event property");
+			//console.log("get for event property");
 		return this.type;
 		
-	}else if(this.type == "data"){ 
+	}else if(this.isEmiter(this.type) != false){ 
+
+			//console.log("get for event property");
+		return this.type;
+		
+	}
+	else if(this.type == "data"){ 
 			
 			return this.htmlLink.dataset[ this.parent.name + "Data" ];
 	
@@ -1332,8 +1356,23 @@ Prop.prototype.removeProp = function(value) {
 				return	this.htmlLink.textContent = "";
 
 			}else if(this.type == "class"){
+				
+				
+					if(Array.isArray(value)){
 
-				this.htmlLink.classList.remove(value);
+						
+						for(var u=0; u < this.htmlLink.classList.length; u++){
+							
+							this.htmlLink.classList.remove(this.htmlLink.classList[u]);
+						}
+					
+						
+					}else{
+						
+						this.htmlLink.classList.remove(value);
+					}
+
+				
 
 
 	}else if(this.type == "html"){
@@ -1349,9 +1388,14 @@ Prop.prototype.removeProp = function(value) {
 				this.htmlLink.value = "";
 
 	}else if(this.type == "render-variant"){
+		
+		var isRemove = false;
 
-
-				 var isRemove = this.renderChild.remove(true);
+          if(this.renderChild.renderType == "container-inner"){
+			  
+			    isRemove = this.renderChild.remove(true);
+		  }
+				
 		 if(isRemove == null){
 
 			 			 this.renderChild.renderParent = null;	
