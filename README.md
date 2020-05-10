@@ -714,12 +714,13 @@ window.onload = function(){
 **Рассмотрим как работает метод getProp() для основных типов свойств:**
 
 * "text" - текстовые данные - возвращает this.htmlLink.textContent;
+* "html" - разметка - возвращает this.htmlLink.innerHtml;
 * "inputvalue", "select" - данные форм возвращает - this.htmlLink.value;
 * "checkbox", "radio" - чекбоксы и радио возвращает tru или false - this.htmlLink.checked;
 * "class" - возвращает массив с классами this.htmlLink.classList;
 * "render-variant" - возвращает текущий отображаемый объект this.renderChild;
 * "group" - возвращает массив контейнеров из данной группы this.groupChild;
-* 'href', 'src', "id" и другие атрибуты возвращает данный атрибут this.htmlLink.getAttribute(this.type);
+* 'href', 'src', "id", "style" и другие атрибуты возвращает данный атрибут this.htmlLink.getAttribute(this.type);
 * для событий обычно не используется, возвращает this.type;
 
 тип **data** - т. к. в данных с типом дата после знака =  идут какие либо данные, то для создания данного типа после 
@@ -730,7 +731,9 @@ window.onload = function(){
 
 Методы **setProp("newProp")** и **removeProp()** работают аналогично, см. исходный код объектов Prop.prototype.removeProp, Prop.prototype.setProp
 
+Единственное стоит обратить внимание на setProp() - для класса, если передать строу с классом - добавит класс, а если передать массив с классами. то удалит все классы и добавит новые из массива.
 
+Для свойств с типом "group" и "render-variant" - смотреть ниже;
 
 # Отключение и включение обработчиков стандартных событий:
 
