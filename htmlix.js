@@ -65,6 +65,30 @@ HTMLixArray.prototype.reuseAll = function(arrayWithObjects){
 	}
 	
 	
+}
+
+HTMLixArray.prototype.getAll = function(map_Object){
+		
+		var array_r = [];		
+		
+     if(map_Object != undefined){
+		 
+		 for (var f=0; f<this.data.length; f++){
+			
+			array_r.push(  this.data[f].getAllProps(map_Object) );
+		}
+		 
+	 }else{
+		 
+		 for (var f=0; f<this.data.length; f++){
+			
+			array_r.push(  this.data[f].getAllProps() );
+		}
+		 
+	 }	
+
+		return array_r;
+
 }	
 
 
@@ -686,6 +710,33 @@ Container.prototype.setAllProps = function(properties){
 	}
 	
 }
+Container.prototype.getAllProps = function(properties){
+	
+	var properties_r = {};
+	
+	if(properties != undefined){
+		
+		for(key in properties){
+
+				if(this.props[key]!= undefined){
+						
+						properties_r[key] = this.props[key].getProp(properties[key]);
+				}
+		}
+	}else{
+		
+		for(key in this.props){
+
+			properties_r[key] = this.props[key].getProp();
+
+		}
+		
+	}
+	//console.log( properties_r);
+	return properties_r;
+}	
+	
+
 Container.prototype.component = function(){
 	
 	
@@ -1313,20 +1364,67 @@ Prop.prototype.getProp = function(value) {
 
     }	
 	else if(this.type == "render-variant"){
+		
+		
+		    if(value == undefined){
 
-				return  this.renderChild;
+				if(this.renderChild.type == "container"){
+										
+					return this.renderChild.getAllProps();
+					
+				}else if(this.renderChild.type == "array"){
+					
+					return this.renderChild.getAll();
+					
+				}		
 
-			}else if(this.type == "group"){
+			}else if(typeof value == "object"){
+				
+				if(this.renderChild.type == "container"){
+										
+					return this.renderChild.getAllProps(value);
+					
+				}else if(this.renderChild.type == "array"){
+					
+					return this.renderChild.getAll(value);
+					
+				}	
 
-					if(value == undefined){
+			}
 
-						return this.groupChild
+	}else if(this.type == "group"){
+
+			if(value == undefined){
+						
+						var array_r = [];
+						
+                         for(var i=0; i<this.groupChild.length; i++){
+							 
+							 array_r.push(this.groupChild[i].getAllProps());
+							 
+						 }
+						return array_r;
 			}else{
-
-						return this.groupChild[value];
+				
+				if(typeof value == "number"){
+					
+					return this.groupChild[value];
+					
+					
+				}else if(typeof value == "object"){
+					
+						var array_r = [];
+						
+                         for(var i=0; i<this.groupChild.length; i++){
+							 
+							 array_r.push(this.groupChild[i].getAllProps(value));
+							 
+						 }
+						return array_r;
+				}	
 			}	 
 
-			}else if(this.isAttr(this.type) != false){
+	}else if(this.isAttr(this.type) != false){
 
 
 						return this.htmlLink.getAttribute(this.isAttr(this.type));
