@@ -24,6 +24,17 @@ Htmlix это javascrit frontend framework для создания как раз
 В html коде ссылки к элементам находятся в data свойствах тега. 
 И по названию ссылки приложение определит тип данного элемента, его вложенность если он в массиве, а также каким образом необходимо с ним работать.
 
+
+Примеры приложений на htmlix:
+
+	<ul>
+		<li><a href="https://sergeyovechkin.github.io/top-menu/htmlix-menu.html">Навигация для сайта</a></li>
+		<li><a href="https://sergeyovechkin.github.io/todo-mvc/">Todo mvc</a></li>
+		<li><a href="https://sergeyovechkin.github.io/simple-cms/">simple-cms - пример одностраничного сайта для github</a></li>
+		<li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>
+
+	</ul>
+
 ## Создание приложения
 
 Для создания приложения htmlix необходимо создать экземпляр **new HTMLixState( StateMap)** передав в него объект с описанием приложения  StateMap.
