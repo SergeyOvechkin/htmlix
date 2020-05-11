@@ -1201,6 +1201,28 @@ Prop.prototype.createInGroup = function(props, insertLocation){
 	this.addToGroup(container, insertLocation);
 	
 }
+Prop.prototype.createNewGroup = function(value){
+	
+	if(this.groupArray != undefined && this.groupArray.pathToComponent != undefined && this.groupArray.pathToComponent == value.componentName){
+		
+		this.reuseGroup(value.group);
+		
+	}else{
+		
+		
+		this.clearGroup();
+		
+		this.groupArray = this.rootLink.state[value.componentName];
+		
+		for(var i=0; i<value.group.length; i++){
+			
+			this.createInGroup(value.group[i]);
+		}
+		
+	}
+	
+	
+}
 
 Prop.prototype.addToGroup = function(container, insertLocation){ 
 
@@ -1333,6 +1355,10 @@ Prop.prototype.setProp = function(value, eventMethod) {
 					
 					this.addToGroup(value, eventMethod);
 					
+				}else if(value.componentName != undefined && value.group != undefined){
+					
+					this.createNewGroup(value);
+					
 				}else{
 					
 					this.createInGroup(value, eventMethod);
@@ -1435,7 +1461,11 @@ Prop.prototype.getProp = function(value) {
 							 array_r.push(this.groupChild[i].getAllProps());
 							 
 						 }
-						return array_r;
+						 var componentName = "";
+						 
+						 if(this.groupArray != undefined)componentName = this.groupArray.pathToComponent;
+						 
+						return {group: array_r, componentName: componentName};
 			}else{
 				
 				if(typeof value == "number"){
@@ -1447,12 +1477,31 @@ Prop.prototype.getProp = function(value) {
 					
 						var array_r = [];
 						
-                         for(var i=0; i<this.groupChild.length; i++){
+
+						 if(value.componentName == undefined && value.group == undefined){
+							    for(var i=0; i<this.groupChild.length; i++){
 							 
-							 array_r.push(this.groupChild[i].getAllProps(value));
+									array_r.push(this.groupChild[i].getAllProps(value));
+							 
+								} 
+							 return array_r;
+							 
+						 }else{
+							 
+							 	for(var i=0; i<this.groupChild.length; i++){
+							 
+									array_r.push(this.groupChild[i].getAllProps(value));
+							 
+								} 
+								
+								var obj_r = {group: array_r};
+								
+								if(value.componentName != undefined)obj_r.componentName = this.groupArray.pathToComponent;
+								
+								return obj_r;
 							 
 						 }
-						return array_r;
+						
 				}	
 			}	 
 
