@@ -11,6 +11,8 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector){
 			this.index = null,
 			this.renderType = "array",
 			this.selector = selector
+			
+			if(node == "virtual-array")this.renderType = "virtual-array";
 
 		}
 HTMLixArray.prototype.add = function(props, insertLocation){
@@ -48,6 +50,12 @@ HTMLixArray.prototype.reuseAll = function(arrayWithObjects){
 	for(var i=0; i<this.data.length; i++){
 		
 		this.data[i].setAllProps(arrayWithObjects[i]);
+		
+			for(var key in this.data[i].props){
+			
+			this.data[i].props[key].prop = null;
+			
+		}
 		
 	}
 	
@@ -88,7 +96,6 @@ HTMLixArray.prototype.getAll = function(map_Object){
 	 }	
 
 		return array_r;
-
 }	
 
 
@@ -334,7 +341,8 @@ HTMLixState.prototype.verifyFetchComponents = function(divEl){
 					  return;
 					  
 				  }
-				  this.state[ key ] = new HTMLixArray("virtuall array", containerHTML, this, key, undefined);
+				  this.state[ key ] = new HTMLixArray("virtual-array", containerHTML, this, key, undefined);
+				
 				
 			}			
 		}
@@ -943,7 +951,8 @@ Prop.prototype.initRenderVariant = function(){
 			
 									if(this.rootLink.description.virtualArrayComponents[nameVirtualArray].selector != undefined) selector = this.rootLink.description.virtualArrayComponents[nameVirtualArray].selector;
 									
-									this.rootLink.state[nameVirtualArray] = new HTMLixArray("virtuall array", objIs, this.rootLink, nameVirtualArray, selector);
+									this.rootLink.state[nameVirtualArray] = new HTMLixArray("virtual-array", objIs, this.rootLink, nameVirtualArray, selector);
+								
 									
 								}
 
@@ -1016,7 +1025,8 @@ Prop.prototype.initGroup = function(containerName, propName){
 													
 												
 													
-													this.rootLink.state[nameVirtualArray] = new HTMLixArray("virtuall array", groupItems[i], this.rootLink, nameVirtualArray, undefined);
+													this.rootLink.state[nameVirtualArray] = new HTMLixArray("virtual-array", groupItems[i], this.rootLink, nameVirtualArray, undefined);
+													
 												}
 
 										
@@ -1090,7 +1100,7 @@ Prop.prototype.removeFromGroup = function(groupID){
 				this.groupChild[t].groupId = t;
 	}
 
-		}
+}
 Prop.prototype.clearGroup = function(){
 
 		if(this.groupChild.length <= 0)return;
@@ -1152,6 +1162,12 @@ Prop.prototype.reuseGroup = function(arrayWithObjects){
 	for(var i=0; i<this.groupChild.length; i++){
 		
 		this.groupChild[i].setAllProps(arrayWithObjects[i]);
+		
+			for(var key in this.groupChild[i].props){
+			
+			this.groupChild[i].props[key].prop = null;
+			
+		}
 		
 	}	
 	if(add > 0){
@@ -1266,28 +1282,35 @@ Prop.prototype.setProp = function(value, eventMethod) {
 
 				this.htmlLink.setAttribute(this.isAttr(this.type), value);
 
-				}else if(this.type == "render-variant"){
+		}else if(this.type == "render-variant"){
 
 
-						if(arguments.length == 1){
+		//if(arguments.length == 1){
 							
 							//console.log(value);
 
-						if(typeof value == "string" ){
+			if(typeof value == "string" ){
 
 								this.render(value);	
 
-							}else if(typeof value == "object" &&  value.type != undefined && value.type == "container" && value.renderType == "container-inner"){
+			}else if(typeof value == "object" &&  value.type != undefined && value.type == "container" && value.renderType == "container-inner"){
 
 								this.renderByContainer(value);
+								
+			}else if(typeof value == "object" && value.componentName != undefined){				
+				
+				
+				this.setOrCreateAndRender(value);
+				
+				
 			}else{
 
-								console.log("не удается отрисовать контейнер в render-variant если вы хотите отрисовать компонент то используйте текстовый параметр")
+				console.log("не удается отрисовать контейнер в render-variant если вы хотите отрисовать компонент то используйте текстовый параметр")
 			}
-		}else if(arguments.length >= 2){
+		//}else if(arguments.length >= 2){
 
-						this.renderByLink(value, eventMethod); 
-		}
+					//	this.renderByLink(value, eventMethod); 
+		//}
 	}else if(this.type == "group"){ 
 
 		    if(Array.isArray(value) ){
@@ -1596,24 +1619,73 @@ Prop.prototype.render = function(nameComponent){
 	}
 
 }
+/*
 Prop.prototype.renderByLink = function(nameComponent, htmlLinkContainer){
 
 			var container = this.rootLink.getContainerByLink(nameComponent, htmlLinkContainer);
 	this.renderByContainer(container);
 
 }
+*/
 Prop.prototype.renderByContainer = function(containerLink){
 
-		if(containerLink != undefined && containerLink.type == "container"){
+		if(containerLink != undefined && containerLink.renderType == "container-inner"){
 		this.renderChild = containerLink;
 		this.renderChild.renderParent = this;
 
 			}else{
-		console.log(" для метода renderByContainer необходимо прередать container");
+		console.log(" для метода renderByContainer необходимо прередать container с renderType='container-inner'");
 		return "undefinit render-variant-htmlLink"
 	}
 	this.htmlLink.innerHTML = "";
 	this.htmlLink.appendChild(this.renderChild.htmlLink);
+}
+
+Prop.prototype.setOrCreateAndRender = function(objWidthProps){
+
+        if(objWidthProps.componentName == undefined){
+			
+			console.log("забыли указать имя компонента  .componentName в обьекте-параметре objWidthProps");
+			
+			return;
+		}	
+    var component = this.rootLink.state[objWidthProps.componentName];
+
+    if(component.renderType == "virtual-array"){
+		
+		if(this.renderChild != undefined && this.renderChild.renderType !=undefined &&  this.renderChild.renderType == "container-inner"){
+			
+			this.renderChild.remove(true);
+		}
+		
+		var container = component.add(objWidthProps);
+
+		this.renderByContainer(container);
+		
+		
+	}else if(component.renderType == "container-outer"){
+		
+		
+		component.setAllProps(objWidthProps);
+		
+		this.render(objWidthProps.componentName);
+				
+		
+	}else if(component.renderType == "array"){
+		
+		if(objWidthProps.data == undefined){
+			
+			console.log("для отображения массива с новыми данными, в параметре objWidthProps.data должен содержаться массив с объектами");
+			
+			return;
+		}	
+			this.render(objWidthProps.componentName);
+			
+			component.reuseAll(objWidthProps.data);
+			
+		
+		
+	}
 }
 
 
