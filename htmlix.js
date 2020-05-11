@@ -1388,30 +1388,39 @@ Prop.prototype.getProp = function(value) {
     }	
 	else if(this.type == "render-variant"){
 		
-		
+			var return_obg = {};
+			
 		    if(value == undefined){
-
+				
+			
 				if(this.renderChild.type == "container"){
 										
-					return this.renderChild.getAllProps();
+					return_obg = this.renderChild.getAllProps();
 					
 				}else if(this.renderChild.type == "array"){
 					
-					return this.renderChild.getAll();
+					return_obg = this.renderChild.getAll();
 					
-				}		
+				}	
+				return_obg["componentName"] = this.renderChild.pathToCоmponent;
+				return return_obg;
 
 			}else if(typeof value == "object"){
 				
 				if(this.renderChild.type == "container"){
 										
-					return this.renderChild.getAllProps(value);
+					return_obg = this.renderChild.getAllProps(value);
 					
 				}else if(this.renderChild.type == "array"){
 					
-					return this.renderChild.getAll(value);
+					return_obg = this.renderChild.getAll(value);
 					
 				}	
+				if(value.componentName != undefined){
+					
+					return_obg["componentName"] = this.renderChild.pathToCоmponent;
+				}
+				return return_obg;
 
 			}
 
