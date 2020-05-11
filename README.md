@@ -1032,7 +1032,7 @@ window.onload = function(){
 * **removeProp()** - убирает компонент из видимости, если это контейнер в массиве (renderType == "container-inner") удаляет его;
 
 
-
+<a name="up_int"></a>
 # Обновление сложных интерфейсов
 
 
