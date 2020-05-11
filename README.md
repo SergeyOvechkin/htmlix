@@ -721,7 +721,7 @@ window.onload = function(){
 * "checkbox", "radio" - чекбоксы и радио возвращает tru или false - this.htmlLink.checked;
 * "class" - возвращает массив с классами this.htmlLink.classList;
 
-* "render-variant" - если this.renderChild.type == "container"  вызывает метод .getAllProps(), если this.renderChild.type == "array"  вызывает метод .getAllProps(),
+* "render-variant" - если this.renderChild.type == "container"  вызывает метод .getAllProps(), если this.renderChild.type == "array"  вызывает метод .getAll(),
 тем самым получает значения всех свойств из отображаемого элемента, если передать в параметром mapObject={key1: "", key2: {ke1: ""} } `.getProp(mapObject)`,
  вернет свойства только совпадающие по названиям с key, таким образом можно получить развернутый объект со всеми значениями свойств либо со всеми нужными значениями свойств из отображаемого элемента; 
 
