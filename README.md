@@ -1156,6 +1156,214 @@ var routes = {
 в специальный объект `fetchComponents` и далее, при инициализации приложение сначала создаст компоненты которых нет в объекте fetchComponents, а после ответа сервера на второй запрос по адресу `templatePath` создаст все остальные.
 
 
+# Обновление сложных интерфейсов
+
+
+## Обновление виртуального массива с различными вариантами шаблонов 
+
+Рассмотрим ситуацию, когда необходимо отобразить сложный список, в каждом пункте которо, есть дополнительный вариант шаблона, например в некоторых пунктах есть параграф с дополнительным текстом, а в некоторых нет.
+
+Давайте создадим разметку для данного списка:
+
+```html
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-12">
+<!--------------------------------->  
+
+		<div data-test_array="array" class="row">
+		<!-- массив test_array с контейнерами списка test_container -->
+		
+			<div data-test_container="container" class="card col-3">
+				<p data-test_container-main_text="text">контейнер 1</p>
+				<div data-test_container-variant="render-variant"> <!-- свойство с типом render-variant - для отображения дополнительного шаблона -->
+				
+				     <div data-variant_cont_1="container"> <!-- первый вариант шаблона -->
+						<p data-variant_cont_1-text="text" data-variant_cont_1-style="style" > текст варианта 1 </p>
+					 </div>
+					 
+				</div>
+			</div>
+			<div data-test_container="container" class="card col-3">
+				<p data-test_container-main_text="text">контейнер 2</p>
+				<div data-test_container-variant="render-variant">
+				
+				     <div data-variant_cont_2="container"><!-- второй вариант шаблона -->
+						<p data-variant_cont_2-text="text" data-variant_cont_2-style="style" > текст варианта 2 </p>
+						<p data-variant_cont_2-text2="text">дополнительный текст</p>
+					 </div>
+					 
+				</div>
+			</div>
+			<div data-test_container="container" class="card col-3">
+				<p data-test_container-main_text="text">контейнер 3</p>
+				<div data-test_container-variant="render-variant">
+				
+				     <div data-variant_cont_1="container"><!-- первый вариант шаблона -->
+						<p data-variant_cont_1-text="text" data-variant_cont_1-style="style" > текст варианта 3 </p>
+					 </div>
+					 
+				</div>
+			</div>
+			
+		
+		</div>
+
+   
+ <!--------------------------------->  
+		</div>	
+	</div>
+</div>
+
+```
+
+Итак выше мы создали разметку которую выдает сервер при первом запросе
+
+Далее создадим описание приложения:
+
+
+```javascript
+var StateMap = {
+	
+	test_array: { //основной шаблон
+		
+		container: "test_container",
+		props: ["variant", "main_text"],
+		methods: {
+			
+			
+		},		
+	},
+	virtualArrayComponents: {
+		
+		var_array_1:{
+			container: "variant_cont_1", //первый вариант дополнительного шаблона
+			props: ["text", "style"],
+			methods: {
+			
+				
+			}			
+		},
+		var_array_2:{
+			container: "variant_cont_2", //второй вариант дополнительного шаблона
+			props: ["text", "style", "text2"],
+			methods: {
+			
+				
+			}			
+		},			
+	}	
+}
+
+window.onload = function(){
+	
+	var HM = new HTMLixState(StateMap);
+	
+	console.log(HM);
+	
+	console.log(HM.state["test_array"].getAll());
+	
+		
+}
+
+
+```
+
+Итак мы создали приложение со всеми компонентами, которые затем вывели в консоль.
+
+Тепреь к примеру мы нажали на кнопку пагинации и перешли на другую страницу, и сервер нам прислал в fetch запроссе json объект с данными для данной новой:
+
+
+
+```javascript
+
+	var resp = [
+	
+	{main_text: "Название 1", variant: {componentName: "var_array_2", text: "оновной текст 1", style: "color: red;", text2: "дополнительный текст1"} },
+	{main_text: "название 2", variant: {componentName: "var_array_1", text: "оновной текст 2", style: "color: yellow;"} },
+	{main_text: "название 3", variant: {componentName: "var_array_2", text: "оновной текст 3", style: "color: red;", text2: "дополнительный текст2"} },
+	{main_text: "название 2", variant: {componentName: "var_array_1", text: "оновной текст 2", style: "color: yellow;"} },
+	
+	];
+
+
+```
+
+Итак мы получили новые данные с сервера, ключами которых являются названия свойств, первое свойство основного шаблона у нас main_text с типом "text", а второе свойство 
+это  variant с типом "render-variant" в него сервер вложил объект с данными для дополнительного шаблона, а также имя дополнительного шаблона componentName,
+
+
+Итак теперь нам необходимо обновить интерфейс на основании полученных данных, первый способ это удалить все из массива вызвав метод .removeAll() в массиве,
+затем в цикле добавлять новые контейнеры conainer = test_array.add(newProps), потом в каждом контейнере удалить старый вариант шаблона conainer.variant.renderChild.remove(true);
+затем создать новый вариант шаблона templ = rootLink.state[componentName].add(newProps); Затем добавить в контейнер новый вариант conainer.variant.renderByContainer(templ);
+
+
+И второй более легкий способ это вызвать:  `HM.state["test_array"].reuseAll(resp)`; 
+с новыми данными сервера. Как он работает? во первых в ответе с сервера ключи объектов, должны совпадать с названиями свойств, во вторых, должно присутствовать имя отображаемого компонента
+ componentName для свойств с типом "render-variant", таким образом мы просто вызываем метод setProp() на каждом свойстве и передаем в него данные с ключа объекта, в ключе variant мы передаем обязательное поле  componentName с именем виртуального массива,
+ остальные поля являются необязательными и если их не указать он возьмет их из шаблона.
+ 
+ Итак изменим код описания приложения:
+ 
+ ```javascript
+ 
+ window.onload = function(){
+	
+	var HM = new HTMLixState(StateMap);
+	
+	
+	var resp = [
+	
+	{main_text: "Название 1", variant: {componentName: "var_array_2", text: "оновной текст 1", style: "color: red;", text2: "дополнительный текст1"} },
+	{main_text: "название 2", variant: {componentName: "var_array_1", text: "оновной текст 2", style: "color: yellow;"} },
+	{main_text: "название 3", variant: {componentName: "var_array_2", text: "оновной текст 3", style: "color: red;", text2: "дополнительный текст2"} },
+	{main_text: "название 2", variant: {componentName: "var_array_1", text: "оновной текст 2", style: "color: yellow;"} },
+	
+	];
+	
+	window.setTimeout( function(){ 
+	
+	HM.state["test_array"].reuseAll(resp);
+	
+	console.log(HM.state["test_array"].getAll());
+	
+	}, 2000);
+	
+	
+	
+	console.log(HM);
+	
+	console.log(HM.state["test_array"].getAll());
+
+	
+}
+ 
+ ```
+ 
+Таким простым способом можно создавать различные ветвления, например если у каждого дополнительного варианта, будет еще какойто вариант или список с типом 'group' и т.д. 
+приложение определит тип свойства которое мы хоти обновить и если ето "render-variant" оно сменит вариант шаблона на тот который мы указали в 'componentName' и установит ему свойства которые мы передали,
+ а если это группа "group" то удалит все из группы и создаст новую из массива с объектами, который нужно будет разместить в значении ключа.
+
+
+Так работает не только метод .reuseAll(resp), для массива, но и метод setAllProps(obgWidthProps) для контейнера и просто свойства setProp(newProp) для любого свойства.
+
+
+Также давайте разберем еще один метод который мы использовали выше это HM.state["test_array"].`getAll()` - он получает массив, с объектами ключами которых являются имена свойств,
+а значениями - данные полученные вызовом метода getProp() на каждом свойстве.
+
+Но что если мы не хотим получать все свойства например события или стили "style", для этого в него нужно передать карту - объект с ключами которого будут названия свойств которые мы хотим получить например:
+
+```javscript
+console.log(HM.state["test_array"].getAll({main_text: "", variant: {text: "", text2: ""}  }));
+```
+Все теперь свойства "style" - нет в данной выборке, таким образом мы можем получить нужные нам данные и с легкостью сохранить их на сервере, а в будущем на основании их создавать новые компоненты.
+Так работает не только метод массива .getAll но и метод контейнера .getAllProps и метод свойства .getProp
+
+
+
+
+
 **htmlix** - находится в стадии тестирования, поэтому не исключена возможность возникновения непредвиденных ошибок, однако несмотря на это, его уже сейчас можно использовать в небольших и средних проектах.
 
-Вопросы и предложения можно отправлять на адрес: maksaev.mikhail@inbox.ru
+Вопросы и предложения можно отправлять на адрес: maksaev.mikhail@inbox.ru 
