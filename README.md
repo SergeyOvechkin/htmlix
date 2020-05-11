@@ -27,13 +27,12 @@ Htmlix это javascrit frontend framework для создания как раз
 
 Примеры приложений на htmlix:
 
-	<ul>
-		<li><a href="https://sergeyovechkin.github.io/top-menu/htmlix-menu.html">Навигация для сайта</a></li>
-		<li><a href="https://sergeyovechkin.github.io/todo-mvc/">Todo mvc</a></li>
-		<li><a href="https://sergeyovechkin.github.io/simple-cms/">simple-cms - пример одностраничного сайта для github</a></li>
-		<li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>
-
-	</ul>
+<ul>
+<li><a href="https://sergeyovechkin.github.io/top-menu/htmlix-menu.html">Навигация для сайта</a></li>
+<li><a href="https://sergeyovechkin.github.io/todo-mvc/">Todo mvc</a></li>
+<li><a href="https://sergeyovechkin.github.io/simple-cms/">simple-cms - пример одностраничного сайта для github</a></li>
+<li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>
+</ul>
 
 ## Создание приложения
 
