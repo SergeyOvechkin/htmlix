@@ -96,7 +96,8 @@ HTMLixArray.prototype.getAll = function(map_Object){
 	 }	
 
 		return array_r;
-}	
+}
+
 
 
 function HTMLixState(StateMap){
@@ -467,6 +468,42 @@ HTMLixState.prototype.createContainerInArr = function(stateNameProp, properties,
 	//if(container.createdContainer != undefined)container.createdContainer();
 	return container;
 }
+HTMLixState.prototype.changeOrder = function(stateNameProp, newOrderArr){
+	
+	var stateArray = this.state[stateNameProp];
+	
+	var htmlLink = stateArray.htmlLink;
+	
+	if(stateArray.selector != undefined ){
+					
+					htmlLink = htmlLink.querySelector(stateArray.selector);
+					
+					if(htmlLink == null || htmlLink == undefined)console.log("error - не удается найти селектор "+stateArray.selector+" для массива "+stateNameProp);
+					
+	}	
+	if(newOrderArr.length != stateArray.data.length){
+		
+		console.log("в массиве newOrderArr, должно быть столько же элементов скольео и в массиве stateNameProp.data");
+		return;
+		
+	}	
+	var newData = [];
+	
+	for(var i=0; i<newOrderArr.length; i++){
+		
+		newData.push(stateArray.data[newOrderArr[i]]);
+	}
+	stateArray.data = newData;
+	stateArray.htmlLink.innerHTML = "";
+	
+	for(var k=0; k<stateArray.data.length; k++){
+		
+		stateArray.htmlLink.appendChild(stateArray.data[k].htmlLink);
+		
+		stateArray.data[k].index = k;
+	}
+}
+
 
 HTMLixState.prototype.removeAll = function(stateNameProp, widthChild){	
 	this.clearContainer(stateNameProp, widthChild);
@@ -1201,26 +1238,29 @@ Prop.prototype.createInGroup = function(props, insertLocation){
 	this.addToGroup(container, insertLocation);
 	
 }
-Prop.prototype.createNewGroup = function(value){
+/*
+
+
+*/
+Prop.prototype.createNewGroup = function(groupArr, componentName){
 	
-	if(this.groupArray != undefined && this.groupArray.pathToComponent != undefined && this.groupArray.pathToComponent == value.componentName){
+	/*if(this.groupArray != undefined && this.groupArray.pathToComponent != undefined && this.groupArray.pathToComponent == value.componentName){
 		
 		this.reuseGroup(value.group);
 		
-	}else{
+	}else{*/
 		
 		
 		this.clearGroup();
 		
-		this.groupArray = this.rootLink.state[value.componentName];
+		this.groupArray = this.rootLink.state[componentName];
 		
-		for(var i=0; i<value.group.length; i++){
+		for(var i=0; i<groupArr.length; i++){
 			
-			this.createInGroup(value.group[i]);
-		}
+			this.createInGroup(groupArr[i]);
+		//}
 		
 	}
-	
 	
 }
 
@@ -1357,7 +1397,7 @@ Prop.prototype.setProp = function(value, eventMethod) {
 					
 				}else if(value.componentName != undefined && value.group != undefined){
 					
-					this.createNewGroup(value);
+					this.createNewGroup(value.group, value.componentName);
 					
 				}else{
 					
@@ -1393,7 +1433,7 @@ Prop.prototype.getProp = function(value) {
 
 				return this.htmlLink.textContent;
 
-			}else if(this.type == "inputvalue" || this.type == "select"){
+	}else if(this.type == "inputvalue" || this.type == "select"){
 
 			return this.htmlLink.value;
 
