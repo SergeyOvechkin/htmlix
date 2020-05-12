@@ -456,14 +456,16 @@ HTMLixState.prototype.createContainerInArr = function(stateNameProp, properties,
 
 			stateArray.data[i].index = i;
 		}		
-	}		
-	for(key in properties){
+	}
+
+	if(properties != undefined)container.setAllProps(properties);
+	/*for(key in properties){
 
 				if(container.props[key]!= undefined){
 
 						container.props[key].setProp(properties[key]);
 		}
-	}
+	}*/
 	//console.log("ll");
 	//if(container.createdContainer != undefined)container.createdContainer();
 	return container;
@@ -657,7 +659,7 @@ function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, r
   this.props = {};
   //this.methods = {};
 
-    /*this.id = id;*/
+  this.id = null;
   this.index = id;
 
   
@@ -754,6 +756,8 @@ Container.prototype.setAllProps = function(properties){
 		}
 	}
 	
+	if(properties.container_id != undefined)this.id = properties.container_id;
+	
 }
 Container.prototype.getAllProps = function(properties){
 	
@@ -768,6 +772,7 @@ Container.prototype.getAllProps = function(properties){
 						properties_r[key] = this.props[key].getProp(properties[key]);
 				}
 		}
+		if(properties.container_id != undefined)properties_r["container_id"] = this.id;
 	}else{
 		
 		for(key in this.props){
