@@ -1218,6 +1218,8 @@ window.onload = function(){
  
  ```
  
+* <a href="https://sergeyovechkin.github.io/tests/render-variant/index.html"> рабочий пример кода выше </a>
+ 
 Таким простым способом можно создавать различные ветвления, например если у каждого дополнительного варианта, будет еще какойто вариант или список с типом 'group' и т.д. 
 приложение определит тип свойства которое мы хотим обновить и если ето "render-variant" оно сменит вариант шаблона на тот который мы указали в 'componentName' и установит ему свойства которые мы передали,
  а если это группа "group" то удалит все из группы и создаст новую из массива с объектами, который нужно будет разместить в значении ключа.
@@ -1246,6 +1248,146 @@ console.log(HM.state["test_array"].getAll( {main_text: "", variant: {componentNa
 
 Все теперь свойства "style" - нет в данной выборке, таким образом мы можем получить нужные нам данные и с легкостью сохранить их на сервере, а в будущем на основании их создавать новые компоненты.
 Так работает не только метод массива .getAll но и метод контейнера .getAllProps и метод свойства .getProp
+
+## Обновление виртуального массива с различными вариантами группа
+
+Тепреь давайте рассмотрим похожую ситуацию за исключением того что вместо различных вариантов шаблонов, у нас в каждом элементе будут отображаться списки из различных групп:
+
+Начальная разметка присылаемая сервером при первой загрузке:
+
+```html
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-12">
+<!--------------------------------->  
+
+		<div data-test_array="array" class="row">
+		
+			<div data-test_container="container" class="card col-3">
+				<p data-test_container-main_text="text">контейнер 1</p>
+				<div data-test_container-test_group="group">
+				
+				     <div data-group_cont_2="container" style="border: 1px solid red">
+						<p data-group_cont_2-text="text" data-group_cont_2-style="style" style="color: blue;" > текст варианта 2 </p>
+						<p data-group_cont_2-text2="text">дополнительный текст1</p>
+					 </div>
+				     <div data-group_cont_2="container" style="border: 1px solid red">
+						<p data-group_cont_2-text="text" data-group_cont_2-style="style" style="color: blue;" > текст варианта 2 </p>
+						<p data-group_cont_2-text2="text">дополнительный текст2</p>
+					 </div>
+					 
+				</div>
+			</div>
+			<div data-test_container="container" class="card col-3">
+				<p data-test_container-main_text="text">контейнер 2</p>
+				<div data-test_container-test_group="group">
+				
+					<div data-group_cont_1="container" style="border: 1px solid green">
+						<p data-group_cont_1-text="text" data-group_cont_1-style="style" style="color: green;" > текст варианта 1 </p>
+					 </div>
+					 <div data-group_cont_1="container" style="border: 1px solid green">
+						<p data-group_cont_1-text="text" data-group_cont_1-style="style" style="color: green;" > текст варианта 1 </p>
+					 </div>
+
+					 
+				</div>
+			</div>
+		
+		</div>
+		
+ <!--------------------------------->  
+		</div>	
+	</div>
+</div>
+```
+
+Описание приложения:
+
+```javascript
+
+var StateMap = {
+	
+	test_array: {
+		
+		container: "test_container",
+		props: ["test_group", "main_text"],
+		methods: {
+			
+			
+		},		
+	},
+	virtualArrayComponents: {
+		
+		group_array_1:{
+			container: "group_cont_1",
+			props: ["text", "style"],
+			methods: {
+			
+				
+			}			
+		},
+		group_array_2:{
+			container: "group_cont_2",
+			props: ["text", "style", "text2"],
+			methods: {
+			
+				
+			}			
+		},			
+	}
+	
+	
+	
+}
+
+
+window.onload = function(){
+	
+	var HM = new HTMLixState(StateMap);
+	
+	console.log(HM);
+}
+```
+Данные с сервера которые нужно обновить:
+
+```javascript
+
+	var resp = [
+	
+	{main_text: "Название 1", test_group: {componentName: "group_array_1", group:[{text: "оновной текст 2", style: "color: yellow;"}, {text: "оновной текст gg", style: "color: red;"}   ] } },
+	{main_text: "Название 2", test_group: {componentName: "group_array_2", group:[{text: "оновной текст 3", text2: "дополнительный текст3", style: "color: red;"} , {text: "оновной текст 4", text2: "дополнительный текст4", style: "color: blue;"}   ] } },
+	{main_text: "Название 3", test_group: {componentName: "group_array_1", group:[{text: "оновной текст 2", style: "color: yellow;"}, {text: "оновной текст gg", style: "color: red;"}, {text: "оновной текст gg", style: "color: black;"}    ] } },
+	{main_text: "Название 4", test_group: {componentName: "group_array_2", group:[{text: "оновной текст gg", text2: "дополнительный текст2", style: "color: blue;"}, {text: "оновной текст gg", text2: "дополнительный текст5", style: "color: green;"}, {text: "оновной текст gg", text2: "дополнительный текст6", style: "color: blue;"}   ] } },
+	
+	];
+
+```
+
+Такой же принцип как и у render-variant только теперь в каждом свойстве test_group у нас объект с двумя обязательными полями componentName - имя виртуального массива и 
+group - массив с обьектами для каждого пункта обновляемой группы.
+
+
+```javascript
+
+window.setTimeout( function(){ 
+	
+	HM.state["test_array"].reuseAll(resp);
+	
+	
+	
+	console.log(HM.state["test_array"].getAll());
+	
+	
+	//получение данных только необходимых свойств
+	console.log(HM.state["test_array"].getAll({main_text: "", test_group: {text: "", text2: ""} }));
+	
+	
+	console.log(HM.state["test_array"].getAll({main_text: "", test_group: {componentName: "", text: "", text2: ""} }));
+	
+	}, 2000);
+
+```
+* <a href="https://sergeyovechkin.github.io/tests/group/index.html"> рабочий пример кода выше </a>
 
 
 
