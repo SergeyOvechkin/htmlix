@@ -24,7 +24,7 @@ Htmlix это javascrit frontend framework для создания как раз
 В html коде ссылки к элементам находятся в data свойствах тега. 
 И по названию ссылки приложение определит тип данного элемента, его вложенность если он в массиве, а также каким образом необходимо с ним работать.
 
-
+<!--
 Примеры приложений на htmlix:
 
 <ul>
@@ -33,6 +33,7 @@ Htmlix это javascrit frontend framework для создания как раз
 <li><a href="https://sergeyovechkin.github.io/simple-cms/">simple-cms - пример одностраничного сайта для github</a></li>
 <li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>
 </ul>
+-->
 
 ## Создание приложения
 
