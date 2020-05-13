@@ -1406,6 +1406,7 @@ window.setTimeout( function(){
 
 * `.removeByIndex(stateNameProp, index, widthChild )` - удаляет один контейнер из массива stateNameProp по индексу index;
 
+* `changeOrder(stateNameProp, newOrder=array)` - изменяет последовательность контейнеров  в массиве stateNameProp и html разметке, newOrder- массив со старыми индексами в новом порядке например [3,2,1,0]
 
 # События создания приложения и компонентов
 
