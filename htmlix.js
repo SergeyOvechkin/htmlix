@@ -659,7 +659,7 @@ function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, r
   this.props = {};
   //this.methods = {};
 
-  this.id = null;
+ // this.id = null;
   this.index = id;
 
   
@@ -756,7 +756,7 @@ Container.prototype.setAllProps = function(properties){
 		}
 	}
 	
-	if(properties.container_id != undefined)this.id = properties.container_id;
+	//if(properties.container_id != undefined)this.id = properties.container_id;
 	
 }
 Container.prototype.getAllProps = function(properties){
@@ -772,7 +772,7 @@ Container.prototype.getAllProps = function(properties){
 						properties_r[key] = this.props[key].getProp(properties[key]);
 				}
 		}
-		if(properties.container_id != undefined)properties_r["container_id"] = this.id;
+		//if(properties.container_id != undefined)properties_r["container_id"] = this.id;
 	}else{
 		
 		for(key in this.props){
@@ -1249,11 +1249,11 @@ Prop.prototype.createInGroup = function(props, insertLocation){
 */
 Prop.prototype.createNewGroup = function(groupArr, componentName){
 	
-	/*if(this.groupArray != undefined && this.groupArray.pathToComponent != undefined && this.groupArray.pathToComponent == value.componentName){
+	if(this.groupArray != undefined && this.groupArray.pathToComponent != undefined && this.groupArray.pathToComponent == componentName){
 		
 		this.reuseGroup(value.group);
 		
-	}else{*/
+	}else{
 		
 		
 		this.clearGroup();
@@ -1263,7 +1263,7 @@ Prop.prototype.createNewGroup = function(groupArr, componentName){
 		for(var i=0; i<groupArr.length; i++){
 			
 			this.createInGroup(groupArr[i]);
-		//}
+	}
 		
 	}
 	
@@ -1273,7 +1273,7 @@ Prop.prototype.addToGroup = function(container, insertLocation){
 
           		 var loc = "and";       
           if(insertLocation == "front")loc = 0;
-          if(typeof insertLocation == 'number' && insertLocation != null && insertLocation != undefined)loc = insertLocation;  		  
+          if(insertLocation != undefined && typeof insertLocation == 'number' && insertLocation != null )loc = insertLocation;  		  
                         
 						this.groupArray = this.rootLink.state[container.pathToCоmponent];
 						container.groupParent = this;
@@ -1360,7 +1360,7 @@ Prop.prototype.setProp = function(value, eventMethod) {
 
 								this.render(value);	
 
-			}else if(typeof value == "object" &&  value.type != undefined && value.type == "container" && value.renderType == "container-inner"){
+			}else if(typeof value == "object" &&  value.renderType != undefined  && value.renderType == "container-inner"){
 
 								this.renderByContainer(value);
 								
@@ -1733,12 +1733,14 @@ Prop.prototype.renderByLink = function(nameComponent, htmlLinkContainer){
 Prop.prototype.renderByContainer = function(containerLink){
 
 		if(containerLink != undefined && containerLink.renderType == "container-inner"){
+		if(this.renderChild != undefined && this.renderChild.renderType != undefined && this.renderChild.renderType == "container-inner")this.renderChild.remove(true);
+
 		this.renderChild = containerLink;
 		this.renderChild.renderParent = this;
 
 			}else{
 		console.log(" для метода renderByContainer необходимо прередать container с renderType='container-inner'");
-		return "undefinit render-variant-htmlLink"
+		return "undefined render-variant-htmlLink"
 	}
 	this.htmlLink.innerHTML = "";
 	this.htmlLink.appendChild(this.renderChild.htmlLink);
@@ -1756,14 +1758,17 @@ Prop.prototype.setOrCreateAndRender = function(objWidthProps){
 
     if(component.renderType == "virtual-array"){
 		
-		if(this.renderChild != undefined && this.renderChild.renderType !=undefined &&  this.renderChild.renderType == "container-inner"){
-			
-			this.renderChild.remove(true);
-		}
-		
-		var container = component.add(objWidthProps);
+		 if(this.renderChild != undefined && this.renderChild.pathToComponent != undefined &&  this.renderChild.pathToComponent == objWidthProps.componentName){
+			 
+			 this.renderChild.setAllProps(objWidthProps);
+			 
+		 }else{
+			 
+			 	var container = component.add(objWidthProps);
 
-		this.renderByContainer(container);
+				this.renderByContainer(container);
+					 
+		 }
 		
 		
 	}else if(component.renderType == "container-outer"){
