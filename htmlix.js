@@ -753,7 +753,11 @@ Container.prototype.setAllProps = function(properties){
 				if(this.props[key]!= undefined){
 
 						this.props[key].setProp(properties[key]);
-		}
+						
+				}else if(key != "componentName"){
+			
+					console.log("warn не найден ключь "+key+" в контейнере "+this.name+" index "+this.index+" массива "+this.pathToComponent+" проверте правильность названия ключей в объекте properties");
+				}
 	}
 	
 	//if(properties.container_id != undefined)this.id = properties.container_id;
@@ -1273,7 +1277,7 @@ Prop.prototype.addToGroup = function(container, insertLocation){
 
           		 var loc = "and";       
           if(insertLocation == "front")loc = 0;
-          if(insertLocation != undefined && typeof insertLocation == 'number' && insertLocation != null )loc = insertLocation;  		  
+          if(insertLocation != undefined && typeof insertLocation == 'number'  )loc = insertLocation;  		  
                         
 						this.groupArray = this.rootLink.state[container.pathToCоmponent];
 						container.groupParent = this;

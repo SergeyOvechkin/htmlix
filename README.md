@@ -3,7 +3,7 @@
 
 ## Javascript Frontend Framework
 
-Htmlix - будет переименован в Broter.js
+
 **Htmlix** - яваскрипт фреймворк основанный на data- свойствах html документа. 
 
 Особенности: 
