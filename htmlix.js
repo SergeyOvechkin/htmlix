@@ -536,7 +536,7 @@ HTMLixState.prototype.removeByIndex = function(stateNameProp, index, widthChild)
 HTMLixState.prototype.removeByIndexes = function(stateNameProp, indexArray, widthChild ){
 
 		if(this.state[stateNameProp].type != "array")return;
-	if(typeof indexArray != "object" ||   indexArray.length < 0 ){
+	if(indexArray.length == undefined){
 
 				console.log("error - некорректно задан второй аргумент для функции removeByIndexes, проверьте что это не пустой массив, а также номер эелемента для удаления" );
 		return;
