@@ -1388,19 +1388,19 @@ Prop.prototype.setProp = function(value, eventMethod) {
 				
 				//if(value.length == 0)return;
 				
-				if(value[0] != undefined && value[0].groupId != undefined){
+				/*if(value[0] != undefined && value[0].groupId != undefined){
 					
 						this.clearGroup();
 			            this.groupChild = value;
 					
-				}else {
+				}else {*/
 					
 					this.reuseGroup(value);
-				}
+				//}
 
 			}else if(typeof value == "object"){
 				
-				if(value.type != undefined && value.renderType == "container-inner"){
+				if(value.renderType != undefined && value.renderType == "container-inner"){
 					
 					this.addToGroup(value, eventMethod);
 					
@@ -2105,7 +2105,7 @@ function HTMLixRouter(state, routes){
 			}else{
 
 
-						console.log("error- маршрут не найден убедитесь в правильности запроса");
+						console.log("router error- маршрут не найден убедитесь в правильности запроса");
 	             }
 ///изменение структуры state для загрузки шаблонов для других страниц в fetch запросе
 	for (var key2 in state){
