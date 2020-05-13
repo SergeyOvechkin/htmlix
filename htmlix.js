@@ -1251,7 +1251,7 @@ Prop.prototype.createNewGroup = function(groupArr, componentName){
 	
 	if(this.groupArray != undefined && this.groupArray.pathToComponent != undefined && this.groupArray.pathToComponent == componentName){
 		
-		this.reuseGroup(value.group);
+		this.reuseGroup(groupArr);
 		
 	}else{
 		
