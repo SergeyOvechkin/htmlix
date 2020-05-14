@@ -98,6 +98,13 @@ HTMLixArray.prototype.getAll = function(map_Object){
 		return array_r;
 }
 
+HTMLixArray.prototype.order = function(newOrderArr){
+	
+	
+	this.rootLink.changeOrder(this.pathToComponent, newOrderArr);
+	
+}
+
 
 
 function HTMLixState(StateMap){
@@ -632,7 +639,7 @@ HTMLixState.prototype.fetchTemplates = function(callb, templatePath){
 					.then((text) => {
 
 
-																		var div = document.createElement('div');
+						var div = document.createElement('div');
 						div.innerHTML = text;
 						callb(div);
 
@@ -755,8 +762,8 @@ Container.prototype.setAllProps = function(properties){
 						this.props[key].setProp(properties[key]);
 						
 				}else if(key != "componentName"){
-			
-					console.log("warn не найден ключь "+key+" в контейнере "+this.name+" index "+this.index+" массива "+this.pathToComponent+" проверте правильность названия ключей в объекте properties");
+					//console.log(this);
+					console.log("warn не найден ключь "+key+" в контейнере "+this.name+" index "+this.index+" массива "+this.pathToCоmponent+" проверте правильность названия ключей в объекте properties");
 				}
 	}
 	
@@ -892,9 +899,9 @@ function Prop(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parent
 
   if(this.type == undefined){
 		
-           var mess = "Не определен тип свойства для data-"+keyData1+"-"+keyData2+" в html коде не найдено для компонента "+pathToContainer+", index= "+this.parentContainer.index;
-	   	 console.log("error - свойство data-"+keyData1+"-"+keyData2+" в html коде не найдено для компонента "+pathToContainer+", index= "+this.parentContainer.index);
-           throw mess+"!";
+           var mess = "error не определен тип свойства для data-"+keyData1+"-"+keyData2+" в html коде не найдено для компонента "+pathToContainer+", index= "+this.parentContainer.index+" !, проверьте правильность названия свойств";
+			console.log(mess);
+           throw mess;
 	   }
 
   if(this.isEvent(this.type) != false && eventMethod != undefined ){
@@ -1712,7 +1719,6 @@ Prop.prototype.render = function(nameComponent){
 		
 		this.renderChild = this.rootLink.state[nameComponent];
 		
-		//console.log(this.rootLink.state[nameComponent]);
 		this.rootLink.state[nameComponent].renderParent = this;		
 
 		this.htmlLink.innerHTML = "";
@@ -1726,14 +1732,6 @@ Prop.prototype.render = function(nameComponent){
 	}
 
 }
-/*
-Prop.prototype.renderByLink = function(nameComponent, htmlLinkContainer){
-
-			var container = this.rootLink.getContainerByLink(nameComponent, htmlLinkContainer);
-	this.renderByContainer(container);
-
-}
-*/
 Prop.prototype.renderByContainer = function(containerLink){
 
 		if(containerLink != undefined && containerLink.renderType == "container-inner"){
@@ -1794,9 +1792,6 @@ Prop.prototype.setOrCreateAndRender = function(objWidthProps){
 			this.render(objWidthProps.componentName);
 			
 			component.reuseAll(objWidthProps.data);
-			
-		
-		
 	}
 }
 
@@ -1811,7 +1806,6 @@ Prop.prototype.isEmiter = function(emiterName){
 			isEmiter = key123;
 		}
 	}
-
 
 			return  isEmiter;
 }
