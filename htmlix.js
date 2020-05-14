@@ -1060,8 +1060,8 @@ Prop.prototype.initRenderVariant = function(){
 											container.renderParent = this;
 											this.rootLink.state[nameVirtualArray].data.push( container );										
 											this.renderChild =  container;	
-											console.log(container);
-											console.log("/////////////////");
+											//console.log(container);
+											//console.log("/////////////////");
 													}														
 					}					
 				}
