@@ -421,8 +421,9 @@ HTMLixState.prototype.createContainerInArr = function(stateNameProp, properties,
 		   }
 	   }
 
+
 				var container = new Container(Link, desc.container,  desc.props,
-									desc.methods, index, stateNameProp, this);
+									desc.methods, index, stateNameProp, this, true, properties);
 
 											container.renderType = "container-inner";
 
@@ -660,7 +661,7 @@ HTMLixState.prototype.capitalizeFirstLetter = function(string){
 
 
 
-function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, rootLink, isRuncreatedContainer) {
+function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, rootLink, isRuncreatedContainer, newProps) {
   this.htmlLink = htmlLink;
   this.rootLink = rootLink;
   this.props = {};
@@ -690,7 +691,8 @@ function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, r
 							this.props[ props[i2] ] = new Prop(htmlLinkToProp, keyLevel_1,	props[i2], methods[ props[i2] ],
 																						this.pathToCоmponent,
 																						this,
-																						this.rootLink
+																						this.rootLink,
+																						newProps
 																					);	
 		 }else{
 
@@ -717,7 +719,8 @@ function Container(htmlLink, keyLevel_1,  props, methods, id, pathToContainer, r
 												   methods[ string ],
 													this.pathToCоmponent,
 													this,
-												   this.rootLink
+												   this.rootLink,
+												   newProps
 																);	
 
 		 }
@@ -869,7 +872,7 @@ EventEmiter.prototype.getEventProp = function(){
 
 }
 
-function Prop(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parentContainer, rootLink) {
+function Prop(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parentContainer, rootLink, newProps) {
 
 	
    this.pathToCоmponent = pathToContainer; 
@@ -915,15 +918,46 @@ function Prop(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parent
 	  this.emiter = this.rootLink.eventProps[this.type];
 	  this.rootLink.eventProps[this.type].addListener(htmlLink, eventMethod.bind(this), this.type, this.emiterKey);
 	}
-	else if(this.type == "render-variant"){
+	else if(this.type == "render-variant" ){
 
-		  		  this.initRenderVariant();
+				if(newProps == undefined || newProps[keyData2] == undefined || newProps[keyData2] == ""){
+					
+					//console.log(newProps);
+					this.initRenderVariant();
+				}else{
+					
+					this.removeAllChild();
+				}
+		  		  
 
 			}else if(this.type == "group"){
+				
+				
+				if(newProps == undefined || newProps[keyData2] == undefined 
+				|| typeof newProps[keyData2] != "object" ||  newProps[keyData2].componentName == undefined){
 
 					this.initGroup(keyData1, keyData2);
+				
+					
+				}else{
+					
+					this.removeAllChild();
+				}	
 	}
 
+}
+Prop.prototype.removeAllChild = function(){	
+	
+	var children = this.htmlLink.children;
+	
+	var count = children.length;
+	
+	for(var p=0; p< count ; p++ ){
+	
+		children[0].remove();
+		
+	}
+	
 }
 
 Prop.prototype.component = function(){
@@ -1026,7 +1060,8 @@ Prop.prototype.initRenderVariant = function(){
 											container.renderParent = this;
 											this.rootLink.state[nameVirtualArray].data.push( container );										
 											this.renderChild =  container;	
-
+											console.log(container);
+											console.log("/////////////////");
 													}														
 					}					
 				}
@@ -1266,8 +1301,14 @@ Prop.prototype.createNewGroup = function(groupArr, componentName){
 		
 	}else{
 		
+		if(this.groupChild != undefined){
+			this.clearGroup();
+			
+		}else{
+			
+			this.groupChild = [];
+		}
 		
-		this.clearGroup();
 		
 		this.groupArray = this.rootLink.state[componentName];
 		
@@ -1760,13 +1801,20 @@ Prop.prototype.setOrCreateAndRender = function(objWidthProps){
 
     if(component.renderType == "virtual-array"){
 		
-		 if(this.renderChild != undefined && this.renderChild.pathToComponent != undefined &&  this.renderChild.pathToComponent == objWidthProps.componentName){
+	
+		//console.log(this.renderChild.pathToCоmponent);
+		
+		 if(this.renderChild != undefined && this.renderChild.pathToCоmponent != undefined &&  this.renderChild.pathToCоmponent == objWidthProps.componentName){
+			 
+			 //console.log(this);
 			 
 			 this.renderChild.setAllProps(objWidthProps);
 			 
 		 }else{
-			 
+				
 			 	var container = component.add(objWidthProps);
+				
+				//console.log(container);
 
 				this.renderByContainer(container);
 					 
