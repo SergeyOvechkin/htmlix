@@ -604,6 +604,7 @@ HTMLixState.prototype.clearContainerProps = function(stateNameProp, index, width
 				}
 			}
 }	
+/*
 HTMLixState.prototype.removeByLink = function(stateNameProp, htmlLink, widthChild){
 
 						   for(var it=0; it< this.state[stateNameProp].data.length; it++){
@@ -624,6 +625,43 @@ HTMLixState.prototype.getContainerByLink = function(stateNameProp, htmlLink){
 						   }
 					   }
 };
+*/
+HTMLixState.prototype.getDifrentFilds = function(array, fild){
+	
+	var newArr = [];
+	for(var i=0; i<array.length; i++){   
+			
+			var compareItem = array[i];
+			if(fild){
+				compareItem = array[i][fild];
+				if(typeof compareItem == "object")compareItem = JSON.stringify(array[i][fild]);
+			}else{
+				
+				if(typeof array[i] == "object")compareItem = JSON.stringify(array[i]);
+			}
+					
+			var isPersist = false;
+			newArr.forEach(newItem=>{    
+					var compareItem_2 = newItem;
+					if(fild){
+							compareItem_2 = newItem[fild];
+							if(typeof compareItem_2 == "object")compareItem_2 = JSON.stringify(newItem[fild]);
+					}else{		
+						if(typeof newItem == "object")compareItem_2 = JSON.stringify(newItem);
+					}
+					if(compareItem_2 == compareItem)isPersist = true;
+			});
+			if(!isPersist){
+				
+				newArr.push(array[i]);				
+				
+			}
+
+	}
+	return newArr;	
+
+}
+
 HTMLixState.prototype.fetchTemplates = function(callb, templatePath){
 
 			
@@ -920,7 +958,8 @@ function Prop(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parent
 	}
 	else if(this.type == "render-variant" ){
 
-				if(newProps == undefined || newProps[keyData2] == undefined || newProps[keyData2] == ""){
+				if(newProps == undefined || newProps[keyData2] == undefined 
+				|| typeof newProps[keyData2] != "object" ||  newProps[keyData2].componentName == undefined){
 					
 					//console.log(newProps);
 					this.initRenderVariant();
@@ -1137,7 +1176,8 @@ Prop.prototype.initGroup = function(containerName, propName){
 						this.groupChild.push(container);
 						
 						this.groupArray = this.rootLink.state[nameVirtualArray];
-						//console.log(this.groupArray);
+						//console.log(this);
+						//console.log('/////////////////');
 						container.groupId  = this.groupChild.length - 1; 
 						if(container.createdContainer != undefined)container.createdContainer();
 
@@ -1403,11 +1443,6 @@ Prop.prototype.setProp = function(value, eventMethod) {
 
 		}else if(this.type == "render-variant"){
 
-
-		//if(arguments.length == 1){
-							
-							//console.log(value);
-
 			if(typeof value == "string" ){
 
 								this.render(value);	
@@ -1426,39 +1461,32 @@ Prop.prototype.setProp = function(value, eventMethod) {
 
 				console.log("не удается отрисовать контейнер в render-variant если вы хотите отрисовать компонент то используйте текстовый параметр")
 			}
-		//}else if(arguments.length >= 2){
-
-					//	this.renderByLink(value, eventMethod); 
-		//}
+			
 	}else if(this.type == "group"){ 
 
 		    if(Array.isArray(value) ){
 				
-				//if(value.length == 0)return;
-				
-				/*if(value[0] != undefined && value[0].groupId != undefined){
-					
-						this.clearGroup();
-			            this.groupChild = value;
-					
-				}else {*/
-					
 					this.reuseGroup(value);
-				//}
+				
 
 			}else if(typeof value == "object"){
 				
-				if(value.renderType != undefined && value.renderType == "container-inner"){
+				/*if(value.renderType != undefined && value.renderType == "container-inner"){
 					
 					this.addToGroup(value, eventMethod);
 					
-				}else if(value.componentName != undefined && value.group != undefined){
+				}else*/ if(value.componentName != undefined && value.group != undefined){
 					
 					this.createNewGroup(value.group, value.componentName);
 					
 				}else{
-					
-					this.createInGroup(value, eventMethod);
+					if(value.location != undefined){
+						var location = value.location;
+						
+						delete value.location;
+						
+					}
+					this.createInGroup(value, location);
 				}
 				
 		}else {
