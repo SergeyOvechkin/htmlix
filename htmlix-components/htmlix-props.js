@@ -45,7 +45,7 @@ function constructorProp(subtype, prop_r){
 	    }else if(keyData2 == "data"){
 			
 			this.type = "data";
-			this.parent = parentContainer;
+			constructorProp("data", this);
 			
 		}else{
 			

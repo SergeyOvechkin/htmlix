@@ -427,7 +427,7 @@ function Prop(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parent
     this.type = keyData2[1];
   } else if (keyData2 == "data") {
     this.type = "data";
-    this.parent = parentContainer;
+    constructorProp("data", this);
   } else {
     this.type = htmlLink.dataset[keyData1 + rootLink.capitalizeFirstLetter(keyData2)];
   }
