@@ -1,4 +1,8 @@
 
+Папки: 
+    
+	dist: htmlix.js width sourcemap
+	htmlix-components: исходные файлы фреймворка
 
 
 ## Javascript Frontend Framework
