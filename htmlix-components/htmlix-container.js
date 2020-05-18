@@ -19,7 +19,7 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 
 										if(htmlLinkToProp == undefined)htmlLinkToProp = this.htmlLink;			
 
-							this.props[ props[i2] ] = new Prop(htmlLinkToProp, containerName,	props[i2], methods[ props[i2] ],
+							this.props[ props[i2] ] = constructorProps(htmlLinkToProp, containerName,	props[i2], methods[ props[i2] ],
 																						this.pathToCоmponent,
 																						this,
 																						this.rootLink,
@@ -44,7 +44,7 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 											  }
 				                 }
 
-			     		 				      this.props[ string ] = new Prop(htmlLinkToProp, 
+			     		 				      this.props[ string ] = constructorProps(htmlLinkToProp, 
 				                                   containerName,	
 												   props[i2], 
 												   methods[ string ],
@@ -76,6 +76,11 @@ Container.prototype.remove = function(widthChild){
 		
 		this.groupParent.removeFromGroup(this.groupId);
 		return;
+	}
+	if(this.renderParent !=undefined && this.renderParent.renderChild != undefined && this.renderParent.renderChild != null){ 
+	
+		this.renderParent.renderChild = null;
+	
 	}
 	if(this.index == null){
 

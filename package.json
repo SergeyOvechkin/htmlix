@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "**Htmlix** - яваскрипт фреймворк основанный на data- свойствах html документа.",
   "main": "htmlix.js",
-  "author": "Maksaev Mihail",
+  "author": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +11,6 @@
     "type": "git",
     "url": "git+https://github.com/SergeyOvechkin/htmlix.js.git"
   },
-  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/SergeyOvechkin/htmlix.js/issues"

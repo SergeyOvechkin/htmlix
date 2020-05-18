@@ -30,14 +30,14 @@ Htmlix это javascrit frontend framework для создания как раз
 
 
 Примеры приложений на Htmlix:
-
+<!--
 <ul>
 <li><a href="https://sergeyovechkin.github.io/tests/top-menu/index.html">top-menu</a></li>
 <li><a href="https://sergeyovechkin.github.io/tests/todo/index.html">toodo mvc</a></li>
 <li><a href="https://sergeyovechkin.github.io/simple-cms/">simple-cms - пример одностраничного сайта для github</a></li>
 <li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>
 </ul>
-
+-->
 
 ## Создание приложения
 
@@ -1256,7 +1256,7 @@ window.onload = function(){
  
  ```
  
-* <a href="https://sergeyovechkin.github.io/tests/render-variant/index.html"> рабочий пример кода выше </a>
+* <a href="https://github.com/SergeyOvechkin/tests/tree/master/render-variant-virtual-array"> рабочий пример кода выше </a>
  
 Таким простым способом можно создавать различные ветвления, например если у каждого дополнительного варианта, будет еще какойто вариант или список с типом 'group' и т.д. 
 приложение определит тип свойства которое мы хотим обновить и если ето "render-variant" оно сменит вариант шаблона на тот который мы указали в 'componentName' и установит ему свойства которые мы передали,
@@ -1425,7 +1425,7 @@ window.setTimeout( function(){
 	}, 2000);
 
 ```
-* <a href="https://sergeyovechkin.github.io/tests/group/index.html"> рабочий пример кода выше </a>
+* <a href="https://github.com/SergeyOvechkin/tests/tree/master/group-variant"> рабочий пример кода выше </a>
 
 
 

@@ -153,7 +153,7 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 
 
 
-																							this.state[key]["props"][ StateMap[key]["arrayProps"][t] ] 	= new Prop( htmlLink, key, StateMap[key]["arrayProps"][t], StateMap[key]["arrayMethods"][ StateMap[key]["arrayProps"][t] ],
+																							this.state[key]["props"][ StateMap[key]["arrayProps"][t] ] 	= constructorProps( htmlLink, key, StateMap[key]["arrayProps"][t], StateMap[key]["arrayMethods"][ StateMap[key]["arrayProps"][t] ],
 																						key,
 																						this.state[key],
 																						this
@@ -177,7 +177,7 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 																continue;
 
 														}			 
-							this.state[key]["props"][ string ] = new Prop(htmlLinkToProp, key,	StateMap[key]["arrayProps"][t], 
+							this.state[key]["props"][ string ] = constructorProps(htmlLinkToProp, key,	StateMap[key]["arrayProps"][t], 
 							                                                        StateMap[key]["arrayMethods"][  string ],
 																						key,
 																						this.state[key],
