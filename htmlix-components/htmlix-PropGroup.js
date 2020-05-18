@@ -365,7 +365,7 @@ PropGroup.prototype.initGroup = function(containerName, propName){
 					    //container.renderType = "container-inner";
 						container.groupParent	= this;
 
-												this.rootLink.state[nameVirtualArray].data.push( container );	
+						this.rootLink.state[nameVirtualArray].data.push( container );	
 						this.groupChild.push(container);
 						
 						this.groupArray = this.rootLink.state[nameVirtualArray];
