@@ -22,26 +22,23 @@ function constructorProps(htmlLink, keyData1, keyData2, eventMethod, pathToConta
 			console.log(mess);
            throw mess;
 	 }
-  if( eventMethod != undefined && isEvent(propType) != false ){
-
-        return new PropStandartEvent(htmlLink, propType, keyData2, eventMethod, pathToContainer, parentContainer, rootLink);
-	
-  }
-   else if(eventMethod != undefined && isEmiter(propType, rootLink) != false  ){
-	  
-		return new PropEventEmiter(htmlLink, propType, keyData2, eventMethod, pathToContainer, parentContainer, rootLink);
-	 
-	}
-	else if(propType == "render-variant" ){
+	if(propType == "render-variant" ){
 		
        return new PropVariant(htmlLink, propType,  keyData2, pathToContainer, parentContainer, rootLink, newProps);
 		  		  
-
-	}else if(propType == "group"){
+	}else  if(propType == "group"){
 		
 		return new PropGroup(htmlLink, propType, keyData1, keyData2, pathToContainer, parentContainer, rootLink, newProps);
 				
-	}else {
+	}else   if(eventMethod != undefined && isEmiter(propType, rootLink) != false  ){
+	  
+		return new PropEventEmiter(htmlLink, propType, keyData2, eventMethod, pathToContainer, parentContainer, rootLink);
+	 
+	}else if( eventMethod != undefined && isEvent(propType) != false ){
+
+        return new PropStandartEvent(htmlLink, propType, keyData2, eventMethod, pathToContainer, parentContainer, rootLink);
+	
+  }else {
 		
 		return new PropCommon(htmlLink, propType,  parentContainer);
 		
@@ -71,6 +68,23 @@ function PropSubtype(htmlLink, propType, propName,  pathToComponent, parentCompo
 		this.prop = null;
 		this.propName = propName;	
 
+}
+PropSubtype.prototype.component = function(){
+
+	return this.rootLink.state[this.pathToCоmponent];
+}
+PropSubtype.prototype.removeAllChild = function(){	
+	
+	var children = this.htmlLink.children;
+	
+	var count = children.length;
+	
+	for(var p=0; p< count ; p++ ){
+	
+		children[0].remove();
+		
+	}
+	
 }
 
 PropCommon.prototype.setProp = function(value, eventMethod) {

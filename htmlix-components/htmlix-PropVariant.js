@@ -15,6 +15,13 @@ function PropVariant(htmlLink, propType,   propName,  pathToComponent, parentCom
 
 
 }
+PropVariant.prototype = Object.create(PropSubtype.prototype);
+
+Object.defineProperty(PropVariant.prototype, 'constructor', { 
+    value: PropVariant, 
+    enumerable: false, // false, чтобы данное свойство не появлялось в цикле for in
+    writable: true });
+/*
 PropVariant.prototype.component = function(){
 
 	return this.rootLink.state[this.pathToCоmponent];
@@ -32,6 +39,7 @@ PropVariant.prototype.removeAllChild = function(){
 	}
 	
 }
+*/
 PropVariant.prototype.getProp= function(value){
 	
 				var return_obg = {};

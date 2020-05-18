@@ -17,6 +17,13 @@ function PropGroup(htmlLink, propType, keyData1,  propName,  pathToComponent, pa
 				}	
 
 }
+PropGroup.prototype = Object.create(PropSubtype.prototype);
+
+Object.defineProperty(PropGroup.prototype, 'constructor', { 
+    value: PropGroup, 
+    enumerable: false, // false, чтобы данное свойство не появлялось в цикле for in
+    writable: true });
+/*
 PropGroup.prototype.component = function(){
 
 	return this.rootLink.state[this.pathToCоmponent];
@@ -34,6 +41,7 @@ PropGroup.prototype.removeAllChild = function(){
 	}
 	
 }
+*/
 PropGroup.prototype.getProp= function(value){
 				if(value == undefined){
 						

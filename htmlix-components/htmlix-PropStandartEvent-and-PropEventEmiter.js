@@ -9,6 +9,13 @@ function PropEventEmiter(htmlLink, propType, propName, eventMethod, pathToCompon
 	  this.emiter = this.rootLink.eventProps[this.type];
 	  this.rootLink.eventProps[this.type].addListener(htmlLink, eventMethod.bind(this), this.type, this.emiterKey);
 }
+PropEventEmiter.prototype = Object.create(PropSubtype.prototype);
+
+Object.defineProperty(PropEventEmiter.prototype, 'constructor', { 
+    value: PropEventEmiter, 
+    enumerable: false, // false, чтобы данное свойство не появлялось в цикле for in
+    writable: true });
+
 PropEventEmiter.prototype.getProp = function(){
 	
 	return this.type;
@@ -21,10 +28,16 @@ PropEventEmiter.prototype.removeProp= function(){
 	
 	return false;
 }
-PropEventEmiter.prototype.component = function(){
+/*PropEventEmiter.prototype.component = function(){
 
 	return this.rootLink.state[this.pathToCоmponent];
-}
+}*/
+/////////////////////////////////////////////
+
+
+
+
+
 function PropStandartEvent(htmlLink, propType, propName, eventMethod, pathToComponent, parentComponent, rootLink){
 	
 	this.events = {};
@@ -38,10 +51,17 @@ function PropStandartEvent(htmlLink, propType, propName, eventMethod, pathToComp
 
 
 }
+PropStandartEvent.prototype = Object.create(PropSubtype.prototype);
+
+Object.defineProperty(PropStandartEvent.prototype, 'constructor', { 
+    value: PropStandartEvent, 
+    enumerable: false, // false, чтобы данное свойство не появлялось в цикле for in
+    writable: true });
+/*	
 PropStandartEvent.prototype.component = function(){
 
 	return this.rootLink.state[this.pathToCоmponent];
-}
+}*/
 PropStandartEvent.prototype.getProp= function(){
 	
 	return this.type;
