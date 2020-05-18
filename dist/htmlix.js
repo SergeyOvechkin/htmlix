@@ -33,7 +33,7 @@ HTMLixArray.prototype.reuseAll = function (arrayWithObjects) {
     this.data[i].setAllProps(arrayWithObjects[i]);
 
     for (var key in this.data[i].props) {
-      this.data[i].props[key].prop = null;
+      if (this.data[i].props[key].prop != undefined) this.data[i].props[key].prop = null;
     }
   }
 
@@ -78,6 +78,7 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
   this.name = containerName;
   this.type = "container";
   this.renderType = "container-outer";
+  if (pathToContainer != containerName) this.renderType = "container-inner";
   if (props == undefined) props = [];
 
   for (var i2 = 0; i2 < props.length; i2++) {
@@ -115,6 +116,11 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
 }
 
 Container.prototype.remove = function (widthChild) {
+  if (this.index == null) {
+    console.log("conteiner without array not removing, to remove its first add container to array");
+    return null;
+  }
+
   if (this.groupId != undefined && this.groupParent != undefined) {
     this.groupParent.removeFromGroup(this.groupId);
     return;
@@ -122,11 +128,6 @@ Container.prototype.remove = function (widthChild) {
 
   if (this.renderParent != undefined && this.renderParent.renderChild != undefined && this.renderParent.renderChild != null) {
     this.renderParent.renderChild = null;
-  }
-
-  if (this.index == null) {
-    console.log("conteiner without array not removing, to remove its first add container to array");
-    return null;
   }
 
   if (widthChild != undefined && widthChild == true) {
@@ -691,9 +692,9 @@ function isEvent(type) {
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function PropGroup(htmlLink, propType, keyData1, propName, pathToComponent, parentComponent, rootLink, newProps) {
+  PropSubtype.call(this, htmlLink, propType, propName, pathToComponent, parentComponent, rootLink);
   this.groupChild = [];
   this.groupArray = null;
-  PropSubtype.call(this, htmlLink, propType, propName, pathToComponent, parentComponent, rootLink);
 
   if (newProps == undefined || newProps[propName] == undefined || _typeof(newProps[propName]) != "object" || newProps[propName].componentName == undefined) {
     this.initGroup(keyData1, propName);
@@ -956,8 +957,8 @@ PropGroup.prototype.initGroup = function (containerName, propName) {
           }
 
           if (nameVirtualArray != null && nameContainer != null && objToFind[key5] == "container") {
-            var container = new Container(groupItems[i], nameContainer, this.rootLink.description.virtualArrayComponents[nameVirtualArray].props, this.rootLink.description.virtualArrayComponents[nameVirtualArray].methods, this.rootLink.state[nameVirtualArray].data.length, nameVirtualArray, this.rootLink, false);
-            container.renderType = "container-inner";
+            var container = new Container(groupItems[i], nameContainer, this.rootLink.description.virtualArrayComponents[nameVirtualArray].props, this.rootLink.description.virtualArrayComponents[nameVirtualArray].methods, this.rootLink.state[nameVirtualArray].data.length, nameVirtualArray, this.rootLink, false); //container.renderType = "container-inner";
+
             container.groupParent = this;
             this.rootLink.state[nameVirtualArray].data.push(container);
             this.groupChild.push(container);
@@ -987,10 +988,10 @@ PropGroup.prototype.initGroup = function (containerName, propName) {
   }
 };
 function PropEventEmiter(htmlLink, propType, propName, eventMethod, pathToComponent, parentComponent, rootLink) {
-  this.emiterKey = "";
-  this.emiter = "";
   PropSubtype.call(this, htmlLink, propType, propName, pathToComponent, parentComponent, rootLink); // console.log(this);
 
+  this.emiterKey = "";
+  this.emiter = "";
   this.emiterKey = "key" + Math.floor(Math.random() * 89999 + 10000);
   this.emiter = this.rootLink.eventProps[this.type];
   this.rootLink.eventProps[this.type].addListener(htmlLink, eventMethod.bind(this), this.type, this.emiterKey);
@@ -1023,9 +1024,9 @@ PropEventEmiter.prototype.removeProp = function () {
 
 
 function PropStandartEvent(htmlLink, propType, propName, eventMethod, pathToComponent, parentComponent, rootLink) {
-  this.events = {};
   PropSubtype.call(this, htmlLink, propType, propName, pathToComponent, parentComponent, rootLink); //console.log(this);
 
+  this.events = {};
   this.events[this.type] = eventMethod.bind(this);
   this.htmlLink.addEventListener(this.type, this.events[this.type]);
 }
@@ -1092,8 +1093,8 @@ PropStandartEvent.prototype.enableEvent = function (value) {
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function PropVariant(htmlLink, propType, propName, pathToComponent, parentComponent, rootLink, newProps) {
-  this.renderChild = null;
   PropSubtype.call(this, htmlLink, propType, propName, pathToComponent, parentComponent, rootLink);
+  this.renderChild = null;
 
   if (newProps == undefined || newProps[propName] == undefined || _typeof(newProps[propName]) != "object" || newProps[propName].componentName == undefined) {
     this.initRenderVariant();
@@ -1187,7 +1188,7 @@ PropVariant.prototype.removeProp = function (value) {
 };
 
 PropVariant.prototype.render = function (nameComponent) {
-  if (this.renderChild == undefined && nameComponent == undefined) {
+  if (this.renderChild == null && nameComponent == undefined) {
     console.log("не известен компонент для рендера");
     return "undefinit render-variant";
   }
@@ -1205,7 +1206,7 @@ PropVariant.prototype.render = function (nameComponent) {
 
 PropVariant.prototype.renderByContainer = function (containerLink) {
   if (containerLink != undefined && containerLink.renderType == "container-inner") {
-    if (this.renderChild != undefined && this.renderChild.renderType != undefined && this.renderChild.renderType == "container-inner") this.renderChild.remove(true);
+    if (this.renderChild != null && this.renderChild.renderType != undefined && this.renderChild.renderType == "container-inner") this.renderChild.remove(true);
     this.renderChild = containerLink;
     this.renderChild.renderParent = this;
   } else {
@@ -1226,7 +1227,7 @@ PropVariant.prototype.setOrCreateAndRender = function (objWidthProps) {
   var component = this.rootLink.state[objWidthProps.componentName];
 
   if (component.renderType == "virtual-array") {
-    if (this.renderChild != undefined && this.renderChild.pathToCоmponent != undefined && this.renderChild.pathToCоmponent == objWidthProps.componentName) {
+    if (this.renderChild != null && this.renderChild.pathToCоmponent != undefined && this.renderChild.pathToCоmponent == objWidthProps.componentName) {
       this.renderChild.setAllProps(objWidthProps);
     } else {
       var container = component.add(objWidthProps);
@@ -1298,8 +1299,8 @@ PropVariant.prototype.initRenderVariant = function () {
           }
 
           if (nameVirtualArray != null && nameContainer != null) {
-            var container = new Container(objIs, nameContainer, this.rootLink.description.virtualArrayComponents[nameVirtualArray].props, this.rootLink.description.virtualArrayComponents[nameVirtualArray].methods, this.rootLink.state[nameVirtualArray].data.length, nameVirtualArray, this.rootLink);
-            container.renderType = "container-inner";
+            var container = new Container(objIs, nameContainer, this.rootLink.description.virtualArrayComponents[nameVirtualArray].props, this.rootLink.description.virtualArrayComponents[nameVirtualArray].methods, this.rootLink.state[nameVirtualArray].data.length, nameVirtualArray, this.rootLink); //container.renderType = "container-inner";
+
             container.renderParent = this;
             this.rootLink.state[nameVirtualArray].data.push(container);
             this.renderChild = container;
@@ -1455,8 +1456,8 @@ HTMLixState.prototype.arrayInit = function (node, StateMap, key) {
       console.log("erorr - неправильно указан тип для контейнера " + StateMap[key].container + " index - " + i + " массива " + key);
     }
 
-    var container23 = new Container(containerHTML[i], StateMap[key].container, StateMap[key].props, StateMap[key].methods, j, key, this);
-    container23.renderType = "container-inner";
+    var container23 = new Container(containerHTML[i], StateMap[key].container, StateMap[key].props, StateMap[key].methods, j, key, this); // container23.renderType = "container-inner";
+
     this.state[key].data[j] = container23;
   }
 
@@ -1526,8 +1527,8 @@ HTMLixState.prototype.addContainer = function (stateNameProp, properties, insert
     }
   }
 
-  var container = new Container(Link, desc.container, desc.props, desc.methods, index, stateNameProp, this, true, properties);
-  container.renderType = "container-inner";
+  var container = new Container(Link, desc.container, desc.props, desc.methods, index, stateNameProp, this, true, properties); //container.renderType = "container-inner";
+
   var htmlLink = stateArray.htmlLink;
 
   if (stateArray.selector != undefined) {
