@@ -212,7 +212,7 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 											console.log("erorr - неправильно указан тип для контейнера "+StateMap[key].container+" index - "+i+ " массива "+key);
 						}					
 						var container23 = new Container(containerHTML[i], StateMap[key].container,  StateMap[key].props, StateMap[key].methods, j, key, this);
-						 container23.renderType = "container-inner";
+						// container23.renderType = "container-inner";
 						this.state[key].data[j] = container23 ;
 
                         				}
@@ -312,7 +312,7 @@ HTMLixState.prototype.addContainer=  function (stateNameProp, properties, insert
 				var container = new Container(Link, desc.container,  desc.props,
 									desc.methods, index, stateNameProp, this, true, properties);
 
-											container.renderType = "container-inner";
+											//container.renderType = "container-inner";
 
 				var htmlLink = stateArray.htmlLink;
 				

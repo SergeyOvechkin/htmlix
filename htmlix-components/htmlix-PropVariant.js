@@ -1,8 +1,10 @@
 function PropVariant(htmlLink, propType,   propName,  pathToComponent, parentComponent, rootLink, newProps){
 	
-	this.renderChild = null;
+	
 	
 	 PropSubtype.call(this, htmlLink,  propType, propName,  pathToComponent, parentComponent, rootLink);
+	 
+	 this.renderChild = null;
 	 
 	 				if(newProps == undefined || newProps[propName] == undefined 
 				|| typeof newProps[propName] != "object" ||  newProps[propName].componentName == undefined){
@@ -123,7 +125,7 @@ PropVariant.prototype.removeProp= function(value){
 }
 PropVariant.prototype.render = function(nameComponent){
 
-	if(this.renderChild == undefined && nameComponent == undefined ){
+	if(this.renderChild == null && nameComponent == undefined ){
 
 			    console.log("не известен компонент для рендера");
 		return  "undefinit render-variant";
@@ -148,7 +150,7 @@ PropVariant.prototype.render = function(nameComponent){
 PropVariant.prototype.renderByContainer = function(containerLink){
 
 		if(containerLink != undefined && containerLink.renderType == "container-inner"){
-		if(this.renderChild != undefined && this.renderChild.renderType != undefined && this.renderChild.renderType == "container-inner")this.renderChild.remove(true);
+		if(this.renderChild != null && this.renderChild.renderType != undefined && this.renderChild.renderType == "container-inner")this.renderChild.remove(true);
 
 		this.renderChild = containerLink;
 		this.renderChild.renderParent = this;
@@ -173,7 +175,7 @@ PropVariant.prototype.setOrCreateAndRender = function(objWidthProps){
 
     if(component.renderType == "virtual-array"){
 		
-		 if(this.renderChild != undefined && this.renderChild.pathToCоmponent != undefined &&  this.renderChild.pathToCоmponent == objWidthProps.componentName){
+		 if(this.renderChild != null && this.renderChild.pathToCоmponent != undefined &&  this.renderChild.pathToCоmponent == objWidthProps.componentName){
 
 			 this.renderChild.setAllProps(objWidthProps);
 			 
@@ -291,7 +293,7 @@ PropVariant.prototype.initRenderVariant = function(){
 															nameVirtualArray, 
 															this.rootLink);
 
-											container.renderType = "container-inner";
+											//container.renderType = "container-inner";
 											container.renderParent = this;
 											this.rootLink.state[nameVirtualArray].data.push( container );										
 											this.renderChild =  container;	

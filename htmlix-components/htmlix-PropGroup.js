@@ -1,9 +1,11 @@
 function PropGroup(htmlLink, propType, keyData1,  propName,  pathToComponent, parentComponent, rootLink, newProps){
 	
-	this.groupChild = [];
-	this.groupArray = null;
+
 	
 	 PropSubtype.call(this, htmlLink,  propType, propName,  pathToComponent, parentComponent, rootLink);
+	 
+	 	this.groupChild = [];
+	this.groupArray = null;
 	 
 	 			if(newProps == undefined || newProps[propName] == undefined 
 				|| typeof newProps[propName] != "object" ||  newProps[propName].componentName == undefined){
@@ -360,7 +362,7 @@ PropGroup.prototype.initGroup = function(containerName, propName){
 												  false
 					                               );
 
-												   						container.renderType = "container-inner";
+					    //container.renderType = "container-inner";
 						container.groupParent	= this;
 
 												this.rootLink.state[nameVirtualArray].data.push( container );	

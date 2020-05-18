@@ -1,10 +1,14 @@
 function PropEventEmiter(htmlLink, propType, propName, eventMethod, pathToComponent, parentComponent, rootLink){
 	
-	this.emiterKey = "";
-	this.emiter = "";
+
 	
 	 PropSubtype.call(this, htmlLink, propType, propName,  pathToComponent, parentComponent, rootLink)
 	// console.log(this);
+	
+	 this.emiterKey = "";
+	 this.emiter = "";
+	
+	
 	  this.emiterKey = "key"+Math.floor(Math.random()*89999+10000);
 	  this.emiter = this.rootLink.eventProps[this.type];
 	  this.rootLink.eventProps[this.type].addListener(htmlLink, eventMethod.bind(this), this.type, this.emiterKey);
@@ -40,10 +44,12 @@ PropEventEmiter.prototype.removeProp= function(){
 
 function PropStandartEvent(htmlLink, propType, propName, eventMethod, pathToComponent, parentComponent, rootLink){
 	
-	this.events = {};
+	
 	
 	 PropSubtype.call(this, htmlLink, propType, propName,  pathToComponent, parentComponent, rootLink);
 	 //console.log(this);
+	 
+	 this.events = {};
 	 
 	 this.events[this.type] = eventMethod.bind(this);	
 	 this.htmlLink.addEventListener(this.type, this.events[this.type]);

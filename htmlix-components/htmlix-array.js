@@ -53,12 +53,10 @@ HTMLixArray.prototype.reuseAll = function(arrayWithObjects){
 		
 			for(var key in this.data[i].props){
 			
-			this.data[i].props[key].prop = null;
+			if(this.data[i].props[key].prop != undefined)this.data[i].props[key].prop = null;
 			
-		}
-		
+		}	
 	}
-	
 	if(add > 0){
 		for (var t=0; t<add; t++){
 			
@@ -70,11 +68,8 @@ HTMLixArray.prototype.reuseAll = function(arrayWithObjects){
 			
 			this.removeIndex([this.data.length - 1], true);
 		}	
-	}
-	
-	
+	}	
 }
-
 HTMLixArray.prototype.getAll = function(map_Object){
 		
 		var array_r = [];		

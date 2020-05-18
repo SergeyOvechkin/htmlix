@@ -7,6 +7,7 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
   this.name = containerName;
   this.type =  "container";
   this.renderType =  "container-outer";
+  if(pathToContainer != containerName)this.renderType = "container-inner";
 
   if(props == undefined)props = [];
   for(var i2 = 0; i2 < props.length; i2++){
@@ -71,7 +72,11 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 
 	}
 Container.prototype.remove = function(widthChild){
-	
+	if(this.index == null){
+
+				console.log("conteiner without array not removing, to remove its first add container to array");
+		return null;
+	}
 	if(this.groupId != undefined && this.groupParent !=undefined){
 		
 		this.groupParent.removeFromGroup(this.groupId);
@@ -81,11 +86,6 @@ Container.prototype.remove = function(widthChild){
 	
 		this.renderParent.renderChild = null;
 	
-	}
-	if(this.index == null){
-
-				console.log("conteiner without array not removing, to remove its first add container to array");
-		return null;
 	}
 	if(widthChild != undefined && widthChild == true){
 
