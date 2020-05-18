@@ -1,6 +1,6 @@
 
 function constructorProps(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parentContainer, rootLink, newProps) {
-	var propType = "";
+	var propType = null;
 
 		if(typeof keyData2 == "object"){
           
