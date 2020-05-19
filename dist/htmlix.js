@@ -464,7 +464,7 @@ PropSubtype.prototype.removeAllChild = function () {
   }
 };
 
-PropCommon.prototype.setProp = function (value, eventMethod) {
+PropCommon.prototype.setProp = function (value) {
   if (this.type == "text") {
     this.htmlLink.textContent = value;
     return;
@@ -501,7 +501,7 @@ PropCommon.prototype.setProp = function (value, eventMethod) {
   }
 };
 
-PropCommon.prototype.getProp = function (value) {
+PropCommon.prototype.getProp = function () {
   if (this.type == "text") {
     return this.htmlLink.textContent;
   } else if (this.type == "inputvalue" || this.type == "select") {
@@ -864,7 +864,7 @@ PropGroup.prototype.reuseGroup = function (arrayWithObjects) {
     this.groupChild[i].setAllProps(arrayWithObjects[i]);
 
     for (var key in this.groupChild[i].props) {
-      this.groupChild[i].props[key].prop = null;
+      if (this.groupChild[i].props[key].prop != undefined) this.groupChild[i].props[key].prop = null;
     }
   }
 
@@ -895,7 +895,7 @@ PropGroup.prototype.createNewGroup = function (groupArr, componentName) {
   if (this.groupArray != null && this.groupArray.pathToComponent != undefined && this.groupArray.pathToComponent == componentName) {
     this.reuseGroup(groupArr);
   } else {
-    if (this.groupChild != undefined) {
+    if (this.groupChild != undefined && this.groupChild.length != 0) {
       this.clearGroup();
     } else {
       this.groupChild = [];
@@ -1172,9 +1172,9 @@ PropVariant.prototype.setProp = function (value) {
 };
 
 PropVariant.prototype.removeProp = function (value) {
-  var isRemove = false;
+  var isRemove = null;
 
-  if (this.renderChild.renderType == "container-inner") {
+  if (this.renderChild != null && this.renderChild.renderType == "container-inner") {
     isRemove = this.renderChild.remove(true);
   }
 
@@ -1194,6 +1194,7 @@ PropVariant.prototype.render = function (nameComponent) {
   }
 
   if (nameComponent != undefined && this.rootLink.state[nameComponent] != undefined) {
+    if (this.renderChild != null && this.renderChild.renderParent != undefined && this.renderChild.renderParent != null) this.renderChild.renderParent = null;
     this.renderChild = this.rootLink.state[nameComponent];
     this.rootLink.state[nameComponent].renderParent = this;
     this.htmlLink.innerHTML = "";

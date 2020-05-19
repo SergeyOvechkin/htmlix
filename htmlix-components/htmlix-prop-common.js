@@ -87,7 +87,7 @@ PropSubtype.prototype.removeAllChild = function(){
 	
 }
 
-PropCommon.prototype.setProp = function(value, eventMethod) {
+PropCommon.prototype.setProp = function(value) {
 	
 			if(this.type == "text"){
 
@@ -146,7 +146,7 @@ PropCommon.prototype.setProp = function(value, eventMethod) {
 	}
 }
 
-PropCommon.prototype.getProp = function(value) {
+PropCommon.prototype.getProp = function() {
 	
 	if(this.type == "text"){
 

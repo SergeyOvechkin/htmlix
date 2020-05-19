@@ -106,9 +106,9 @@ PropVariant.prototype.setProp= function(value){
 }
 PropVariant.prototype.removeProp= function(value){
 	
-			var isRemove = false;
+			var isRemove = null;
 
-          if(this.renderChild.renderType == "container-inner"){
+          if(this.renderChild != null && this.renderChild.renderType == "container-inner"){
 			  
 			    isRemove = this.renderChild.remove(true);
 		  }
@@ -131,6 +131,8 @@ PropVariant.prototype.render = function(nameComponent){
 		return  "undefinit render-variant";
 	}
 	if(nameComponent != undefined && this.rootLink.state[nameComponent] != undefined){
+		
+		if(this.renderChild != null && this.renderChild.renderParent != undefined && this.renderChild.renderParent != null)this.renderChild.renderParent = null;
 		
 		this.renderChild = this.rootLink.state[nameComponent];
 		

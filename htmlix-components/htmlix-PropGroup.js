@@ -8,13 +8,9 @@ function PropGroup(htmlLink, propType, keyData1,  propName,  pathToComponent, pa
 	this.groupArray = null;
 	 
 	 			if(newProps == undefined || newProps[propName] == undefined 
-				|| typeof newProps[propName] != "object" ||  newProps[propName].componentName == undefined){
-
+				|| typeof newProps[propName] != "object" ||  newProps[propName].componentName == undefined ){
 					this.initGroup(keyData1, propName);
-				
-					
 				}else{
-					
 					this.removeAllChild();
 				}	
 
@@ -225,7 +221,7 @@ PropGroup.prototype.reuseGroup = function(arrayWithObjects){
 		
 			for(var key in this.groupChild[i].props){
 			
-			this.groupChild[i].props[key].prop = null;
+			if(this.groupChild[i].props[key].prop != undefined)this.groupChild[i].props[key].prop = null;
 			
 		}
 		
@@ -264,7 +260,7 @@ PropGroup.prototype.createNewGroup = function(groupArr, componentName){
 		this.reuseGroup(groupArr);
 		
 	}else{		
-		if(this.groupChild != undefined){
+		if(this.groupChild != undefined && this.groupChild.length != 0){
 			this.clearGroup();
 			
 		}else{
