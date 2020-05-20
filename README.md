@@ -1150,7 +1150,7 @@ window.onload = function(){
 				methods: {				
 				}			
 			},
-		fetchComponents: {	//поместили компонент в специальный объект fetchComponents, это говорит о том что шаблоны для него нужно искать в файле - pathToComponent: "./template.html" после их загрузки.
+		fetchComponents: {	//поместили компонент в специальный объект fetchComponents, это говорит о том что шаблоны для него нужно искать в файле - templatePath: "./template.html" после их загрузки.
 			variant2: {
 				container: "variant2",
 				props: ["content"],
@@ -1159,13 +1159,13 @@ window.onload = function(){
 			},			
 		}
 		stateSettings: {
-			pathToComponent: "./template.html"
+			templatePath: "./template.html"
 		}
 	}
 
 ```
 Итак выше мы изменили описание приложения, теперь varian2 у нас помещен в объект fetchComponents что говорит о том что его нужно создать после того как догрузятся шаблоны из файла
-pathToComponent: "./template.html" который мы указали в настройках.
+templatePath: "./template.html" который мы указали в настройках.
 
 
 После клика по кнопке мы меняем отображаемый компонент в свойстве. Можно не только поменять отображаемый компонент, но и сразу установить ему какие либо свойства:
