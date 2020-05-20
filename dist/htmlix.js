@@ -405,9 +405,14 @@ function constructorProps(htmlLink, keyData1, keyData2, eventMethod, pathToConta
 
   if (_typeof(keyData2) == "object") {
     propType = keyData2[1];
-  } else if (keyData2 == "data") {
+
+    if (keyData2[0].search("data") == 0) {
+      propType = "data";
+      return new PropCommon(htmlLink, propType, parentContainer, keyData2[0]);
+    }
+  } else if (keyData2.search("data") == 0) {
     propType = "data";
-    return new PropCommon(htmlLink, propType, parentContainer);
+    return new PropCommon(htmlLink, propType, parentContainer, keyData2);
   } else {
     propType = htmlLink.dataset[keyData1 + rootLink.capitalizeFirstLetter(keyData2)];
   }
@@ -427,16 +432,17 @@ function constructorProps(htmlLink, keyData1, keyData2, eventMethod, pathToConta
   } else if (eventMethod != undefined && isEvent(propType) != false) {
     return new PropStandartEvent(htmlLink, propType, keyData2, eventMethod, pathToContainer, parentContainer, rootLink);
   } else {
-    return new PropCommon(htmlLink, propType, parentContainer);
+    return new PropCommon(htmlLink, propType);
   }
 }
 
-function PropCommon(htmlLink, propType, parentComponent) {
+function PropCommon(htmlLink, propType, parentComponent, propName) {
   this.htmlLink = htmlLink;
   this.type = propType;
 
   if (this.type == "data") {
     this.parent = parentComponent;
+    this.propName = propName;
   }
 }
 
@@ -480,8 +486,10 @@ PropCommon.prototype.setProp = function (value) {
     return;
   } else if (this.type == "class") {
     if (Array.isArray(value)) {
-      for (var u = 0; u < this.htmlLink.classList.length; u++) {
-        this.htmlLink.classList.remove(this.htmlLink.classList[u]);
+      var classLength = this.htmlLink.classList.length;
+
+      for (var u = 0; u < classLength; u++) {
+        this.htmlLink.classList.remove(this.htmlLink.classList[0]);
       }
 
       for (var k = 0; k < value.length; k++) {
@@ -496,7 +504,7 @@ PropCommon.prototype.setProp = function (value) {
     this.htmlLink.setAttribute(this.isAttr(this.type), value);
     return;
   } else if (this.type == "data") {
-    this.htmlLink.dataset[this.parent.name + "Data"] = value;
+    this.htmlLink.dataset[this.parent.name + this.parent.rootLink.capitalizeFirstLetter(this.propName)] = value;
     return;
   }
 };
@@ -509,13 +517,20 @@ PropCommon.prototype.getProp = function () {
   } else if (this.type == "checkbox" || this.type == "radio") {
     return this.htmlLink.checked;
   } else if (this.type == "class") {
-    return this.htmlLink.classList;
+    var classList = this.htmlLink.classList;
+    var clasArr = [];
+
+    for (var i = 0; i < classList.length; i++) {
+      clasArr.push(classList[i]);
+    }
+
+    return clasArr;
   } else if (this.type == "html") {
     return this.htmlLink.innerHTML;
   } else if (this.isAttr(this.type) != false) {
     return this.htmlLink.getAttribute(this.isAttr(this.type));
   } else if (this.type == "data") {
-    return this.htmlLink.dataset[this.parent.name + "Data"];
+    return this.htmlLink.dataset[this.parent.name + this.parent.rootLink.capitalizeFirstLetter(this.propName)];
   }
 };
 
@@ -542,7 +557,7 @@ PropCommon.prototype.removeProp = function (value) {
     this.htmlLink.value = "";
     return;
   } else if (this.type == "data") {
-    this.htmlLink.dataset[this.parent.name + "Data"] = "";
+    this.htmlLink.dataset[this.parent.name + this.rootLink.parent.capitalizeFirstLetter(this.propName)] = "";
     return;
   } else if (this.isAttr(this.type) != false) {
     this.htmlLink.setAttribute(this.isAttr(this.type), "");
