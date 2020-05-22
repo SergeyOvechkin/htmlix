@@ -1,7 +1,7 @@
 
 Папки: 
     
-	dist: htmlix.js width sourcemap
+	dist: htmlix.js with sourcemap
 	htmlix-components: исходные файлы фреймворка
 
 
