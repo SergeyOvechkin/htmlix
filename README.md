@@ -19,14 +19,15 @@
 *  типизация свойств, значительно сокращает количество используемых методов и уменьшает объем кода требуемого для написания и запоминания.
 
 Примеры приложений на Htmlix:
-<!--
+
+
 <ul>
+<li><a href="https://sergeyovechkin.github.io/simple-cms/">htmlix api в SPA формате</a></li>
 <li><a href="https://sergeyovechkin.github.io/tests/top-menu/index.html">top-menu</a></li>
 <li><a href="https://sergeyovechkin.github.io/tests/todo/index.html">toodo mvc</a></li>
-<li><a href="https://sergeyovechkin.github.io/simple-cms/">simple-cms - пример одностраничного сайта для github</a></li>
 <li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>
 </ul>
--->
+
 
 ## Создание приложения
 
