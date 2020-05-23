@@ -517,7 +517,7 @@ var StateMap = {
 											
 					var text = this.parent.props.text.getProp();  
 											
-					this.rootLink.state["pages"].add({paragraf: text}); 
+					this.rootLink.state["pages"].add({paragraf: text}, 0); //добавляем контейнер в начало массива, соответственно индекс всех остальных увеличивается на 1
 											
 					this.rootLink.eventProps["emiter-create-page"].emit();
 					//вызвали пользовательское событие "emiter-create-page"	при создании контейнера	
@@ -541,7 +541,8 @@ var StateMap = {
 				},
 				remove: function(){ 		
 							
-					this.parent.remove();
+					this.parent.remove(); //удалили контейнер соответственно индекс контейнеров идущих после него уменьшился на 1
+					
 					this.rootLink.eventProps["emiter-create-page"].emit(); 
 					//вызвали пользовательское событие "emiter-create-page" при удалении контейнера
 							
