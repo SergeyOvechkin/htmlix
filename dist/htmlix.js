@@ -69,7 +69,7 @@ HTMLixArray.prototype.getAll = function (map_Object) {
 HTMLixArray.prototype.order = function (newOrderArr) {
   this.rootLink.changeOrder(this.pathToComponent, newOrderArr);
 };
-function Container(htmlLink, containerName, props, methods, index, pathToContainer, rootLink, isRuncreatedContainer, newProps) {
+function Container(htmlLink, containerName, props, methods, index, pathToContainer, rootLink, isRunonCreatedContainer, newProps) {
   this.htmlLink = htmlLink;
   this.rootLink = rootLink;
   this.props = {};
@@ -106,11 +106,11 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
     }
   }
 
-  if (methods.createdContainer != undefined) {
-    this.createdContainer = methods.createdContainer.bind(this);
+  if (methods.onCreatedContainer != undefined) {
+    this.onCreatedContainer = methods.onCreatedContainer.bind(this);
 
-    if (isRuncreatedContainer == undefined || isRuncreatedContainer != false) {
-      this.createdContainer(); //console.log(this);
+    if (isRunonCreatedContainer == undefined || isRunonCreatedContainer != false) {
+      this.onCreatedContainer(); //console.log(this);
     }
   }
 }
@@ -308,7 +308,8 @@ function HTMLixRouter(state, routes) {
       }
 
       for (var key in this.routes[nameArrComp].routComponent) {
-        var key2 = this.routes[nameArrComp].routComponent[key];
+        //console.log(key);
+        var key2 = this.routes[nameArrComp].routComponent[key]; //console.log(key2);
 
         if (this.component[key2] == undefined) {
           var component = this.rootLink.state[key2];
@@ -981,7 +982,7 @@ PropGroup.prototype.initGroup = function (containerName, propName) {
             //console.log('/////////////////');
 
             container.groupId = this.groupChild.length - 1;
-            if (container.createdContainer != undefined) container.createdContainer();
+            if (container.onCreatedContainer != undefined) container.onCreatedContainer();
           } else if (objToFind[key5] == "template") {
             this.groupArray = this.rootLink.state[nameVirtualArray];
             groupItems[i].setAttribute('style', "");

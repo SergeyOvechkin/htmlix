@@ -1,4 +1,4 @@
-function Container(htmlLink, containerName,  props, methods, index, pathToContainer, rootLink, isRuncreatedContainer, newProps) {
+function Container(htmlLink, containerName,  props, methods, index, pathToContainer, rootLink, isRunonCreatedContainer, newProps) {
   this.htmlLink = htmlLink;
   this.rootLink = rootLink;
   this.props = {};
@@ -59,13 +59,13 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 
 
 		 								}
-       if(methods.createdContainer != undefined ){ 
+       if(methods.onCreatedContainer != undefined ){ 
 
-				this.createdContainer = methods.createdContainer.bind(this)
+				this.onCreatedContainer = methods.onCreatedContainer.bind(this)
 
-		if(isRuncreatedContainer==undefined || isRuncreatedContainer!=false){
+		if(isRunonCreatedContainer==undefined || isRunonCreatedContainer!=false){
 			
-			this.createdContainer();
+			this.onCreatedContainer();
 			//console.log(this);
 		}
 	}

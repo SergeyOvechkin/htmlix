@@ -209,8 +209,11 @@ function HTMLixRouter(state, routes){
 					
 					for(var key in this.routes[nameArrComp].routComponent){
 						
+						//console.log(key);
+						
 						var key2 = this.routes[nameArrComp].routComponent[key];
 						
+						//console.log(key2);
 						
 						if(this.component[key2] == undefined){
 							var component = this.rootLink.state[key2];

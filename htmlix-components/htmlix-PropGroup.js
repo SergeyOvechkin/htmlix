@@ -368,7 +368,7 @@ PropGroup.prototype.initGroup = function(containerName, propName){
 						//console.log(this);
 						//console.log('/////////////////');
 						container.groupId  = this.groupChild.length - 1; 
-						if(container.createdContainer != undefined)container.createdContainer();
+						if(container.onCreatedContainer != undefined)container.onCreatedContainer();
 
 				 }else if(objToFind[key5] == "template"){
 					 
