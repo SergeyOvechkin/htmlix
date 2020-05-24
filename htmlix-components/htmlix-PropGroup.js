@@ -120,7 +120,7 @@ PropGroup.prototype.setProp= function(value){
 				
 		}else {
 			
-			console.log("не получается создать "+value+"в группе компонента"+this.pathToCоmponent);
+			console.log("не получается создать "+value+"в группе компонента"+this.pathToComponent);
 		}
 		return;
 	
@@ -157,21 +157,21 @@ PropGroup.prototype.removeFromGroup = function(groupID){
 
 }
 PropGroup.prototype.clearGroup = function(){
+	
+	   var count = this.groupChild.length;
 
-		if(this.groupChild.length <= 0)return;
+		if(count <= 0)return;
 
 		var indexes = [];
 
-		for(var i=0; i< this.groupChild.length; i++){
+		for(var i=0; i< count; i++){
 
 				indexes.push(this.groupChild[i].index);
 	}
 
+	this.rootLink.removeByIndexes(this.groupChild[0].pathToCоmponent, indexes, true);
 
-
-				this.rootLink.removeByIndexes(this.groupChild[0].pathToCоmponent, indexes, true);
-
-		this.groupChild= [];
+	this.groupChild.length = 0;
 }
 PropGroup.prototype.getGroupsArray = function(){
 	
@@ -202,7 +202,7 @@ PropGroup.prototype.reuseGroup = function(arrayWithObjects){
 	
 		if(this.groupArray == null && this.getGroupsArray() == null){
 				
-					console.log("error для использования метода .reuseGroup свойство должно иметь поле this.groupArray");
+					console.log("error для использования метода .reuseGroup свойство должно иметь поле this.groupArray !=null");
 					return		
 		}
 	
@@ -244,16 +244,20 @@ PropGroup.prototype.reuseGroup = function(arrayWithObjects){
 }
 PropGroup.prototype.createInGroup = function(props, insertLocation){
 	
-	if(this.groupArray == null && this.getGroupsArray() == null){
+	if(this.groupArray == null && this.getGroupsArray() == null && props.componentName == undefined){
 		
-		console.log("error для использования метода createInGroup свойство должно иметь поле this.groupArray");
+		console.log("error для использования метода createInGroup свойство должно иметь поле this.groupArray !=null");
 		return		
 	}
+	if(this.groupArray == null || this.groupArray == undefined)this.groupArray = this.rootLink.state[props.componentName];
+		
 	var container =  this.groupArray.add(props);
 	
 	this.addToGroup(container, insertLocation);	
 }
 PropGroup.prototype.createNewGroup = function(groupArr, componentName){
+	
+
 	
 	if(this.groupArray != null && this.groupArray.pathToComponent != undefined && this.groupArray.pathToComponent == componentName){
 		
@@ -269,6 +273,7 @@ PropGroup.prototype.createNewGroup = function(groupArr, componentName){
 		}	
 		
 		this.groupArray = this.rootLink.state[componentName];
+		if(!this.groupArray)console.log("error не создан компонент "+componentName);
 		
 		for(var i=0; i<groupArr.length; i++){
 			
@@ -303,6 +308,33 @@ PropGroup.prototype.addToGroup = function(container, insertLocation){
 									this.groupChild[i].groupId = i;
 				}			
 		}
+}
+PropGroup.prototype.order= function(newOrderArr){ 
+
+	var htmlLink = this.htmlLink;
+	
+
+	if(newOrderArr.length != this.groupChild.length){
+		
+		console.log("в массиве newOrderArr, должно быть столько же элементов сколько и в массиве this.groupChild");
+		return;
+		
+	}	
+	var newData = [];
+	
+	for(var i=0; i<newOrderArr.length; i++){
+		
+		newData.push(this.groupChild[newOrderArr[i]]);
+	}
+	this.groupChild = newData;
+	htmlLink.innerHTML = "";
+	
+	for(var k=0; k< this.groupChild.length; k++){
+		
+		htmlLink.appendChild(this.groupChild[k].htmlLink);
+		
+		this.groupChild[k].groupId = k;
+	}
 }
 
 PropGroup.prototype.initGroup = function(containerName, propName){

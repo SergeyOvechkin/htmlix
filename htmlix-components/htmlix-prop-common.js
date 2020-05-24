@@ -37,7 +37,11 @@ function constructorProps(htmlLink, keyData1, keyData2, eventMethod, pathToConta
 		
 		return new PropGroup(htmlLink, propType, keyData1, keyData2, pathToContainer, parentContainer, rootLink, newProps);
 				
-	}else   if(eventMethod != undefined && isEmiter(propType, rootLink) != false  ){
+	}else if(propType == "group-mix"){
+		
+		return new PropGroupMix(htmlLink, propType, keyData1, keyData2, pathToContainer, parentContainer, rootLink, newProps);
+				
+	}else  if(eventMethod != undefined && isEmiter(propType, rootLink) != false  ){
 	  
 		return new PropEventEmiter(htmlLink, propType, keyData2, eventMethod, pathToContainer, parentContainer, rootLink);
 	 
