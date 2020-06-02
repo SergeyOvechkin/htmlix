@@ -1555,9 +1555,8 @@ function HTMLixState(StateMap) {
     } else {
       console.log("erorr - неправильно указан тип для контейнера либо массива " + key);
     }
-  }
+  } // console.log("source-map");		
 
-  console.log("source-map");
 }
 
 HTMLixState.prototype.containerInit = function (node, StateMap, key) {
@@ -1815,13 +1814,14 @@ HTMLixState.prototype.clearContainerProps = function (stateNameProp, index, widt
     } else if (widthChild != undefined && widthChild == true && container.props[key].renderChild != undefined && container.props[key].renderChild.renderType == "container-inner") {
       container.props[key].renderChild.remove(true);
     } else if (widthChild != undefined && widthChild == true && container.props[key].groupChild != undefined && container.props[key].groupChild.length > 0) {
-      var indexesArr = [];
-
-      for (var it = 0; it < container.props[key].groupChild.length; it++) {
-        indexesArr.push(container.props[key].groupChild[it].index);
+      container.props[key].clearGroup();
+      /*
+            var indexesArr = [];						
+      for(var it =0; it < container.props[key].groupChild.length; it++){
+      indexesArr.push(container.props[key].groupChild[it].index);
       }
-
-      this.removeByIndexes(container.props[key].groupChild[0].pathToCоmponent, indexesArr, true);
+      this.removeByIndexes(container.props[key].groupChild[0].pathToCоmponent,  indexesArr, true);
+      */
     }
   }
 };

@@ -104,7 +104,7 @@ function HTMLixState(StateMap){
 				}	
 	    }
 
-   console.log("source-map");		
+  // console.log("source-map");		
 }
 
 HTMLixState.prototype.containerInit = function(node, StateMap, key){
@@ -471,12 +471,17 @@ HTMLixState.prototype.clearContainerProps = function(stateNameProp, index, width
 												container.props[key].renderChild.remove(true);
 					}
 					else if(widthChild != undefined && widthChild == true && container.props[key].groupChild != undefined && container.props[key].groupChild.length > 0){
-
+													
+							container.props[key].clearGroup();
+				
+                    /*
 						                    var indexesArr = [];						
 					for(var it =0; it < container.props[key].groupChild.length; it++){
 						indexesArr.push(container.props[key].groupChild[it].index);
 					}
-					this.removeByIndexes(container.props[key].groupChild[0].pathToCоmponent,  indexesArr, true);				
+					this.removeByIndexes(container.props[key].groupChild[0].pathToCоmponent,  indexesArr, true);
+
+							*/
 				}
 			}
 }	
