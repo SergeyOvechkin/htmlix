@@ -129,3 +129,8 @@ PropStandartEvent.prototype.enableEvent = function(value){
 				console.log("обработчика с таким событием не найдено");
 	}
 }
+PropStandartEvent.prototype.emitEvent = function(eventName){
+	
+	this.events[eventName]()
+	
+}

@@ -241,7 +241,7 @@ PropCommon.prototype.removeProp = function(value) {
 	
 	}else if(this.isAttr(this.type) != false){
 
-				this.htmlLink.setAttribute(this.isAttr(this.type), "");
+				this.htmlLink.removeAttribute(this.isAttr(this.type));
 				return;
 
 	}	

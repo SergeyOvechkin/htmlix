@@ -563,7 +563,7 @@ PropCommon.prototype.removeProp = function (value) {
     this.htmlLink.dataset[this.parent.name + this.rootLink.parent.capitalizeFirstLetter(this.propName)] = "";
     return;
   } else if (this.isAttr(this.type) != false) {
-    this.htmlLink.setAttribute(this.isAttr(this.type), "");
+    this.htmlLink.removeAttribute(this.isAttr(this.type));
     return;
   }
 };
@@ -1253,6 +1253,10 @@ PropStandartEvent.prototype.enableEvent = function (value) {
     console.log("обработчика с таким событием не найдено");
   }
 };
+
+PropStandartEvent.prototype.emitEvent = function (eventName) {
+  this.events[eventName]();
+};
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function PropVariant(htmlLink, propType, propName, pathToComponent, parentComponent, rootLink, newProps) {
@@ -1570,7 +1574,7 @@ HTMLixState.prototype.containerInit = function (node, StateMap, key) {
 HTMLixState.prototype.arrayInit = function (node, StateMap, key) {
   if (this.state[key] != undefined) return;
   if (node == null) node = document.querySelector('[data-' + key + ']');
-  if (node == null || node == undefined) console.log("error в html разметке не найден контейнер " + key);
+  if (node == null || node == undefined) console.log("error в html разметке не найден массив " + key);
   var lengthChildren = node.children.length;
   if (StateMap[key].container == undefined) console.log("error- забыли указать контейнер для массива " + key);
   var containerHTML = node.querySelectorAll('[data-' + StateMap[key].container + ']');

@@ -122,7 +122,7 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 
 	       			if(this.state[key] != undefined)return;
 			if(node == null)node = document.querySelector('[data-'+key+']');
-            if(node == null || node == undefined)console.log("error в html разметке не найден контейнер "+key);	
+            if(node == null || node == undefined)console.log("error в html разметке не найден массив "+key);	
 			
 
 									var lengthChildren = node.children.length; 
@@ -408,8 +408,6 @@ HTMLixState.prototype.removeAll = function(stateNameProp, widthChild){
 	this.state[stateNameProp].data = [];
 
 }
-
-
 
 HTMLixState.prototype.removeByIndex = function(stateNameProp, index, widthChild){
 
