@@ -302,7 +302,7 @@ function HTMLixRouter(state, routes){
 
 
 
-function EventEmiter(eventName, prop, listeners, listenersEventMethods){
+function EventEmiter(eventName, prop, listeners, listenersEventMethods, behavior, rootLink){
 
 		this.listeners = listeners;
 	this.listenersEventMethods =  listenersEventMethods;
@@ -310,9 +310,15 @@ function EventEmiter(eventName, prop, listeners, listenersEventMethods){
 		this.event  = new Event(eventName);
 	this.type = eventName;
 	this.prop = prop;
+	this.behavior = null;
+	this.rootLink = null;
+	if(behavior != undefined){
+		this.behavior = behavior.bind(this);
+		this.rootLink = rootLink;
+	}
 
 
-		}
+}
 
 EventEmiter.prototype.addListener = function(htmlLinkToListener, eventMethod, eventName, nameListener){
 
@@ -341,6 +347,13 @@ EventEmiter.prototype.removeListener = function(htmlLinkToListener){
 }
 
 EventEmiter.prototype.emit = function(){
+	
+	    if(this.behavior != null){
+			
+			var isEmit = this.behavior();
+			
+			if(isEmit == false)return;
+		}
 
 		for(key in  this.listeners){
 

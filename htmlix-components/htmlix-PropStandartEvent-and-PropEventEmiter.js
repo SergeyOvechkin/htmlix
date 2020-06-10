@@ -7,11 +7,12 @@ function PropEventEmiter(htmlLink, propType, propName, eventMethod, pathToCompon
 	
 	 this.emiterKey = "";
 	 this.emiter = "";
+	 this.eventMethod = eventMethod.bind(this);
 	
 	
 	  this.emiterKey = "key"+Math.floor(Math.random()*89999+10000);
 	  this.emiter = this.rootLink.eventProps[this.type];
-	  this.rootLink.eventProps[this.type].addListener(htmlLink, eventMethod.bind(this), this.type, this.emiterKey);
+	  this.rootLink.eventProps[this.type].addListener(htmlLink, this.eventMethod, this.type, this.emiterKey);
 }
 PropEventEmiter.prototype = Object.create(PropSubtype.prototype);
 
@@ -32,6 +33,30 @@ PropEventEmiter.prototype.removeProp= function(){
 	
 	return false;
 }
+PropEventEmiter.prototype.disableEvent= function(){
+	
+
+		if(this[this.type+'-disable'] != undefined){
+
+			return;
+		}
+
+		this[this.type+'-disable'] = true;
+
+				this.emiter.removeListener(this.htmlLink);
+
+}
+PropEventEmiter.prototype.enableEvent = function(){
+
+		if(this[this.type+'-disable'] == undefined){
+
+			return;
+		}
+		delete this[this.type+'-disable'];
+
+		this.emiter.addListener(this.htmlLink, this.eventMethod, this.type, this.emiterKey);
+}
+
 /*PropEventEmiter.prototype.component = function(){
 
 	return this.rootLink.state[this.pathToCоmponent];

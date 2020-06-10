@@ -10,8 +10,16 @@ function HTMLixState(StateMap){
 		if(StateMap.eventEmiters != undefined){
 
 			     for (var key in StateMap.eventEmiters){ 
-
-   		    this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {});
+             if(StateMap.eventEmiters[key].behavior != undefined){
+				 
+				 this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {}, StateMap.eventEmiters[key].behavior, this);
+				 
+			 }else{
+				 
+				 this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {} );
+				 
+			 }
+   		    
 
 		 }
 	}		
