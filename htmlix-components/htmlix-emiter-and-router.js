@@ -193,6 +193,8 @@ function HTMLixRouter(state, routes){
 
 				matchRout: findComponent,
 				
+				countError: 0,
+				
 				findRouters: function(nameArrComp){
 					
 					if(nameArrComp == undefined){
@@ -218,7 +220,14 @@ function HTMLixRouter(state, routes){
 						if(this.component[key2] == undefined){
 							var component = this.rootLink.state[key2];
 							this.component[key2] = component;
-							if(component == undefined)console.log("router error - не удается найти компонент "+key2+" в описании приложения, проверьте правильность написания ключей в параметре routes для HTMLixRouter");
+							if(component == undefined){
+								
+								var messPart = "warn не удалось найти компонент "+key2+" в описании приложения;";
+								if(this.countError > 0)messPart = "router error - не удается найти компонент "+key2+" в описании приложения, проверьте правильность написания ключей в параметре routes для HTMLixRouter";
+							    console.log(messPart);
+								
+								this.countError = this.countError+1;
+							}
 							//console.log(key);
 						}
 						

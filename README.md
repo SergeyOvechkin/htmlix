@@ -582,6 +582,29 @@ var StateMap = {
 получить новые данные в слушателе события можно с помощью this.emiter.prop или this.emiter.getEventProp();
 * `.getEventProp()` - получает данные пользовательского события;
 
+* `behavior()` метод добавляется к эмитеру событий, если возвращает false событие не будет вызвано, пример использования:
+
+```
+  eventEmiters: { 
+
+ //событие для смены типа навигации
+
+		["emiter-navigation-type"] : {
+			prop: "",
+			
+			behavior: function(){
+				//если ширина экрана меньше 600 px событие не сработает
+				if(window.innerWidth < 600 && this.prop == "top-menu")return false;
+				
+				this.rootLink.stateProperties.NAVIGATION_TYPE = this.prop;				
+				return true;
+			}
+			
+		},
+},
+
+```
+
 
 Слушателями пользовательских событий могут быть, как свойства Prop контейнера Container, так и свойства Массива Array;
 
@@ -806,13 +829,19 @@ window.onload = function(){
 
 Для свойств с типом "group" и "render-variant" - смотреть ниже;
 
-# Отключение и включение обработчиков стандартных событий:
+# Дополнительные методы для свойств - событий:
 
 Для свойст являющихся стандартными событиями есть два дополнительных метода:
 
 * `this.disableEvent(eventName)` - временно отключить событие eventName на данном свойстве;
 
 * `this.enableEvent(eventName)` - включает отключенное событие;
+
+Для пользовательских событий:
+
+* `this.disableEvent()` - временно отключить прослушивание пользовательского события на данном свойстве;
+
+* `this.enableEvent()` - включает отключенное событие;
 
 # Виртуальный массив
 
@@ -1531,6 +1560,99 @@ window.setTimeout( function(){
 
 ```
 * <a href="https://github.com/SergeyOvechkin/tests/tree/master/group-variant"> рабочий пример кода выше </a>
+
+# Наследование компонентов
+
+
+Для наследования свойств контейнера другим контейнером необходимо указать поле  `container_extend`: "`имя_наследуемого_компонента`". В родительском компоненте также можно указать поле `share_props`: numb, где numb - число свойств массива props (счет идет с начала массива), которые позволяет наследовать родительский контейнер.
+
+Пример использования: 
+
+1. Создадим html разметку двух контейнеров: 
+```
+
+			<div data-test_container="container" class="card col-3" style="color: red;">
+			
+				<p  data-test_container-main_text="text">контейнер первый</p>
+				
+				
+				<button data-test_container-click="click">click </button>
+			</div>
+		
+		
+		   <div data-test_container_2="container" class="card col-3" style="color: red; margin-top: 10px;">
+			
+				<p  data-test_container_2-main_text="text">контейнер второй</p>
+				
+				<p  data-test_container_2-text2="text">click there...</p>
+				
+				<button data-test_container_2-click="click">click </button>
+			</div>
+
+```
+В html разметке второго контейнера, который наследует свойства первого, должны быть все наследуемые свойства первого контейнера с такими-же именами.
+
+2. Далее создадим описание приложения:
+```
+var StateMap = {
+	
+	test_container: {
+		
+		container: "test_container",
+		
+		/// share_props - разрешает унаследовать только первые два свойства "main_text" и "click"
+		///если не указать то можно будет унаследовать все свойства
+		share_props: 2,
+		props: [ "main_text", ["click", "click", "button:first-of-type"], ["hover", "mouseover", ""] ],
+		methods: {
+			
+			click: function(){
+				
+				var text = this.parent.props.main_text.getProp();
+				
+				this.parent.props.main_text.setProp(text + " 1");
+				
+			},
+			hover: function(){ //это свойство наследоваться не будет так как его номер в массиве = 3, а мы наследуем только первые два
+				
+				var text = this.parent.props.main_text.getProp();
+				
+				this.parent.props.main_text.setProp(text + " 2");
+				
+			}
+		},		
+	},
+	test_container_2: {
+		
+		container: "test_container_2",
+		
+		///наследует свойства контейнера - компонента test_container, 
+		//здесь указывается имя компонента из контейнера которого будут унаследованы свойства, 
+		//если бы это был контейнер из виртуального или обычного массива, нужно указать имя массива
+		container_extend: "test_container",
+		
+		///и добавляет два своих "text2", ['click2'
+		props: ["text2", ['click2', "click", "[data-test_container_2-text2='text']"] ],
+		methods: {
+			
+			click2: function(){
+				
+				var text2 = this.parent.props.text2.getProp();
+				
+				this.parent.props.text2.setProp(text2 + " 2");			
+				
+				
+			}
+
+		},		
+	},
+	
+
+}
+
+```
+
+Итак в примере выше мы унаследовали два первых свойства: "main_text"  и "click" из контейнера `test_container` и добавили два новых: "text2" и'click2.
 
 
 

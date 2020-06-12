@@ -375,6 +375,7 @@ function HTMLixRouter(state, routes) {
     htmlLink: {},
     component: {},
     matchRout: findComponent,
+    countError: 0,
     findRouters: function findRouters(nameArrComp) {
       if (nameArrComp == undefined) {
         nameArrComp = this.matchRout(this.routes);
@@ -391,7 +392,14 @@ function HTMLixRouter(state, routes) {
         if (this.component[key2] == undefined) {
           var component = this.rootLink.state[key2];
           this.component[key2] = component;
-          if (component == undefined) console.log("router error - не удается найти компонент " + key2 + " в описании приложения, проверьте правильность написания ключей в параметре routes для HTMLixRouter"); //console.log(key);
+
+          if (component == undefined) {
+            var messPart = "warn не удалось найти компонент " + key2 + " в описании приложения;";
+            if (this.countError > 0) messPart = "router error - не удается найти компонент " + key2 + " в описании приложения, проверьте правильность написания ключей в параметре routes для HTMLixRouter";
+            console.log(messPart);
+            this.countError = this.countError + 1;
+          } //console.log(key);
+
         }
 
         if (this.htmlLink[key] == undefined || this.htmlLink[key] == null) this.htmlLink[key] = document.querySelector("[data-" + key + "]"); //console.log(this.htmlLink[key]);
