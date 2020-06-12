@@ -1640,9 +1640,9 @@ var StateMap = {
 			
 			click2: function(){
 				
-				var text2 = this.parent.props.text2.getProp();
+				var text = this.parent.props.main_text.getProp(); ///обращаемся в новом методе к свойству main_text которое унаследовали от контейнера test_container
 				
-				this.parent.props.text2.setProp(text2 + " 2");			
+				this.parent.props.main_text.setProp(text + " 2");		
 				
 				
 			}
