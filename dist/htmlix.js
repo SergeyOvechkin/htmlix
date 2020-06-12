@@ -8,10 +8,11 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector) {
 
   if (this.renderType == "virtual-array") {
     var thisArrDesc = this.rootLink.description.virtualArrayComponents[this.pathToComponent];
-    var parentContainerName = this.rootLink.description.virtualArrayComponents[this.pathToComponent].container_extend;
+    var parentContainerName = thisArrDesc.container_extend;
   } else {
     var thisArrDesc = this.rootLink.description[this.pathToComponent];
-    var parentContainerName = this.rootLink.description[this.pathToComponent].container_extend;
+    if (thisArrDesc == undefined) thisArrDesc = this.rootLink.description.fetchComponents[this.pathToComponent];
+    var parentContainerName = thisArrDesc.container_extend;
   }
 
   if (parentContainerName != undefined) {
