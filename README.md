@@ -1569,7 +1569,8 @@ window.setTimeout( function(){
 Пример использования: 
 
 1. Создадим html разметку двух контейнеров: 
-```
+
+```html
 
 			<div data-test_container="container" class="card col-3" style="color: red;">
 			
@@ -1593,7 +1594,9 @@ window.setTimeout( function(){
 В html разметке второго контейнера, который наследует свойства первого, должны быть все наследуемые свойства первого контейнера с такими-же именами.
 
 2. Далее создадим описание приложения:
-```
+
+```javascript
+
 var StateMap = {
 	
 	test_container: {
