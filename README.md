@@ -1606,7 +1606,7 @@ var StateMap = {
 		/// share_props - разрешает унаследовать только первые два свойства "main_text" и "click"
 		///если не указать то можно будет унаследовать все свойства
 		share_props: 2,
-		props: [ "main_text", ["click", "click", "button:first-of-type"], ["hover", "mouseover", ""] ],
+		props: [ "main_text", "click", ["hover", "mouseover", ""] ],
 		methods: {
 			
 			click: function(){
