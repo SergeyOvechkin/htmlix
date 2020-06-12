@@ -8,6 +8,44 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
   this.type =  "container";
   this.renderType =  "container-outer";
   if(pathToContainer != containerName)this.renderType = "container-inner";
+  
+  ///container_extend
+  if(this.renderType ==  "container-outer"){  
+	 // console.log("1");
+	 var parentContainerName = this.rootLink.description[this.pathToCоmponent].container_extend;
+	  
+	  	  if(parentContainerName != undefined){
+           
+          ///описание наследуемого компонента		   
+		  var parCont = this.rootLink.description[parentContainerName];
+		   if(parCont == undefined &&  this.rootLink.description.virtualArrayComponents != undefined){
+			   
+			   parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
+			   
+		   }
+		   if(parCont == undefined)console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
+			 
+		   var shareProps = parCont.props;
+		
+		
+		  if(parCont.share_props != undefined){
+			  		  
+			  shareProps = shareProps.slice(0, parCont.share_props);
+		  }
+		  for(var u =0; u < shareProps.length; u++){
+			  
+			  var keyProp = shareProps[u];
+			  if(typeof keyProp == "object")keyProp = shareProps[u][0];
+			  
+			  if(parCont.methods[keyProp] != undefined){
+				  
+				 methods[keyProp] = parCont.methods[keyProp];
+			  }
+		  }		  
+		  props = shareProps.concat(props);
+	  }
+  }
+  
 
   if(props == undefined)props = [];
   for(var i2 = 0; i2 < props.length; i2++){

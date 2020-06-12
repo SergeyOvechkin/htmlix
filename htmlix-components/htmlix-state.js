@@ -120,8 +120,6 @@ HTMLixState.prototype.containerInit = function(node, StateMap, key){
 		if(this.state[key] != undefined)return;
 	if(node == null)node = document.querySelector('[data-'+key+']');
     if(node == null || node == undefined)console.log("error в html разметке не найден контейнер "+key);	
-
-
 	if(StateMap[key]== undefined)console.log("error- проверьте корректность parent ключей в html - коде");
 	this.state[key] = new Container(node, key,  StateMap[key].props, StateMap[key].methods, null, key, this);
 

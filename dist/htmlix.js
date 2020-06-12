@@ -4,7 +4,42 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector) {
   this.htmlLink = node, this.data = [], this.rootLink = rootLink, this.pathToComponent = pathToComponent, this.type = "array", this.templateData = containerHTML.cloneNode(true),
   /*this.id = null, */
   this.index = null, this.renderType = "array", this.selector = selector;
-  if (node == "virtual-array") this.renderType = "virtual-array";
+  if (node == "virtual-array") this.renderType = "virtual-array"; ///container_extend
+
+  if (this.renderType == "virtual-array") {
+    var thisArrDesc = this.rootLink.description.virtualArrayComponents[this.pathToComponent];
+    var parentContainerName = this.rootLink.description.virtualArrayComponents[this.pathToComponent].container_extend;
+  } else {
+    var thisArrDesc = this.rootLink.description[this.pathToComponent];
+    var parentContainerName = this.rootLink.description[this.pathToComponent].container_extend;
+  }
+
+  if (parentContainerName != undefined) {
+    ///описание наследуемого компонента		   
+    var parCont = this.rootLink.description[parentContainerName];
+
+    if (parCont == undefined && this.rootLink.description.virtualArrayComponents != undefined) {
+      parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
+    }
+
+    if (parCont == undefined) console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
+    var shareProps = parCont.props;
+
+    if (parCont.share_props != undefined) {
+      shareProps = shareProps.slice(0, parCont.share_props);
+    }
+
+    for (var u = 0; u < shareProps.length; u++) {
+      var keyProp = shareProps[u];
+      if (_typeof(keyProp) == "object") keyProp = shareProps[u][0];
+
+      if (parCont.methods[keyProp] != undefined) {
+        thisArrDesc.methods[keyProp] = parCont.methods[keyProp];
+      }
+    }
+
+    thisArrDesc.props = shareProps.concat(thisArrDesc.props);
+  }
 }
 
 HTMLixArray.prototype.add = function (props, insertLocation) {
@@ -69,6 +104,8 @@ HTMLixArray.prototype.getAll = function (map_Object) {
 HTMLixArray.prototype.order = function (newOrderArr) {
   this.rootLink.changeOrder(this.pathToComponent, newOrderArr);
 };
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function Container(htmlLink, containerName, props, methods, index, pathToContainer, rootLink, isRunonCreatedContainer, newProps) {
   this.htmlLink = htmlLink;
   this.rootLink = rootLink;
@@ -78,7 +115,40 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
   this.name = containerName;
   this.type = "container";
   this.renderType = "container-outer";
-  if (pathToContainer != containerName) this.renderType = "container-inner";
+  if (pathToContainer != containerName) this.renderType = "container-inner"; ///container_extend
+
+  if (this.renderType == "container-outer") {
+    // console.log("1");
+    var parentContainerName = this.rootLink.description[this.pathToCоmponent].container_extend;
+
+    if (parentContainerName != undefined) {
+      ///описание наследуемого компонента		   
+      var parCont = this.rootLink.description[parentContainerName];
+
+      if (parCont == undefined && this.rootLink.description.virtualArrayComponents != undefined) {
+        parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
+      }
+
+      if (parCont == undefined) console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
+      var shareProps = parCont.props;
+
+      if (parCont.share_props != undefined) {
+        shareProps = shareProps.slice(0, parCont.share_props);
+      }
+
+      for (var u = 0; u < shareProps.length; u++) {
+        var keyProp = shareProps[u];
+        if (_typeof(keyProp) == "object") keyProp = shareProps[u][0];
+
+        if (parCont.methods[keyProp] != undefined) {
+          methods[keyProp] = parCont.methods[keyProp];
+        }
+      }
+
+      props = shareProps.concat(props);
+    }
+  }
+
   if (props == undefined) props = [];
 
   for (var i2 = 0; i2 < props.length; i2++) {

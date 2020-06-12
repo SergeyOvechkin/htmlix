@@ -13,6 +13,51 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector){
 			this.selector = selector
 			
 			if(node == "virtual-array")this.renderType = "virtual-array";
+			
+  ///container_extend
+ 
+	if(this.renderType == "virtual-array"){
+		 var thisArrDesc = this.rootLink.description.virtualArrayComponents[this.pathToComponent];
+		 var parentContainerName = this.rootLink.description.virtualArrayComponents[this.pathToComponent].container_extend;
+	}else{
+		var thisArrDesc = this.rootLink.description[this.pathToComponent];
+		var parentContainerName = this.rootLink.description[this.pathToComponent].container_extend;
+	}
+	
+	  
+	  if(parentContainerName != undefined){
+           
+          ///описание наследуемого компонента		   
+		  var parCont = this.rootLink.description[parentContainerName];
+		   if(parCont == undefined &&  this.rootLink.description.virtualArrayComponents != undefined){
+			   
+			   parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
+			   
+		   }
+		   if(parCont == undefined)console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
+			 
+		   var shareProps = parCont.props;
+		
+		
+		  if(parCont.share_props != undefined){
+			  		  
+			  shareProps = shareProps.slice(0, parCont.share_props);
+		  }
+		  for(var u =0; u < shareProps.length; u++){
+			  
+			  var keyProp = shareProps[u];
+			  if(typeof keyProp == "object")keyProp = shareProps[u][0];
+			  
+			  if(parCont.methods[keyProp] != undefined){
+				  
+				 thisArrDesc.methods[keyProp] = parCont.methods[keyProp];
+			  }
+		  }		  
+		  thisArrDesc.props = shareProps.concat(thisArrDesc.props);
+	  }
+  			
+			
+			
 
 		}
 HTMLixArray.prototype.add = function(props, insertLocation){
