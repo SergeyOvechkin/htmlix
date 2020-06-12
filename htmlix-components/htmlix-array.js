@@ -33,6 +33,9 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector){
 			   
 			   parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
 			   
+		   }else if(parCont == undefined &&  this.rootLink.description.fetchComponents != undefined){
+			   
+			   parCont = this.rootLink.description.fetchComponents[parentContainerName];
 		   }
 		   if(parCont == undefined)console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
 			 

@@ -20,6 +20,8 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector) {
 
     if (parCont == undefined && this.rootLink.description.virtualArrayComponents != undefined) {
       parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
+    } else if (parCont == undefined && this.rootLink.description.fetchComponents != undefined) {
+      parCont = this.rootLink.description.fetchComponents[parentContainerName];
     }
 
     if (parCont == undefined) console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
@@ -118,8 +120,10 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
   if (pathToContainer != containerName) this.renderType = "container-inner"; ///container_extend
 
   if (this.renderType == "container-outer") {
-    // console.log("1");
-    var parentContainerName = this.rootLink.description[this.pathToCоmponent].container_extend;
+    var thisCont = this.rootLink.description[this.pathToCоmponent];
+    if (thisCont == undefined) thisCont = this.rootLink.description.fetchComponents[this.pathToCоmponent]; // console.log("1");
+
+    var parentContainerName = thisCont.container_extend;
 
     if (parentContainerName != undefined) {
       ///описание наследуемого компонента		   
@@ -127,6 +131,8 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
 
       if (parCont == undefined && this.rootLink.description.virtualArrayComponents != undefined) {
         parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
+      } else if (parCont == undefined && this.rootLink.description.fetchComponents != undefined) {
+        parCont = this.rootLink.description.fetchComponents[parentContainerName];
       }
 
       if (parCont == undefined) console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
