@@ -35,13 +35,20 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector) {
     for (var u = 0; u < shareProps.length; u++) {
       var keyProp = shareProps[u];
       if (_typeof(keyProp) == "object") keyProp = shareProps[u][0];
+      var isPersist = false;
+      thisArrDesc.props.forEach(function (prop) {
+        var findProp = prop;
+        if (_typeof(findProp) == "object") findProp = findProp[0];
+        if (findProp == keyProp) isPersist = true;
+      });
+      if (isPersist) continue;
+      thisArrDesc.props.push(shareProps[u]);
 
       if (parCont.methods[keyProp] != undefined) {
         thisArrDesc.methods[keyProp] = parCont.methods[keyProp];
       }
-    }
+    } //thisArrDesc.props = shareProps.concat(thisArrDesc.props);
 
-    thisArrDesc.props = shareProps.concat(thisArrDesc.props);
   }
 }
 
@@ -146,13 +153,20 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
       for (var u = 0; u < shareProps.length; u++) {
         var keyProp = shareProps[u];
         if (_typeof(keyProp) == "object") keyProp = shareProps[u][0];
+        var isPersist = false;
+        props.forEach(function (prop) {
+          var findProp = prop;
+          if (_typeof(findProp) == "object") findProp = prop[0];
+          if (findProp == keyProp) isPersist = true;
+        });
+        if (isPersist) continue;
+        props.push(shareProps[u]);
 
         if (parCont.methods[keyProp] != undefined) {
           methods[keyProp] = parCont.methods[keyProp];
         }
-      }
+      } //props = shareProps.concat(props);
 
-      props = shareProps.concat(props);
     }
   }
 

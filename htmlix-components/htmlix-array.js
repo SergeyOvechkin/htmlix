@@ -24,8 +24,7 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector){
 		if(thisArrDesc == undefined)thisArrDesc = this.rootLink.description.fetchComponents[this.pathToComponent];
 		var parentContainerName = thisArrDesc.container_extend;
 	}
-	
-	  
+		  
 	  if(parentContainerName != undefined){
            
           ///описание наследуемого компонента		   
@@ -52,18 +51,26 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector){
 			  var keyProp = shareProps[u];
 			  if(typeof keyProp == "object")keyProp = shareProps[u][0];
 			  
+			  var isPersist = false;
+			  
+			  thisArrDesc.props.forEach((prop)=>{ 			  
+			             var findProp = prop;						
+						if(typeof findProp == "object")findProp = findProp[0];
+						if(findProp == keyProp)isPersist = true;						
+			  });
+			  
+			  if(isPersist)continue
+			  
+			  thisArrDesc.props.push(shareProps[u]);
+			  
 			  if(parCont.methods[keyProp] != undefined){
 				  
 				 thisArrDesc.methods[keyProp] = parCont.methods[keyProp];
 			  }
 		  }		  
-		  thisArrDesc.props = shareProps.concat(thisArrDesc.props);
+		  //thisArrDesc.props = shareProps.concat(thisArrDesc.props);
 	  }
-  			
-			
-			
-
-		}
+}
 HTMLixArray.prototype.add = function(props, insertLocation){
 		
 		var container = this.rootLink.addContainer(this.pathToComponent, props, insertLocation);

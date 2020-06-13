@@ -30,7 +30,7 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 			   parCont = this.rootLink.description.fetchComponents[parentContainerName];
 		   }
 		   if(parCont == undefined)console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
-			 
+		   		 
 		   var shareProps = parCont.props;
 		
 		
@@ -43,12 +43,25 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 			  var keyProp = shareProps[u];
 			  if(typeof keyProp == "object")keyProp = shareProps[u][0];
 			  
-			  if(parCont.methods[keyProp] != undefined){
+			  var isPersist = false;
+			  
+			  props.forEach((prop)=>{ 			  
+			             var findProp = prop;						
+						if(typeof findProp == "object")findProp = prop[0];
+						if(findProp == keyProp)isPersist = true;
+                        					
+			  });
+			  if(isPersist)continue
+			  
+			  props.push(shareProps[u]);
+			  			  
+			  if(parCont.methods[keyProp] != undefined){			
 				  
-				 methods[keyProp] = parCont.methods[keyProp];
+					methods[keyProp] = parCont.methods[keyProp]; 
+						
 			  }
 		  }		  
-		  props = shareProps.concat(props);
+		  //props = shareProps.concat(props);
 	  }
   }
   
