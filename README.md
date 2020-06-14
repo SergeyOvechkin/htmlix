@@ -1801,6 +1801,74 @@ var routes = {
 
 * `templatePath` - путь к файлу с шаблонами для компонентов, шаблонов которых нет на данном адресе url. Используется при первой загрузке приложения.
 
+# Загрузка шаблонов из .js файла - templateVar
+
+Первый способ подключения недостающих шаблонов это использовать fetchComponents при данном способе сначала создаются те компоненты которые есть в разметке, отданной сервером, а остальные асинхронно, после дозагрузки шаблонов.
+
+Второй способ это поместить шаблоны в .js файл например template.js, подключить его в index.html и указать в настройках:
+
+файл - index.html :
+
+```
+ <!--------------------->
+<script src="./template.js"></script>
+
+```
+
+Настройки StateMap:
+
+```
+ stateSettings :{
+   templateVar: template,  ///название переменной из файла template.js
+}   
+
+```
+
+Сам файл template.js :
+
+```
+
+var template = `
+                      <!--- контейнер variant_cont_2 ------------>
+					  <div data-variant_cont_2="container" style="border: 1px solid green;">
+						<p data-variant_cont_2-text="text" data-variant_cont_2-style="style" style="color: green;" > текст варианта 2 </p>
+						<p data-variant_cont_2-text2="text"  > дополнительный текст варианта 2 </p>
+					  </div>
+				     
+					 <!--- контейнер variant_cont_3 из виртуального массива variant_arr_3 ------------>
+					 <div data-variant_cont_3="container" style="border: 1px solid green;">
+						<p data-variant_cont_3-text="text" data-variant_cont_3-style="style" style="color: green;" > текст варианта 3 </p>						
+					 </div>
+					  
+				`;
+
+```
+Теперь все компоненты будут созданы синхронно.
+
+
+Если в приложении используется роутер то поля first и templatePath можно не указывать, т. к. они не будут использованы, например:
+
+```
+var routes = {
+	
+	 ["/"]:  { 
+	           routComponent: {
+			
+					router_main: "home",   //компоненты соответствующие данному роуту
+			
+				},
+	          },
+	
+	["/"+SITE_NAME+"/"]:  {  
+	           routComponent: {
+			
+					router_main: "home",   //компоненты соответствующие данному роуту
+			
+				},
+	}
+
+
+```
 
 
 

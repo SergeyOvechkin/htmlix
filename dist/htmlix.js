@@ -264,7 +264,10 @@ Container.prototype.component = function () {
   return this.rootLink.state[this.pathToCоmponent];
 };
 function HTMLixRouter(state, routes) {
-  var namePathInRoutes = findComponent(routes); //поиск соответствующего роута
+  var namePathInRoutes = "";
+  var _templateVar = false;
+  if (state.stateSettings != undefined && state.stateSettings.templateVar != undefined) _templateVar = true;
+  if (!_templateVar) namePathInRoutes = findComponent(routes); //поиск соответствующего роута
 
   function findComponent(routes) {
     var urlPath = window.location.pathname; //console.log(urlPath);
@@ -357,29 +360,33 @@ function HTMLixRouter(state, routes) {
   } //поиск шаблона
 
 
-  if (routes[namePathInRoutes] != undefined && routes[namePathInRoutes].templatePath != undefined) {
-    if (state.stateSettings == undefined) state.stateSettings = {};
-    state.stateSettings.templatePath = routes[namePathInRoutes].templatePath;
-  } else {
-    console.log("router error- маршрут не найден убедитесь в правильности запроса");
+  if (!_templateVar) {
+    if (routes[namePathInRoutes] != undefined && routes[namePathInRoutes].templatePath != undefined) {
+      if (state.stateSettings == undefined) state.stateSettings = {};
+      state.stateSettings.templatePath = routes[namePathInRoutes].templatePath;
+    } else {
+      console.log("router error- маршрут не найден убедитесь в правильности запроса");
+    }
   } ///изменение структуры state для загрузки шаблонов для других страниц в fetch запросе
 
 
-  for (var key2 in state) {
-    var toCare = true;
+  if (!_templateVar) {
+    for (var key2 in state) {
+      var toCare = true;
 
-    for (var t = 0; t < routes[namePathInRoutes].first.length; t++) {
-      if (key2 == routes[namePathInRoutes].first[t] || key2 == "stateSettings" || key2 == "stateMethods" || key2 == 'stateProperties' || key2 == "eventEmiters" || key2 == 'virtualArrayComponents' || key2 == "fetchComponents"
-      /* ||  key2 ==  'firstInitComponents' */
-      ) {
-          toCare = false;
-        }
-    }
+      for (var t = 0; t < routes[namePathInRoutes].first.length; t++) {
+        if (key2 == routes[namePathInRoutes].first[t] || key2 == "stateSettings" || key2 == "stateMethods" || key2 == 'stateProperties' || key2 == "eventEmiters" || key2 == 'virtualArrayComponents' || key2 == "fetchComponents"
+        /* ||  key2 ==  'firstInitComponents' */
+        ) {
+            toCare = false;
+          }
+      }
 
-    if (toCare) {
-      if (state['fetchComponents'] == undefined) state['fetchComponents'] = {};
-      state['fetchComponents'][key2] = state[key2];
-      delete state[key2];
+      if (toCare) {
+        if (state['fetchComponents'] == undefined) state['fetchComponents'] = {};
+        state['fetchComponents'][key2] = state[key2];
+        delete state[key2];
+      }
     }
   }
 
@@ -1611,6 +1618,7 @@ PropVariant.prototype.initRenderVariant = function () {
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function HTMLixState(StateMap) {
+  var _templateVarDOM = false;
   this.description = StateMap;
   this.state = {};
   this.eventProps = {};
@@ -1627,9 +1635,13 @@ function HTMLixState(StateMap) {
     }
   }
 
+  if (StateMap.stateSettings != undefined) {
+    this.stateSettings = StateMap.stateSettings;
+  }
+
   for (var key in StateMap) {
     if (key == "stateSettings") {
-      this.stateSettings = StateMap[key];
+      //this.stateSettings = StateMap[key];
       continue;
     }
 
@@ -1677,10 +1689,30 @@ function HTMLixState(StateMap) {
     initStandartComponents(this, StateMap, key);
   }
 
+  if (this.stateSettings != undefined && this.stateSettings.templateVar != undefined) {
+    if (_templateVarDOM == false) {
+      _templateVarDOM = document.createElement('div');
+      _templateVarDOM.innerHTML = this.stateSettings.templateVar;
+    }
+
+    this.verifiTemplateVarComponents(_templateVarDOM);
+  }
+
   function initStandartComponents(context, StateMap, key) {
     var node = document.querySelector('[data-' + key + ']');
 
-    if (node == undefined) {
+    if (node == null || node == undefined) {
+      if (context.stateSettings != undefined && context.stateSettings.templateVar != undefined) {
+        if (_templateVarDOM == false) {
+          _templateVarDOM = document.createElement('div');
+          _templateVarDOM.innerHTML = context.stateSettings.templateVar;
+        }
+
+        node = _templateVarDOM.querySelector('[data-' + key + ']');
+      }
+    }
+
+    if (node == undefined || node == null) {
       console.log("Error - в Html коде нет атрибута data-" + key + " проверьте корректность названия ключей в html");
     }
 
@@ -1772,6 +1804,12 @@ HTMLixState.prototype.arrayInit = function (node, StateMap, key) {
 };
 
 HTMLixState.prototype.verifyFetchComponents = function (divEl) {
+  if (this.verifiTemplateVarComponents(divEl)) {
+    if (this.stateMethods != undefined && this.stateMethods.onLoadAll != undefined) this.stateMethods.onLoadAll.bind(this)();
+  }
+};
+
+HTMLixState.prototype.verifiTemplateVarComponents = function (divEl) {
   if (this.description.virtualArrayComponents != undefined) {
     for (var key in this.description.virtualArrayComponents) {
       if (this.state[key] == undefined) {
@@ -1779,15 +1817,15 @@ HTMLixState.prototype.verifyFetchComponents = function (divEl) {
 
         if (containerHTML == null) {
           console.log("Error в шаблоне " + this.stateSettings.templatePath + " не найдено компонента " + key + " - виртуального массива,  проверьте его наличие и правильность ключей в шаблоне");
-          return;
+          return false;
         }
 
         this.state[key] = new HTMLixArray("virtual-array", containerHTML, this, key, undefined);
       }
     }
-
-    if (this.stateMethods != undefined && this.stateMethods.onLoadAll != undefined) this.stateMethods.onLoadAll.bind(this)();
   }
+
+  return true;
 };
 
 HTMLixState.prototype.addContainer = function (stateNameProp, properties, insertLocation) {

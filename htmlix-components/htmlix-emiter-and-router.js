@@ -1,11 +1,16 @@
 function HTMLixRouter(state, routes){
 
-		var namePathInRoutes = findComponent(routes); 
+		var namePathInRoutes = "";
 
+        var _templateVar = false;
+
+		if(state.stateSettings != undefined && state.stateSettings.templateVar != undefined)_templateVar = true;		
+        
+		if(! _templateVar)namePathInRoutes = findComponent(routes);
 
 
 //поиск соответствующего роута
-					function findComponent(routes){
+function findComponent(routes){
 
 				var urlPath = window.location.pathname;
 
@@ -139,7 +144,9 @@ function HTMLixRouter(state, routes){
 
 
 
+
 //поиск шаблона
+if(! _templateVar){
 	if(routes[namePathInRoutes] != undefined && routes[namePathInRoutes].templatePath != undefined){
 
 				if(state.stateSettings == undefined)state.stateSettings = {};
@@ -147,12 +154,14 @@ function HTMLixRouter(state, routes){
 
 						state.stateSettings.templatePath = routes[namePathInRoutes].templatePath;
 
-			}else{
+	 }else{
 
 
 						console.log("router error- маршрут не найден убедитесь в правильности запроса");
 	             }
+}				 
 ///изменение структуры state для загрузки шаблонов для других страниц в fetch запросе
+if(! _templateVar){
 	for (var key2 in state){
 
 				var toCare = true;
@@ -180,6 +189,7 @@ function HTMLixRouter(state, routes){
 				  			  }
 
 	}
+}	
 	var stateWithRoutes = new HTMLixState(state);
 	
 	

@@ -1,4 +1,8 @@
 function HTMLixState(StateMap){
+	
+	var _templateVarDOM = false;
+	
+	
 	this.description = StateMap;
 
 
@@ -20,14 +24,19 @@ function HTMLixState(StateMap){
 				 
 			 }
    		    
-
 		 }
-	}		
+	}
+    if(StateMap.stateSettings != undefined){
+		
+		this.stateSettings = StateMap.stateSettings;
+		
+	}	
 	for (var key in StateMap){
 
-						if(key == "stateSettings"){ 
+		if(key == "stateSettings"){ 
 
-						this.stateSettings = StateMap[key];
+						//this.stateSettings = StateMap[key];
+												
 			continue;
 		}		
 		if(key == "stateMethods"){ 
@@ -86,13 +95,39 @@ function HTMLixState(StateMap){
 		}
 
 				initStandartComponents(this, StateMap, key);
+					
+	}
+	if(this.stateSettings != undefined && this.stateSettings.templateVar != undefined){
+					
+			if(_templateVarDOM == false){
+								 
+					_templateVarDOM = document.createElement('div'); 
+					_templateVarDOM.innerHTML = this.stateSettings.templateVar								
+			}	
+					
+		this.verifiTemplateVarComponents(_templateVarDOM);					
 	}
 
 				function initStandartComponents(context, StateMap, key){
 
 				var node = document.querySelector('[data-'+key+']');
+								
+				     if(node == null || node == undefined){
+						 						 
+						 if(context.stateSettings != undefined && context.stateSettings.templateVar != undefined){
+							 
+							 if(_templateVarDOM == false){
+								 
+								_templateVarDOM = document.createElement('div'); 
+								_templateVarDOM.innerHTML = context.stateSettings.templateVar;								
+							 }
 
-					if(node == undefined){
+								node = _templateVarDOM.querySelector('[data-'+key+']'); 								
+							
+						 }
+					 }
+
+					if(node == undefined || node == null){
 
 											console.log("Error - в Html коде нет атрибута data-"+key+" проверьте корректность названия ключей в html");
 				}
@@ -234,6 +269,13 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 
 HTMLixState.prototype.verifyFetchComponents = function(divEl){
 	
+	if( this.verifiTemplateVarComponents(divEl) ){
+
+       		if(this.stateMethods != undefined && this.stateMethods.onLoadAll != undefined)this.stateMethods.onLoadAll.bind(this)();
+	}
+}
+HTMLixState.prototype.verifiTemplateVarComponents = function(divEl){
+	
 	if(this.description.virtualArrayComponents != undefined){
 		
 		for(var key in this.description.virtualArrayComponents){
@@ -245,7 +287,7 @@ HTMLixState.prototype.verifyFetchComponents = function(divEl){
 			      if(containerHTML == null ){
 					  
 					  console.log("Error в шаблоне "+ this.stateSettings.templatePath+" не найдено компонента "+key+" - виртуального массива,  проверьте его наличие и правильность ключей в шаблоне");
-					  return;
+					  return false;
 					  
 				  }
 				  this.state[ key ] = new HTMLixArray("virtual-array", containerHTML, this, key, undefined);
@@ -254,8 +296,8 @@ HTMLixState.prototype.verifyFetchComponents = function(divEl){
 			}			
 		}
 
-       		if(this.stateMethods != undefined && this.stateMethods.onLoadAll != undefined)this.stateMethods.onLoadAll.bind(this)();
 	}
+	return true;
 }
 HTMLixState.prototype.addContainer=  function (stateNameProp, properties, insertLocation){
 
