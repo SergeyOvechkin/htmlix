@@ -15,7 +15,6 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector){
 			if(node == "virtual-array")this.renderType = "virtual-array";
 			
   ///container_extend
- 
 	if(this.renderType == "virtual-array"){
 		 var thisArrDesc = this.rootLink.description.virtualArrayComponents[this.pathToComponent];
 		 var parentContainerName = thisArrDesc.container_extend;
@@ -23,53 +22,11 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector){
 		var thisArrDesc = this.rootLink.description[this.pathToComponent];
 		if(thisArrDesc == undefined)thisArrDesc = this.rootLink.description.fetchComponents[this.pathToComponent];
 		var parentContainerName = thisArrDesc.container_extend;
-	}
+	}	  
+	 if(parentContainerName != undefined){
 		  
-	  if(parentContainerName != undefined){
-           
-          ///описание наследуемого компонента		   
-		  var parCont = this.rootLink.description[parentContainerName];
-		   if(parCont == undefined &&  this.rootLink.description.virtualArrayComponents != undefined){
-			   
-			   parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
-			   
-		   }else if(parCont == undefined &&  this.rootLink.description.fetchComponents != undefined){
-			   
-			   parCont = this.rootLink.description.fetchComponents[parentContainerName];
-		   }
-		   if(parCont == undefined)console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
-			 
-		   var shareProps = parCont.props;
-		
-		
-		  if(parCont.share_props != undefined){
-			  		  
-			  shareProps = shareProps.slice(0, parCont.share_props);
-		  }
-		  for(var u =0; u < shareProps.length; u++){
-			  
-			  var keyProp = shareProps[u];
-			  if(typeof keyProp == "object")keyProp = shareProps[u][0];
-			  
-			  var isPersist = false;
-			  
-			  thisArrDesc.props.forEach((prop)=>{ 			  
-			             var findProp = prop;						
-						if(typeof findProp == "object")findProp = findProp[0];
-						if(findProp == keyProp)isPersist = true;						
-			  });
-			  
-			  if(isPersist)continue
-			  
-			  thisArrDesc.props.push(shareProps[u]);
-			  
-			  if(parCont.methods[keyProp] != undefined){
-				  
-				 thisArrDesc.methods[keyProp] = parCont.methods[keyProp];
-			  }
-		  }		  
-		  //thisArrDesc.props = shareProps.concat(thisArrDesc.props);
-	  }
+	     this.rootLink.containerExtend(parentContainerName, thisArrDesc.props, thisArrDesc.methods);
+	 }
 }
 HTMLixArray.prototype.add = function(props, insertLocation){
 		
@@ -148,10 +105,8 @@ HTMLixArray.prototype.getAll = function(map_Object){
 
 		return array_r;
 }
-
 HTMLixArray.prototype.order = function(newOrderArr){
-	
-	
+		
 	this.rootLink.changeOrder(this.pathToComponent, newOrderArr);
 	
 }

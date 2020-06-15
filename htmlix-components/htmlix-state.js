@@ -1,47 +1,33 @@
 function HTMLixState(StateMap){
 	
 	var _templateVarDOM = false;
-	
-	
+		
 	this.description = StateMap;
-
-
 	this.state = {};
 	this.eventProps = {};
 	this.stateMethods = {};
 	this.stateProperties = {};
 
-		if(StateMap.eventEmiters != undefined){
-
-			     for (var key in StateMap.eventEmiters){ 
-             if(StateMap.eventEmiters[key].behavior != undefined){
-				 
-				 this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {}, StateMap.eventEmiters[key].behavior, this);
-				 
-			 }else{
-				 
-				 this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {} );
-				 
-			 }
-   		    
+	if(StateMap.eventEmiters != undefined){
+		  for (var key in StateMap.eventEmiters){ 
+             if(StateMap.eventEmiters[key].behavior != undefined){				 
+				 this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {}, StateMap.eventEmiters[key].behavior, this);				 
+			 }else{				 
+				 this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {} );				 
+			 } 		    
 		 }
 	}
-    if(StateMap.stateSettings != undefined){
-		
-		this.stateSettings = StateMap.stateSettings;
-		
+    if(StateMap.stateSettings != undefined){		
+		this.stateSettings = StateMap.stateSettings;		
 	}	
 	for (var key in StateMap){
 
-		if(key == "stateSettings"){ 
-
-						//this.stateSettings = StateMap[key];
-												
+		if(key == "stateSettings"){ 						
 			continue;
 		}		
 		if(key == "stateMethods"){ 
-
-						this.stateMethods = StateMap[key];
+		
+			this.stateMethods = StateMap[key];
 			continue;
 		}		
 		if(key == 'stateProperties'){
@@ -55,60 +41,55 @@ function HTMLixState(StateMap){
 		}
 		if(key == "fetchComponents"){
 
-						var context = this;
+			  var context = this;
 			  var StateMap1 = StateMap.fetchComponents;
 			 
-			 if(StateMap.stateSettings == undefined)StateMap.stateSettings = {};
+			  if(StateMap.stateSettings == undefined)StateMap.stateSettings = {};
               if (StateMap.stateSettings.templatePath == undefined) StateMap.stateSettings.templatePath = "/template/template.html";
                 			 
 
-						this.fetchTemplates(function(divEl){
+			this.fetchTemplates(function(divEl){
 				for(var key10 in StateMap1){
 
 
-															var node = divEl.querySelector('[data-'+key10+']');
+						var node = divEl.querySelector('[data-'+key10+']');
 
-												if(node == undefined){
+						if(node == undefined){
 
-												console.log("Error - в Html коде нет атрибута data-"+key10+" для компонента из объекта fetchComponents");
-					}
+							console.log("Error - в Html коде нет атрибута data-"+key10+" для компонента из объекта fetchComponents");
+						}
 
-										var type = node.dataset[key10];
+						var type = node.dataset[key10];
 
 
-															if(type=="array"){
+						if(type=="array"){
 
 									context.arrayInit(node, StateMap1, key10);
 
-							}else if(type=="container"){
+						}else if(type=="container"){
 
 						context.containerInit(node, StateMap1, key10);
 
-					}					
-				}
-				
+						}else{
+							console.log("erorr - неправильно указан тип для контейнера либо массива "+key+" для компонента из объекта fetchComponents");
+						}					
+				}				
 				context.verifyFetchComponents(divEl);
 
 							},  StateMap.stateSettings.templatePath);
 
 						continue;
 		}
-
-				initStandartComponents(this, StateMap, key);
+		initStandartComponents(this, StateMap, key);
 					
 	}
 	if(this.stateSettings != undefined && this.stateSettings.templateVar != undefined){
-					
-			if(_templateVarDOM == false){
-								 
-					_templateVarDOM = document.createElement('div'); 
-					_templateVarDOM.innerHTML = this.stateSettings.templateVar								
-			}	
-					
+			
+		createFromVarTemplate(this);
+		
 		this.verifiTemplateVarComponents(_templateVarDOM);					
 	}
-
-				function initStandartComponents(context, StateMap, key){
+	function initStandartComponents(context, StateMap, key){
 
 				var node = document.querySelector('[data-'+key+']');
 								
@@ -116,57 +97,52 @@ function HTMLixState(StateMap){
 						 						 
 						 if(context.stateSettings != undefined && context.stateSettings.templateVar != undefined){
 							 
-							 if(_templateVarDOM == false){
-								 
-								_templateVarDOM = document.createElement('div'); 
-								_templateVarDOM.innerHTML = context.stateSettings.templateVar;								
-							 }
-
-								node = _templateVarDOM.querySelector('[data-'+key+']'); 								
-							
+							    createFromVarTemplate(context);
+								
+								node = _templateVarDOM.querySelector('[data-'+key+']'); 															
 						 }
 					 }
+				if(node == undefined || node == null){
 
-					if(node == undefined || node == null){
-
-											console.log("Error - в Html коде нет атрибута data-"+key+" проверьте корректность названия ключей в html");
+						console.log("Error - в Html коде нет атрибута data-"+key+" проверьте корректность названия ключей в html");
 				}
 				var type = node.dataset[key];		
 				if(type=="array"){
 
-								context.arrayInit(node, StateMap, key);			
+					context.arrayInit(node, StateMap, key);			
 
-						}else if(type=="container"){
+				}else if(type=="container"){
 
 					context.containerInit(node, StateMap, key);
 
-
-									}else{
-
-										console.log("erorr - неправильно указан тип для контейнера либо массива "+key);
+				}else{
+						console.log("erorr - неправильно указан тип для контейнера либо массива "+key);
 				}	
 	    }
-
-  // console.log("source-map");		
+		function createFromVarTemplate(context){
+			
+			if(_templateVarDOM == false){
+				_templateVarDOM = document.createElement('div'); 
+				_templateVarDOM.innerHTML = context.stateSettings.templateVar;
+			}				
+		}	
 }
-
 HTMLixState.prototype.containerInit = function(node, StateMap, key){
 
-		if(this.state[key] != undefined)return;
+	if(this.state[key] != undefined)return;
 	if(node == null)node = document.querySelector('[data-'+key+']');
     if(node == null || node == undefined)console.log("error в html разметке не найден контейнер "+key);	
 	if(StateMap[key]== undefined)console.log("error- проверьте корректность parent ключей в html - коде");
 	this.state[key] = new Container(node, key,  StateMap[key].props, StateMap[key].methods, null, key, this);
 
-	}
+}
 HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 
-	       			if(this.state[key] != undefined)return;
+	       	if(this.state[key] != undefined)return;
 			if(node == null)node = document.querySelector('[data-'+key+']');
             if(node == null || node == undefined)console.log("error в html разметке не найден массив "+key);	
 			
-
-									var lengthChildren = node.children.length; 
+		    var lengthChildren = node.children.length; 
 			if(StateMap[key].container == undefined)console.log("error- забыли указать контейнер для массива " +key);
 			var containerHTML = node.querySelectorAll('[data-'+StateMap[key].container+']');
 			
@@ -174,13 +150,9 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 			
 			if(StateMap[key].selector != undefined) array_selector = StateMap[key].selector;
 
-
-									if(containerHTML.length == 0)console.log("error - в html коде нет атрибута data-"+StateMap[key].container+" либо не создан шаблон для массива "+key);
+		    if(containerHTML.length == 0)console.log("error - в html коде нет атрибута data-"+StateMap[key].container+" либо не создан шаблон для массива "+key);
 			this.state[key] = new HTMLixArray(node, containerHTML[0], this, key, array_selector);
 			
-			
-			
-
 			if(StateMap[key]["arrayProps"] !=undefined ){
 
 								this.state[key]["props"] = {};
@@ -228,8 +200,7 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 				}
 			}
 
-
-						var i = 0;
+			var i = 0;
 			if(containerHTML[0].dataset[StateMap[key].container] == "template"){
 				                 
 								 containerHTML[0].dataset[StateMap[key].container] = "container";
@@ -244,9 +215,8 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 				i = 1;
 
 			}		
-
-
-				for( var j=0, i; i < containerHTML.length; j++, i++){
+			
+			for( var j=0, i; i < containerHTML.length; j++, i++){
 
 						if(containerHTML[i].dataset[StateMap[key].container] != "container"){
 
@@ -256,17 +226,16 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 						// container23.renderType = "container-inner";
 						this.state[key].data[j] = container23 ;
 
-                        				}
-				if(this.state[key].data.length < lengthChildren ){
+            }
+			if(this.state[key].data.length < lengthChildren ){
 
-										console.log("warn - контейнеров в массиве "+key+" создано меньше чем обьявлено в html, проверьте корректность написания всех ключей в html коде либо удалите лишние элементы не соответствующие контейнеру - "+StateMap[key].container);	
-				}
-             	if(this.state[key].data.length > lengthChildren){
+				console.log("warn - контейнеров в массиве "+key+" создано меньше чем обьявлено в html, проверьте корректность написания всех ключей в html коде либо удалите лишние элементы не соответствующие контейнеру - "+StateMap[key].container);	
+			}
+            if(this.state[key].data.length > lengthChildren){
 
-										console.log("warn - контейнеров "+StateMap[key].container+" в массиве "+key+" создано больше чем обьявлено в html, проверьте что контейнеры распологаются в массиве непосредственно, старайтесь избегать создания порежуточных тегов");
-				}	
+				console.log("warn - контейнеров "+StateMap[key].container+" в массиве "+key+" создано больше чем обьявлено в html, проверьте что контейнеры распологаются в массиве непосредственно, старайтесь избегать создания порежуточных тегов");
+		   }	
 }
-
 HTMLixState.prototype.verifyFetchComponents = function(divEl){
 	
 	if( this.verifiTemplateVarComponents(divEl) ){
@@ -440,8 +409,6 @@ HTMLixState.prototype.changeOrder = function(stateNameProp, newOrderArr){
 		stateArray.data[k].index = k;
 	}
 }
-
-
 HTMLixState.prototype.removeAll = function(stateNameProp, widthChild){	
 
 		if(this.state[stateNameProp].type != "array")return;
@@ -456,13 +423,10 @@ HTMLixState.prototype.removeAll = function(stateNameProp, widthChild){
 	this.state[stateNameProp].data = [];
 
 }
-
 HTMLixState.prototype.removeByIndex = function(stateNameProp, index, widthChild){
 
 	this.removeByIndexes(stateNameProp, [index], widthChild);
 }
-
-
 HTMLixState.prototype.removeByIndexes = function(stateNameProp, indexArray, widthChild ){
 
 		if(this.state[stateNameProp].type != "array")return;
@@ -494,8 +458,7 @@ HTMLixState.prototype.removeByIndexes = function(stateNameProp, indexArray, widt
 			this.state[stateNameProp].data[i].index = i;
 	}
 
-	}
-	
+}	
 HTMLixState.prototype.clearContainerProps = function(stateNameProp, index, widthChild){
 	
 	                var container = this.state[stateNameProp].data[index];
@@ -531,7 +494,6 @@ HTMLixState.prototype.clearContainerProps = function(stateNameProp, index, width
 				}
 			}
 }	
-
 HTMLixState.prototype.getDifrentFilds = function(array, fild){
 	
 	var newArr = [];
@@ -562,12 +524,9 @@ HTMLixState.prototype.getDifrentFilds = function(array, fild){
 				newArr.push(array[i]);				
 				
 			}
-
 	}
 	return newArr;	
-
 }
-
 HTMLixState.prototype.fetchTemplates = function(callb, templatePath){
 
 			
@@ -578,11 +537,9 @@ HTMLixState.prototype.fetchTemplates = function(callb, templatePath){
 						if(response.ok) {
 							return response.text();
 						}	
-
             						throw new Error('Network response was not ok');
 					})
 					.then((text) => {
-
 
 						var div = document.createElement('div');
 						div.innerHTML = text;
@@ -593,13 +550,53 @@ HTMLixState.prototype.fetchTemplates = function(callb, templatePath){
 							console.log(error);
 					});
 
-		}
-
-
+}
 HTMLixState.prototype.capitalizeFirstLetter = function(string){
 
 		return string.charAt(0).toUpperCase() + string.slice(1);
 
 	}
-
+HTMLixState.prototype.containerExtend =  function(parentContainerName, props, methods){
+	  
+	          ///описание наследуемого компонента		   
+		  var parCont = this.description[parentContainerName];
+		   if(parCont == undefined &&  this.description.virtualArrayComponents != undefined){
+			   
+			   parCont = this.description.virtualArrayComponents[parentContainerName];
+			   
+		   }else if(parCont == undefined &&  this.description.fetchComponents != undefined){
+			   
+			   parCont = this.description.fetchComponents[parentContainerName];
+		   }
+		   if(parCont == undefined)console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
+		   		 
+		   var shareProps = parCont.props;
+				
+		  if(parCont.share_props != undefined){
+			  		  
+			  shareProps = shareProps.slice(0, parCont.share_props);
+		  }
+		  for(var u =0; u < shareProps.length; u++){
+			  
+			  var keyProp = shareProps[u];
+			  if(typeof keyProp == "object")keyProp = shareProps[u][0];
+			  
+			  var isPersist = false;
+			  
+			  props.forEach((prop)=>{ 			  
+			             var findProp = prop;						
+						if(typeof findProp == "object")findProp = prop[0];
+						if(findProp == keyProp)isPersist = true;                      					
+			  });
+			  if(isPersist)continue
+			  
+			  props.unshift(shareProps[u]);
+			  			  
+			  if(parCont.methods[keyProp] != undefined){			
+				  
+					methods[keyProp] = parCont.methods[keyProp]; 
+						
+			  }
+		  }		     
+  }
 

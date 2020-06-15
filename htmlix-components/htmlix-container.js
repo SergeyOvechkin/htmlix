@@ -14,58 +14,13 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 
      var thisCont =  this.rootLink.description[this.pathToCоmponent];
      if(thisCont == undefined)thisCont = this.rootLink.description.fetchComponents[this.pathToCоmponent];	 
-	 // console.log("1");
 	 var parentContainerName = thisCont.container_extend;
 	  
 	  	  if(parentContainerName != undefined){
-           
-          ///описание наследуемого компонента		   
-		  var parCont = this.rootLink.description[parentContainerName];
-		   if(parCont == undefined &&  this.rootLink.description.virtualArrayComponents != undefined){
-			   
-			   parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
-			   
-		   }else if(parCont == undefined &&  this.rootLink.description.fetchComponents != undefined){
-			   
-			   parCont = this.rootLink.description.fetchComponents[parentContainerName];
-		   }
-		   if(parCont == undefined)console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
-		   		 
-		   var shareProps = parCont.props;
-		
-		
-		  if(parCont.share_props != undefined){
-			  		  
-			  shareProps = shareProps.slice(0, parCont.share_props);
-		  }
-		  for(var u =0; u < shareProps.length; u++){
 			  
-			  var keyProp = shareProps[u];
-			  if(typeof keyProp == "object")keyProp = shareProps[u][0];
-			  
-			  var isPersist = false;
-			  
-			  props.forEach((prop)=>{ 			  
-			             var findProp = prop;						
-						if(typeof findProp == "object")findProp = prop[0];
-						if(findProp == keyProp)isPersist = true;
-                        					
-			  });
-			  if(isPersist)continue
-			  
-			  props.push(shareProps[u]);
-			  			  
-			  if(parCont.methods[keyProp] != undefined){			
-				  
-					methods[keyProp] = parCont.methods[keyProp]; 
-						
-			  }
-		  }		  
-		  //props = shareProps.concat(props);
+			  this.rootLink.containerExtend(parentContainerName, props, methods);
 	  }
   }
-  
-
   if(props == undefined)props = [];
   for(var i2 = 0; i2 < props.length; i2++){
 
@@ -101,8 +56,7 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 												  continue;
 											  }
 				                 }
-
-			     		 				      this.props[ string ] = constructorProps(htmlLinkToProp, 
+			     		 		this.props[ string ] = constructorProps(htmlLinkToProp, 
 				                                   containerName,	
 												   props[i2], 
 												   methods[ string ],
@@ -110,24 +64,19 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 													this,
 												   this.rootLink,
 												   newProps
-																);	
-
+												);	
 		 }
-
-
-		 								}
+	}
        if(methods.onCreatedContainer != undefined ){ 
 
 				this.onCreatedContainer = methods.onCreatedContainer.bind(this)
 
-		if(isRunonCreatedContainer==undefined || isRunonCreatedContainer!=false){
+		 if(isRunonCreatedContainer==undefined || isRunonCreatedContainer!=false){
 			
 			this.onCreatedContainer();
-			//console.log(this);
-		}
-	}
-
-	}
+		 }
+	 }
+}
 Container.prototype.remove = function(widthChild){
 	if(this.index == null){
 
@@ -153,7 +102,6 @@ Container.prototype.remove = function(widthChild){
 	}
       return true;
 }
-
 Container.prototype.setAllProps = function(properties){
 	
 		for(key in properties){
@@ -163,11 +111,9 @@ Container.prototype.setAllProps = function(properties){
 						this.props[key].setProp(properties[key]);
 						
 				}else if(key != "componentName"){
-					//console.log(this);
 					console.log("warn не найден ключь "+key+" в контейнере "+this.name+" index "+this.index+" массива "+this.pathToCоmponent+" проверте правильность названия ключей в объекте properties");
 				}
 	}
-	
 }
 Container.prototype.getAllProps = function(properties){
 	
@@ -188,16 +134,11 @@ Container.prototype.getAllProps = function(properties){
 
 			properties_r[key] = this.props[key].getProp();
 
-		}
-		
+		}		
 	}
-	//console.log( properties_r);
 	return properties_r;
 }	
-	
-
 Container.prototype.component = function(){
-	
-	
+		
 	return this.rootLink.state[this.pathToCоmponent];
 }
