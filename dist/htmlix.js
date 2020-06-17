@@ -115,6 +115,15 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
     } else {
       var string = props[i2][0];
       var selector = props[i2][2];
+      var type = props[i2][1];
+
+      if (type == "aux") {
+        if (methods[string] == undefined) console.log("error название свойства " + string + " не совпадает с названием метода");
+        if (this.methods == undefined) this.methods = {};
+        this.methods[string] = methods[string].bind(this);
+        continue;
+      }
+
       var htmlLinkToProp = this.htmlLink;
 
       if (selector != "") {
@@ -558,6 +567,8 @@ PropCommon.prototype.setProp = function (value) {
   } else if (this.type == "data") {
     this.htmlLink.dataset[this.parent.name + this.parent.rootLink.capitalizeFirstLetter(this.propName)] = value;
     return;
+  } else {
+    console.log("error неправильно указан тип свойства, если тип = aux его нужно создавать с помощью массива ['имя_метода', 'aux']");
   }
 };
 
@@ -583,6 +594,8 @@ PropCommon.prototype.getProp = function () {
     return this.htmlLink.getAttribute(this.isAttr(this.type));
   } else if (this.type == "data") {
     return this.htmlLink.dataset[this.parent.name + this.parent.rootLink.capitalizeFirstLetter(this.propName)];
+  } else {
+    console.log("error неправильно указан тип свойства, если тип = aux его нужно создавать с помощью массива ['имя_метода', 'aux']");
   }
 };
 
@@ -614,6 +627,8 @@ PropCommon.prototype.removeProp = function (value) {
   } else if (this.isAttr(this.type) != false) {
     this.htmlLink.removeAttribute(this.isAttr(this.type));
     return;
+  } else {
+    console.log("error неправильно указан тип свойства, если тип = aux его нужно создавать с помощью массива ['имя_метода', 'aux']");
   }
 };
 
@@ -1571,10 +1586,6 @@ function HTMLixState(StateMap) {
   }
 
   for (var key in StateMap) {
-    if (key == "stateSettings") {
-      continue;
-    }
-
     if (key == "stateMethods") {
       this.stateMethods = StateMap[key];
       continue;
@@ -1585,7 +1596,7 @@ function HTMLixState(StateMap) {
       continue;
     }
 
-    if (key == 'eventEmiters' || key == 'virtualArrayComponents') {
+    if (key == 'eventEmiters' || key == 'virtualArrayComponents' || key == "stateSettings") {
       continue;
     }
 
@@ -1690,6 +1701,15 @@ HTMLixState.prototype.arrayInit = function (node, StateMap, key) {
       } else {
         var string = StateMap[key]["arrayProps"][t][0];
         var selector = StateMap[key]["arrayProps"][t][2];
+        var type = StateMap[key]["arrayProps"][t][1];
+
+        if (type == "aux") {
+          if (StateMap[key]["arrayMethods"][string] == undefined) console.log("error название свойства массива " + key + " - " + string + " не совпадает с названием метода");
+          if (this.state[key].methods == undefined) this.state[key].methods = {};
+          this.state[key].methods[string] = StateMap[key]["arrayMethods"][string].bind(this.state[key]);
+          continue;
+        }
+
         var htmlLinkToProp = this.state[key].htmlLink;
 
         if (selector != "") {
@@ -1746,7 +1766,7 @@ HTMLixState.prototype.verifiTemplateVarComponents = function (divEl) {
         var containerHTML = divEl.querySelector('[data-' + this.description.virtualArrayComponents[key].container + ']');
 
         if (containerHTML == null) {
-          console.log("Error в шаблоне " + this.stateSettings.templatePath + " не найдено компонента " + key + " - виртуального массива,  проверьте его наличие и правильность ключей в шаблоне");
+          console.log("Error в догружаемом шаблоне  не найдено компонента " + key + " - виртуального массива,  проверьте его наличие и правильность ключей в шаблоне");
           return false;
         }
 
@@ -1760,7 +1780,7 @@ HTMLixState.prototype.verifiTemplateVarComponents = function (divEl) {
 
 HTMLixState.prototype.addContainer = function (stateNameProp, properties, insertLocation) {
   if (this.state[stateNameProp] == undefined) console.log("не получается найти компонент" + stateNameProp + "в this.state");
-  var stateArray = this.state[stateNameProp]; //console.log(stateArray);
+  var stateArray = this.state[stateNameProp];
 
   if (stateArray.type != "array") {
     console.log("создать контейнер можно только в массиве array");
@@ -1796,8 +1816,7 @@ HTMLixState.prototype.addContainer = function (stateNameProp, properties, insert
     }
   }
 
-  var container = new Container(Link, desc.container, desc.props, desc.methods, index, stateNameProp, this, true, properties); //container.renderType = "container-inner";
-
+  var container = new Container(Link, desc.container, desc.props, desc.methods, index, stateNameProp, this, true, properties);
   var htmlLink = stateArray.htmlLink;
 
   if (stateArray.selector != undefined) {
@@ -1998,7 +2017,7 @@ HTMLixState.prototype.containerExtend = function (parentContainerName, props, me
     parCont = this.description.fetchComponents[parentContainerName];
   }
 
-  if (parCont == undefined) console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
+  if (parCont == undefined) console.log("error неправильно указано имя компонента наследуемого компонента в container_extend");
   var shareProps = parCont.props;
 
   if (parCont.share_props != undefined) {

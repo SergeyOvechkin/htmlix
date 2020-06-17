@@ -21,10 +21,7 @@ function HTMLixState(StateMap){
 		this.stateSettings = StateMap.stateSettings;		
 	}	
 	for (var key in StateMap){
-
-		if(key == "stateSettings"){ 						
-			continue;
-		}		
+	
 		if(key == "stateMethods"){ 
 		
 			this.stateMethods = StateMap[key];
@@ -35,7 +32,7 @@ function HTMLixState(StateMap){
 			this.stateProperties = StateMap[key];
 			continue;				
 		}		
-		if(key == 'eventEmiters' || key ==  'virtualArrayComponents'){
+		if(key == 'eventEmiters' || key ==  'virtualArrayComponents' || key == "stateSettings"){
 
 						continue;
 		}
@@ -160,9 +157,9 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 								for (var t=0; t < StateMap[key]["arrayProps"].length; t++){
 
 
-															if(typeof StateMap[key]["arrayProps"][t] == "string"){
-							var htmlLink = this.state[key].htmlLink.querySelectorAll('[data-'+key+'-'+StateMap[key]["arrayProps"][t]+']')[0];
-							if(htmlLink == undefined)htmlLink  = this.state[key].htmlLink;
+						if(typeof StateMap[key]["arrayProps"][t] == "string"){
+												var htmlLink = this.state[key].htmlLink.querySelectorAll('[data-'+key+'-'+StateMap[key]["arrayProps"][t]+']')[0];
+												if(htmlLink == undefined)htmlLink  = this.state[key].htmlLink;
 
 
 
@@ -174,11 +171,23 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 
 
 
-																							}else{
+						}else{
 
-													var string =  StateMap[key]["arrayProps"][t][0];
+							var string =  StateMap[key]["arrayProps"][t][0];
 
-				 							var selector = StateMap[key]["arrayProps"][t][2];
+				 			var selector = StateMap[key]["arrayProps"][t][2];
+							
+							var type = StateMap[key]["arrayProps"][t][1];
+							
+							if(type == "aux"){
+								
+                                  								
+									 if(StateMap[key]["arrayMethods"][  string ] == undefined)console.log("error название свойства массива "+key+" - "+string+" не совпадает с названием метода");
+									 if(this.state[key].methods == undefined)this.state[key].methods = {};
+									 this.state[key].methods[string] = StateMap[key]["arrayMethods"][  string ].bind( this.state[key]);
+									 continue;
+									 
+							}
 
 														var htmlLinkToProp  = this.state[key].htmlLink;
 
@@ -255,7 +264,7 @@ HTMLixState.prototype.verifiTemplateVarComponents = function(divEl){
 
 			      if(containerHTML == null ){
 					  
-					  console.log("Error в шаблоне "+ this.stateSettings.templatePath+" не найдено компонента "+key+" - виртуального массива,  проверьте его наличие и правильность ключей в шаблоне");
+					  console.log("Error в догружаемом шаблоне  не найдено компонента "+key+" - виртуального массива,  проверьте его наличие и правильность ключей в шаблоне");
 					  return false;
 					  
 				  }
@@ -275,8 +284,6 @@ HTMLixState.prototype.addContainer=  function (stateNameProp, properties, insert
 
 		var stateArray = this.state[stateNameProp];
 		
-		//console.log(stateArray);
-
 		if(stateArray.type != "array"){
 
 				console.log("создать контейнер можно только в массиве array");
@@ -310,16 +317,13 @@ HTMLixState.prototype.addContainer=  function (stateNameProp, properties, insert
 
 		    if(this.description.virtualArrayComponents != undefined && this.description.virtualArrayComponents[stateNameProp] != undefined){ 
 
-
 										desc = this.description.virtualArrayComponents[stateNameProp];
 							   
 		   }else {
-
 			   		   if(this.description.fetchComponents !=undefined && this.description.fetchComponents[stateNameProp] != undefined){
 
 			   						 desc = this.description.fetchComponents[stateNameProp];
 			   }else{
-
 				   				   console.log("eror- не получается найти описание для компонета "+stateNameProp+" проверьте существуют ли обьекты fetchComponents, virtualArrayComponents в описании, параметре StateMap");
 			   }			  
 		   }
@@ -328,8 +332,6 @@ HTMLixState.prototype.addContainer=  function (stateNameProp, properties, insert
 
 				var container = new Container(Link, desc.container,  desc.props,
 									desc.methods, index, stateNameProp, this, true, properties);
-
-											//container.renderType = "container-inner";
 
 				var htmlLink = stateArray.htmlLink;
 				
@@ -568,7 +570,7 @@ HTMLixState.prototype.containerExtend =  function(parentContainerName, props, me
 			   
 			   parCont = this.description.fetchComponents[parentContainerName];
 		   }
-		   if(parCont == undefined)console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
+		   if(parCont == undefined)console.log("error неправильно указано имя компонента наследуемого компонента в container_extend");
 		   		 
 		   var shareProps = parCont.props;
 				

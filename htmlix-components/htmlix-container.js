@@ -43,6 +43,17 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 			     				 var string =  props[i2][0];
 
 				 				 var selector = props[i2][2];
+								 
+								 var type = props[i2][1];
+								 
+								 if(type == "aux"){
+									 
+									 if(methods[ string ] == undefined)console.log("error название свойства "+string+" не совпадает с названием метода");
+									 if(this.methods == undefined)this.methods = {};
+									 this.methods[string] = methods[ string ].bind(this);
+									 continue;
+									 
+								 }
 
 				 				 var  htmlLinkToProp = this.htmlLink;
 

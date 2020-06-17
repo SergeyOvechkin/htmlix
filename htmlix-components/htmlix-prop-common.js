@@ -155,6 +155,10 @@ PropCommon.prototype.setProp = function(value) {
 			this.htmlLink.dataset[ this.parent.name + this.parent.rootLink.capitalizeFirstLetter(this.propName) ] = value;
 			return;
 	
+	}else{
+		
+		console.log("error неправильно указан тип свойства, если тип = aux его нужно создавать с помощью массива ['имя_метода', 'aux']");
+		
 	}
 }
 
@@ -198,6 +202,10 @@ PropCommon.prototype.getProp = function() {
 			
 			return this.htmlLink.dataset[ this.parent.name + this.parent.rootLink.capitalizeFirstLetter(this.propName) ];
 	
+	}else{
+		
+		console.log("error неправильно указан тип свойства, если тип = aux его нужно создавать с помощью массива ['имя_метода', 'aux']");
+		
 	}
 }
 PropCommon.prototype.removeProp = function(value) {
@@ -244,6 +252,10 @@ PropCommon.prototype.removeProp = function(value) {
 				this.htmlLink.removeAttribute(this.isAttr(this.type));
 				return;
 
+	}else{
+		
+		console.log("error неправильно указан тип свойства, если тип = aux его нужно создавать с помощью массива ['имя_метода', 'aux']");
+		
 	}	
 }
 
