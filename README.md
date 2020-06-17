@@ -773,9 +773,34 @@ window.onload = function(){
 Если тип свойства является стандартным событием например "click", 'mouseup' и т. д., то к нему будет присоединен обработчик события который необходимо создать
 в объекте method для данного контейнера в описании приложения.
 Если тип свойства является пользовательским событием, то также как и для обычного события создается обработчик.
-В обработчиках событий оператор this. указывает на данный конкретный экземпляр Prop, а далее с помощью навигации можно переходить к любым другим свойствам относительно данного.
+В обработчиках событий оператор `this` - указывает на данный конкретный экземпляр Prop, а далее с помощью навигации можно переходить к любым другим свойствам относительно данного.
 
-Методы **setProp("newProp")**, **getProp()** и **removeProp()** работают по разному в зависимости от типа своства.
+Методы `setProp("newProp")`, `getProp()` и `removeProp()` работают по разному в зависимости от типа свойства.
+
+Перечень всех типов:
+
+* "text" - текстовые данные;
+* "html" - html разметка;
+* "inputvalue", "select" - данные форм ;
+* "checkbox", "radio" - чекбоксы и радио;
+* "class" -  массив с классами;
+* "render-variant" -  текущий отображаемый объект;
+* "group" -  группа контейнеров из какого либо виртуального массива;
+* "group-mix" -  группа контейнеров из разных виртуальных массивов;
+
+
+тип **data** - т. к. в данных с типом дата после знака =  идут какие либо данные, то для создания данного типа после 
+имени массива или контейнера пишется имя data а далее уже какие либо данные, например: data-page-data_name="какие либо данные",
+здесь тип данных определяется по имени свойства оно всегда должно начинаться с data после названия контейнера.
+
+Атрибуты:  'alt', 'disabled', 'href', 'id', 'src', 'style', 'title'.
+
+Типы стандартных событий:  'click', 'keydown', 'dblclick', 'contextmenu',  'selectstart', 'mousewheel', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'mousedown', 'keypress', 'keyup', 'focus', 'blur', 'change', 'reset', 'select', 'submit', 'abort', 'change'.
+
+тип **aux** - `вспомогательный метод`: ["имя_метода", "aux"] в описании приложения объявляется в массиве свойств - props, и также как для обработчика событий для него указывается
+метод в объекте methods. this в нем указывает на контейнер либо массив (если он объявлен в свойствах массива). Может принимать параметры и возвращвть значение.
+В уже созданном компоненте (контейнере или массиве) он будет доступен в объекте methods контейнера или массива (в объекте props его не будет).
+Объявлять можно только с помощью массива ["имя_метода", "aux"], в html разметку, не добавляется. Наследуется по тому-же принципу как и обычные свойства.
 
 
 **Рассмотрим как работает метод getProp() для основных типов свойств:**
@@ -836,6 +861,8 @@ window.onload = function(){
 * `this.disableEvent(eventName)` - временно отключить событие eventName на данном свойстве;
 
 * `this.enableEvent(eventName)` - включает отключенное событие;
+
+* `this.emitEvent(eventName)` - вызывает метод обработчик события eventName;
 
 Для пользовательских событий:
 
@@ -1903,6 +1930,102 @@ var routes = {
 
 
 ```
+
+# Добавление вспомогательных методов.
+
+Вспомогательные методы контейнера или массива  объявляются в описании приложения в массиве props ---- props: [`name_method`, 'aux'].
+В уже созданном компоненте в объекте props их не будет, они будут доступны в объекте `methods` контейнера или массива.
+this - в методе указывает на контейнер или массив.  Наследуются по тому-же принципу как и обычные свойства.
+
+Пример использования:
+
+container:
+
+```javascript
+	form: {
+		container: "form",
+		props: ["input", "click", ["test_and_send_name", "aux"] ], ///добавили свойство-вспомогательный метод с типом aux
+		methods: {
+			
+			click: function(){
+				event.preventDefault();
+				var text = this.parent.props.input.getProp();
+				
+				this.parent.methods.test_and_send_name(text); // вспомогательные (aux) методы находятся в объекте methods контейнера
+				
+				console.log(text);
+							
+			},
+			test_and_send_name: function(name){ // метод может принимать параметры
+				
+				///this в методе указывает на контейнер
+				
+				if(name.length < 2){
+					alert("имя должно быть больше двух символов");
+					return;
+				}
+				
+				this.rootLink.eventProps["emiter-set-name"].setEventProp(name); // вызвали событие "emiter-set-name" из метода
+				window.localStorage.setItem('user_name', name);
+								
+			}		
+		},		
+	},
+
+```
+
+array:
+
+```javascript
+	users_array: {  
+		selector: "div.row",
+		arrayProps: [ "message", 
+		              ["send_message", "aux"], //добавили вспомогательный метод
+  		              ['listen_set_name', "emiter-set-name", ""],
+ 					  ['listen_exit_user', "emiter-exit-user", ""]  				  
+					  ], 
+		arrayMethods: {
+			
+            send_message: function(type, mess){ //вспомогательный метод принимает два параметра
+				
+				if(type == "login"){
+					
+					this.props.message.setProp("новый посетитель - "+mess); //this в методе массива указывает на массив
+					
+				}else if(type == "logout"){
+					
+					this.props.message.setProp(mess+" - покинул сайт");
+					
+				}				
+			},					
+			listen_set_name: function(){
+				
+				this.parent.add( {user_name: this.emiter.getEventProp()} );
+				
+				this.parent.methods.send_message("login", this.emiter.getEventProp()); //вызвали вспомогательный метод	
+				
+			},
+			listen_exit_user: function(){
+				
+				this.parent.data.forEach(container=>{
+					
+					if(container.props.user_name.getProp() == this.emiter.getEventProp()){
+						
+						container.remove(true); 
+					}					
+				});
+                 this.parent.methods.send_message("logout", this.emiter.getEventProp()); //вызвали вспомогательный метод				
+			},			
+		},		
+		container: "user",
+		props: [ "user_name", ],
+		methods: {
+		},        	
+	},	
+
+```
+<a href="https://sergeyovechkin.github.io/tests/test-aux-methods/index.html">Полный код данного теста</a>
+
 
 
 
