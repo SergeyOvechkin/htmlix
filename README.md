@@ -1725,16 +1725,8 @@ var StateMap = {
 
 Методы экземпляра приложения можно вызвать из любой точки this.rootLink.nameMethod();
 
-* `.addContainer(stateNameProp, properties, insertLocation)` добавляет новый контейнер в компонент  stateNameProp с начальными свойствами properties, в указаную позицию insertLocation,
-если не указать позицию, добавит - в конец, если не указать какое либо свойство в объекте  properties то возьмет данные из шаблона.
-
-* `.removeAll(stateNameProp, widthChild)` - очищает массив stateNameProp, если указать widthChild=true удалит все дочерние компоненты со свойств с типами group и render-variant
-
-* `.removeByIndexes(stateNameProp, indexArray, widthChild )` - удаляет несколько контейнеров indexArray=[] из массива  stateNameProp;
-
-* `.removeByIndex(stateNameProp, index, widthChild )` - удаляет один контейнер из массива stateNameProp по индексу index;
-
-* `changeOrder(stateNameProp, newOrder=array)` - изменяет последовательность контейнеров  в массиве stateNameProp и html разметке, newOrder- массив со старыми индексами в новом порядке например [3,2,1,0]
+///вспомогательный метод для отсеивания повторяющихся полей какого либо массива	если поле массива - объект, то можно указать его ключи по которым отсеивать полями
+getDifrentFilds(array, fild)
 
 # События создания приложения и компонентов
 

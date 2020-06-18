@@ -18,21 +18,115 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector) {
   if (parentContainerName != undefined) {
     this.rootLink.containerExtend(parentContainerName, thisArrDesc.props, thisArrDesc.methods);
   }
-}
+} ///добавляет контейнер в массив 
 
-HTMLixArray.prototype.add = function (props, insertLocation) {
-  var container = this.rootLink.addContainer(this.pathToComponent, props, insertLocation);
+
+HTMLixArray.prototype.add = function (properties, insertLocation) {
+  if (insertLocation != undefined && insertLocation != "and" && isNaN(insertLocation)) {
+    console.log("Введите корректную позицию для вставки контейнера в массив " + this.pathToComponent);
+    return;
+  }
+
+  var index = 0;
+
+  if (insertLocation == undefined || insertLocation == "and") {
+    index = this.data.length;
+  } else if (typeof insertLocation == 'number') {
+    if (insertLocation > this.data.length) insertLocation = this.data.length;
+    index = insertLocation;
+  }
+
+  var Link = this.templateData.cloneNode(true);
+  var desc = this.rootLink.description[this.pathToComponent];
+
+  if (desc == undefined) {
+    if (this.rootLink.description.virtualArrayComponents != undefined && this.rootLink.description.virtualArrayComponents[this.pathToComponent] != undefined) {
+      desc = this.rootLink.description.virtualArrayComponents[this.pathToComponent];
+    } else {
+      if (this.rootLink.description.fetchComponents != undefined && this.rootLink.description.fetchComponents[this.pathToComponent] != undefined) {
+        desc = this.rootLink.description.fetchComponents[this.pathToComponent];
+      } else {
+        console.log("eror- не получается найти описание для компонета " + this.pathToComponent + " проверьте существуют ли обьекты fetchComponents, virtualArrayComponents в описании, параметре StateMap");
+      }
+    }
+  }
+
+  var container = new Container(Link, desc.container, desc.props, desc.methods, index, this.pathToComponent, this.rootLink, true, properties);
+  var htmlLink = this.htmlLink;
+
+  if (this.selector != undefined) {
+    htmlLink = htmlLink.querySelector(this.selector);
+    if (htmlLink == null || htmlLink == undefined) console.log("error - не удается найти селектор " + this.selector + " для массива " + this.pathToComponent);
+  }
+
+  if (insertLocation == undefined || insertLocation == "and") {
+    if (this.rootLink.description.virtualArrayComponents == undefined) {
+      htmlLink.appendChild(Link);
+    } else {
+      if (this.rootLink.description.virtualArrayComponents[this.pathToComponent] == undefined) htmlLink.appendChild(Link);
+    }
+
+    this.data.push(container);
+  } else if (typeof insertLocation == 'number') {
+    if (this.rootLink.description.virtualArrayComponents == undefined) {
+      htmlLink.insertBefore(Link, htmlLink.children[insertLocation]);
+    } else {
+      if (this.rootLink.description.virtualArrayComponents[this.pathToComponent] == undefined) htmlLink.insertBefore(Link, htmlLink.children[insertLocation]);
+    }
+
+    this.data.splice(insertLocation, 0, container);
+
+    for (var i = insertLocation; i < this.data.length; i++) {
+      this.data[i].index = i;
+    }
+  }
+
+  if (properties != undefined) container.setAllProps(properties);
   return container;
-};
+}; ///удаляет контейнер или группу контейнеров из массива по индексам	
+
 
 HTMLixArray.prototype.removeIndex = function (indexArray, widthChild) {
+  if (widthChild != false) widthChild = true;
   if (_typeof(indexArray) != "object") indexArray = [indexArray];
-  this.rootLink.removeByIndexes(this.pathToComponent, indexArray, widthChild);
-};
+
+  for (var r = 0; r < indexArray.length; r++) {
+    if (indexArray[r] > this.data.length - 1) {
+      console.log("error - индекс для удаления " + indexArray[r] + " больше количества элементов в массиве " + this.pathToComponent);
+      return;
+    }
+
+    this.rootLink.clearContainerProps(this.pathToComponent, indexArray[r], widthChild);
+    this.data[indexArray[r]].htmlLink.remove();
+  }
+
+  var newData = this.data.filter(function (container, i) {
+    return !indexArray.some(function (numb) {
+      return numb == i;
+    });
+  });
+  this.data = newData;
+
+  for (var i = 0; i < this.data.length; i++) {
+    this.data[i].index = i;
+  }
+}; //удаляет все контейнеры из массива	
+
 
 HTMLixArray.prototype.removeAll = function (widthChild) {
-  this.rootLink.removeAll(this.pathToComponent, widthChild);
-};
+  if (widthChild != false) widthChild = true;
+
+  for (var index = 0; index < this.data.length; index++) {
+    this.rootLink.clearContainerProps(this.pathToComponent, index, widthChild);
+    this.data[index].htmlLink.remove();
+  }
+
+  this.data.length = 0;
+  this.data = [];
+}; //метод обновляет свойства всех контейнеров, а также обнуляет поле prop каждого свойства, если переданных в метод
+//объектов со свойствами больше контейнеров в массиве, то добавляет контейнеры
+//если меньше то удаляет лишние	
+
 
 HTMLixArray.prototype.reuseAll = function (arrayWithObjects) {
   var newArrLength = arrayWithObjects.length;
@@ -61,7 +155,8 @@ HTMLixArray.prototype.reuseAll = function (arrayWithObjects) {
       this.removeIndex([this.data.length - 1], true);
     }
   }
-};
+}; //получает набор объектов где названия ключей - имена свойств контейнеров, а данные - данные свойств контейнеров
+
 
 HTMLixArray.prototype.getAll = function (map_Object) {
   var array_r = [];
@@ -77,10 +172,35 @@ HTMLixArray.prototype.getAll = function (map_Object) {
   }
 
   return array_r;
-};
+}; //изменяет проядок контейнеров в массиве и html разметке
+
 
 HTMLixArray.prototype.order = function (newOrderArr) {
-  this.rootLink.changeOrder(this.pathToComponent, newOrderArr);
+  var htmlLink = this.htmlLink;
+
+  if (this.selector != undefined) {
+    htmlLink = htmlLink.querySelector(this.selector);
+    if (htmlLink == null || htmlLink == undefined) console.log("error - не удается найти селектор " + this.selector + " для массива " + this.pathToComponent);
+  }
+
+  if (newOrderArr.length != this.data.length) {
+    console.log("в массиве newOrderArr, должно быть столько же элементов сколько и в исходном массиве ");
+    return;
+  }
+
+  var newData = [];
+
+  for (var i = 0; i < newOrderArr.length; i++) {
+    newData.push(this.data[newOrderArr[i]]);
+  }
+
+  this.data = newData;
+  this.htmlLink.innerHTML = "";
+
+  for (var k = 0; k < this.data.length; k++) {
+    this.htmlLink.appendChild(this.data[k].htmlLink);
+    this.data[k].index = k;
+  }
 };
 function Container(htmlLink, containerName, props, methods, index, pathToContainer, rootLink, isRunonCreatedContainer, newProps) {
   this.htmlLink = htmlLink;
@@ -163,12 +283,7 @@ Container.prototype.remove = function (widthChild) {
     this.renderParent.renderChild = null;
   }
 
-  if (widthChild != undefined && widthChild == true) {
-    this.rootLink.removeByIndexes(this.pathToCоmponent, [this.index], true);
-  } else {
-    this.rootLink.removeByIndexes(this.pathToCоmponent, [this.index]);
-  }
-
+  this.rootLink.state[this.pathToCоmponent].removeIndex([this.index], widthChild);
   return true;
 };
 
@@ -909,7 +1024,7 @@ PropGroup.prototype.clearGroup = function () {
     indexes.push(this.groupChild[i].index);
   }
 
-  this.rootLink.removeByIndexes(this.groupChild[0].pathToCоmponent, indexes, true);
+  this.rootLink.state[this.groupChild[0].pathToCоmponent].removeIndex(indexes, true);
   this.groupChild.length = 0;
 };
 
@@ -1668,7 +1783,8 @@ function HTMLixState(StateMap) {
       _templateVarDOM.innerHTML = context.stateSettings.templateVar;
     }
   }
-}
+} //создает контейнер - компонент (renderType = "container-outer")
+
 
 HTMLixState.prototype.containerInit = function (node, StateMap, key) {
   if (this.state[key] != undefined) return;
@@ -1676,7 +1792,8 @@ HTMLixState.prototype.containerInit = function (node, StateMap, key) {
   if (node == null || node == undefined) console.log("error в html разметке не найден контейнер " + key);
   if (StateMap[key] == undefined) console.log("error- проверьте корректность parent ключей в html - коде");
   this.state[key] = new Container(node, key, StateMap[key].props, StateMap[key].methods, null, key, this);
-};
+}; //создает компонент - обычный массив (renderType="array")
+
 
 HTMLixState.prototype.arrayInit = function (node, StateMap, key) {
   if (this.state[key] != undefined) return;
@@ -1751,13 +1868,15 @@ HTMLixState.prototype.arrayInit = function (node, StateMap, key) {
   if (this.state[key].data.length > lengthChildren) {
     console.log("warn - контейнеров " + StateMap[key].container + " в массиве " + key + " создано больше чем обьявлено в html, проверьте что контейнеры распологаются в массиве непосредственно, старайтесь избегать создания порежуточных тегов");
   }
-};
+}; //проверяет что созданы все виртуальные массивы при дозагрузке компонентов в fetchTemplates а также вызывает метод - событие onLoadAll
+
 
 HTMLixState.prototype.verifyFetchComponents = function (divEl) {
   if (this.verifiTemplateVarComponents(divEl)) {
     if (this.stateMethods != undefined && this.stateMethods.onLoadAll != undefined) this.stateMethods.onLoadAll.bind(this)();
   }
-};
+}; //проверяет что созданы все виртуальные массивы после создания всех компонентов с опцией templateVar
+
 
 HTMLixState.prototype.verifiTemplateVarComponents = function (divEl) {
   if (this.description.virtualArrayComponents != undefined) {
@@ -1776,154 +1895,8 @@ HTMLixState.prototype.verifiTemplateVarComponents = function (divEl) {
   }
 
   return true;
-};
+}; //удаляет обработчики событий со свойств - слушателей событий, а также дочерние контейнеры со свойств с типами group group-mix и render-variant
 
-HTMLixState.prototype.addContainer = function (stateNameProp, properties, insertLocation) {
-  if (this.state[stateNameProp] == undefined) console.log("не получается найти компонент" + stateNameProp + "в this.state");
-  var stateArray = this.state[stateNameProp];
-
-  if (stateArray.type != "array") {
-    console.log("создать контейнер можно только в массиве array");
-    return;
-  }
-
-  if (insertLocation != undefined && insertLocation != "and" && isNaN(insertLocation)) {
-    console.log("Введите корректную позицию для вставки контейнера в массив " + stateNameProp);
-    return;
-  }
-
-  var index = 0;
-
-  if (insertLocation == undefined || insertLocation == "and") {
-    index = stateArray.data.length;
-  } else if (typeof insertLocation == 'number') {
-    if (insertLocation > stateArray.data.length) insertLocation = stateArray.data.length;
-    index = insertLocation;
-  }
-
-  var Link = stateArray.templateData.cloneNode(true);
-  var desc = this.description[stateNameProp]; //console.log(this.description);
-
-  if (desc == undefined) {
-    if (this.description.virtualArrayComponents != undefined && this.description.virtualArrayComponents[stateNameProp] != undefined) {
-      desc = this.description.virtualArrayComponents[stateNameProp];
-    } else {
-      if (this.description.fetchComponents != undefined && this.description.fetchComponents[stateNameProp] != undefined) {
-        desc = this.description.fetchComponents[stateNameProp];
-      } else {
-        console.log("eror- не получается найти описание для компонета " + stateNameProp + " проверьте существуют ли обьекты fetchComponents, virtualArrayComponents в описании, параметре StateMap");
-      }
-    }
-  }
-
-  var container = new Container(Link, desc.container, desc.props, desc.methods, index, stateNameProp, this, true, properties);
-  var htmlLink = stateArray.htmlLink;
-
-  if (stateArray.selector != undefined) {
-    htmlLink = htmlLink.querySelector(stateArray.selector);
-    if (htmlLink == null || htmlLink == undefined) console.log("error - не удается найти селектор " + stateArray.selector + " для массива " + stateNameProp);
-  }
-
-  if (insertLocation == undefined || insertLocation == "and") {
-    if (this.description.virtualArrayComponents == undefined) {
-      htmlLink.appendChild(Link);
-    } else {
-      if (this.description.virtualArrayComponents[stateNameProp] == undefined) htmlLink.appendChild(Link);
-    }
-
-    stateArray.data.push(container);
-  } else if (typeof insertLocation == 'number') {
-    if (this.description.virtualArrayComponents == undefined) {
-      htmlLink.insertBefore(Link, htmlLink.children[insertLocation]);
-    } else {
-      if (this.description.virtualArrayComponents[stateNameProp] == undefined) htmlLink.insertBefore(Link, htmlLink.children[insertLocation]);
-    }
-
-    stateArray.data.splice(insertLocation, 0, container);
-
-    for (var i = insertLocation; i < stateArray.data.length; i++) {
-      stateArray.data[i].index = i;
-    }
-  }
-
-  if (properties != undefined) container.setAllProps(properties);
-  return container;
-};
-
-HTMLixState.prototype.changeOrder = function (stateNameProp, newOrderArr) {
-  var stateArray = this.state[stateNameProp];
-  var htmlLink = stateArray.htmlLink;
-
-  if (stateArray.selector != undefined) {
-    htmlLink = htmlLink.querySelector(stateArray.selector);
-    if (htmlLink == null || htmlLink == undefined) console.log("error - не удается найти селектор " + stateArray.selector + " для массива " + stateNameProp);
-  }
-
-  if (newOrderArr.length != stateArray.data.length) {
-    console.log("в массиве newOrderArr, должно быть столько же элементов скольео и в массиве stateNameProp.data");
-    return;
-  }
-
-  var newData = [];
-
-  for (var i = 0; i < newOrderArr.length; i++) {
-    newData.push(stateArray.data[newOrderArr[i]]);
-  }
-
-  stateArray.data = newData;
-  stateArray.htmlLink.innerHTML = "";
-
-  for (var k = 0; k < stateArray.data.length; k++) {
-    stateArray.htmlLink.appendChild(stateArray.data[k].htmlLink);
-    stateArray.data[k].index = k;
-  }
-};
-
-HTMLixState.prototype.removeAll = function (stateNameProp, widthChild) {
-  if (this.state[stateNameProp].type != "array") return;
-
-  for (var index = 0; index < this.state[stateNameProp].data.length; index++) {
-    this.clearContainerProps(stateNameProp, index, widthChild);
-    this.state[stateNameProp].data[index].htmlLink.remove();
-  }
-
-  this.state[stateNameProp].data.length = 0;
-  this.state[stateNameProp].data = [];
-};
-
-HTMLixState.prototype.removeByIndex = function (stateNameProp, index, widthChild) {
-  this.removeByIndexes(stateNameProp, [index], widthChild);
-};
-
-HTMLixState.prototype.removeByIndexes = function (stateNameProp, indexArray, widthChild) {
-  if (this.state[stateNameProp].type != "array") return;
-
-  if (indexArray.length == undefined) {
-    console.log("error - некорректно задан второй аргумент для функции removeByIndexes, проверьте что это не пустой массив, а также номер эелемента для удаления");
-    return;
-  }
-
-  for (var r = 0; r < indexArray.length; r++) {
-    if (indexArray[r] > this.state[stateNameProp].data.length - 1) {
-      console.log("error - индекс для удаления " + indexArray[r] + " больше количества элементов в массиве " + stateNameProp);
-      return;
-    }
-
-    this.clearContainerProps(stateNameProp, indexArray[r], widthChild);
-    this.state[stateNameProp].data[indexArray[r]].htmlLink.remove();
-  }
-
-  var newData = this.state[stateNameProp].data.filter(function (container, i) {
-    return !indexArray.some(function (numb) {
-      return numb == i;
-    });
-  });
-  this.state[stateNameProp].data = newData;
-
-  for (var i = 0; i < this.state[stateNameProp].data.length; i++) {
-    this.state[stateNameProp].data[i].index = i;
-  }
-};
 
 HTMLixState.prototype.clearContainerProps = function (stateNameProp, index, widthChild) {
   var container = this.state[stateNameProp].data[index];
@@ -1940,16 +1913,10 @@ HTMLixState.prototype.clearContainerProps = function (stateNameProp, index, widt
       container.props[key].renderChild.remove(true);
     } else if (widthChild != undefined && widthChild == true && container.props[key].groupChild != undefined && container.props[key].groupChild.length > 0) {
       container.props[key].clearGroup();
-      /*
-            var indexesArr = [];						
-      for(var it =0; it < container.props[key].groupChild.length; it++){
-      indexesArr.push(container.props[key].groupChild[it].index);
-      }
-      this.removeByIndexes(container.props[key].groupChild[0].pathToCоmponent,  indexesArr, true);
-      */
     }
   }
-};
+}; ///метод ля отсеивания повторяющихся полей какого либо массива	
+
 
 HTMLixState.prototype.getDifrentFilds = function (array, fild) {
   var newArr = [];
@@ -1984,7 +1951,8 @@ HTMLixState.prototype.getDifrentFilds = function (array, fild) {
   }
 
   return newArr;
-};
+}; //загрузка шаблонов для fetchTemplate option
+
 
 HTMLixState.prototype.fetchTemplates = function (callb, templatePath) {
   if (templatePath == undefined) console.log("error не указана дериктория для поиска шаблона в настройках .stateSettings.templatePath");
@@ -2005,7 +1973,8 @@ HTMLixState.prototype.fetchTemplates = function (callb, templatePath) {
 
 HTMLixState.prototype.capitalizeFirstLetter = function (string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
-};
+}; //наследование свойств контейнера	
+
 
 HTMLixState.prototype.containerExtend = function (parentContainerName, props, methods) {
   ///описание наследуемого компонента		   

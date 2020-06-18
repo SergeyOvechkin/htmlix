@@ -154,7 +154,6 @@ PropGroup.prototype.removeFromGroup = function(groupID){
 
 				this.groupChild[t].groupId = t;
 	}
-
 }
 PropGroup.prototype.clearGroup = function(){
 	
@@ -168,8 +167,7 @@ PropGroup.prototype.clearGroup = function(){
 
 				indexes.push(this.groupChild[i].index);
 	}
-
-	this.rootLink.removeByIndexes(this.groupChild[0].pathToCоmponent, indexes, true);
+	this.rootLink.state[this.groupChild[0].pathToCоmponent].removeIndex(indexes, true);
 
 	this.groupChild.length = 0;
 }
@@ -190,8 +188,7 @@ PropGroup.prototype.getGroupsArray = function(){
 							  return this.groupArray;
 							  
 						  }
-					  }
-					  
+					  }			  
 				  }					  	
 		}
 	return null;	

@@ -104,13 +104,8 @@ Container.prototype.remove = function(widthChild){
 		this.renderParent.renderChild = null;
 	
 	}
-	if(widthChild != undefined && widthChild == true){
+	  this.rootLink.state[this.pathToCоmponent].removeIndex([this.index], widthChild);
 
-				this.rootLink.removeByIndexes(this.pathToCоmponent, [this.index], true);
-
-			}else{
-		this.rootLink.removeByIndexes(this.pathToCоmponent, [this.index]);
-	}
       return true;
 }
 Container.prototype.setAllProps = function(properties){
