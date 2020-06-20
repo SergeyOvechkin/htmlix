@@ -189,6 +189,13 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 									 this.state[key].methods[string] = StateMap[key]["arrayMethods"][  string ].bind( this.state[key]);
 									 continue;
 									 
+							}else if(type == "extend"){
+									 
+									 var isTrue = this.propExtend(StateMap[key]["arrayProps"][t][2], StateMap[key]["arrayProps"][t][3], StateMap[key]["arrayProps"], StateMap[key]["arrayMethods"], StateMap[key]["arrayProps"][t][0], t);
+									 if(isTrue == false)continue;
+									 t--;
+									 continue;
+								 
 							}
 
 														var htmlLinkToProp  = this.state[key].htmlLink;
@@ -382,7 +389,7 @@ HTMLixState.prototype.containerExtend =  function(parentContainerName, props, me
 			   
 			   parCont = this.description.fetchComponents[parentContainerName];
 		   }
-		   if(parCont == undefined)console.log("error неправильно указано имя компонента наследуемого компонента в container_extend");
+		   if(parCont == undefined)console.log("error неправильно указано имя наследуемого компонента в container_extend");
 		   		 
 		   var shareProps = parCont.props;
 				
@@ -412,5 +419,53 @@ HTMLixState.prototype.containerExtend =  function(parentContainerName, props, me
 						
 			  }
 		  }		     
+  }
+  //наследование отдельных свойств
+  HTMLixState.prototype.propExtend =  function(parentContainerName, propsOrArrayProps, props, methods, propName, index){
+	  
+	  	   ///описание наследуемого компонента		   
+		  var parCont = this.description[parentContainerName];
+		   if(parCont == undefined &&  this.description.virtualArrayComponents != undefined){
+			   
+			   parCont = this.description.virtualArrayComponents[parentContainerName];
+			   
+		   }else if(parCont == undefined &&  this.description.fetchComponents != undefined){
+			   
+			   parCont = this.description.fetchComponents[parentContainerName];
+		   }
+		   if(parCont == undefined)console.log("error неправильно указано имя  наследуемого компонента в prop_extend");
+		   		 
+		   var shareProps = parCont[propsOrArrayProps];
+		   
+		   var isExtend = false;
+	       
+		   for(var u =0; u < shareProps.length; u++){ 
+		   
+		   			  var keyProp = shareProps[u];
+					if(typeof keyProp == "object")keyProp = shareProps[u][0];
+		           
+				   if(keyProp == propName){
+					   
+					   isExtend = true;
+					   
+					    props[index] = shareProps[u];
+					   
+					   if(propsOrArrayProps == "props" && parCont.methods[keyProp] != undefined){
+						   
+						   methods[keyProp] = parCont.methods[keyProp];
+						   
+					   }else if(propsOrArrayProps == "arrayProps" && parCont.arrayMethods[keyProp] != undefined){
+						   
+						   methods[keyProp] = parCont.arrayMethods[keyProp];
+					   }
+				   }
+				   
+                   				   
+		   }  
+		   if(!isExtend){
+			   
+			   console.log("error свойства "+propName+" в компоненте "+parentContainerName+" не найдено");
+			   return false;
+		   }
   }
 

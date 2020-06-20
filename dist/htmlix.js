@@ -242,6 +242,11 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
         if (this.methods == undefined) this.methods = {};
         this.methods[string] = methods[string].bind(this);
         continue;
+      } else if (type == "extend") {
+        var isTrue = this.rootLink.propExtend(props[i2][2], props[i2][3], props, methods, props[i2][0], i2);
+        if (isTrue == false) continue;
+        i2--;
+        continue;
       }
 
       var htmlLinkToProp = this.htmlLink;
@@ -1825,6 +1830,11 @@ HTMLixState.prototype.arrayInit = function (node, StateMap, key) {
           if (this.state[key].methods == undefined) this.state[key].methods = {};
           this.state[key].methods[string] = StateMap[key]["arrayMethods"][string].bind(this.state[key]);
           continue;
+        } else if (type == "extend") {
+          var isTrue = this.propExtend(StateMap[key]["arrayProps"][t][2], StateMap[key]["arrayProps"][t][3], StateMap[key]["arrayProps"], StateMap[key]["arrayMethods"], StateMap[key]["arrayProps"][t][0], t);
+          if (isTrue == false) continue;
+          t--;
+          continue;
         }
 
         var htmlLinkToProp = this.state[key].htmlLink;
@@ -1986,7 +1996,7 @@ HTMLixState.prototype.containerExtend = function (parentContainerName, props, me
     parCont = this.description.fetchComponents[parentContainerName];
   }
 
-  if (parCont == undefined) console.log("error неправильно указано имя компонента наследуемого компонента в container_extend");
+  if (parCont == undefined) console.log("error неправильно указано имя наследуемого компонента в container_extend");
   var shareProps = parCont.props;
 
   if (parCont.share_props != undefined) {
@@ -2008,6 +2018,43 @@ HTMLixState.prototype.containerExtend = function (parentContainerName, props, me
     if (parCont.methods[keyProp] != undefined) {
       methods[keyProp] = parCont.methods[keyProp];
     }
+  }
+}; //наследование отдельных свойств
+
+
+HTMLixState.prototype.propExtend = function (parentContainerName, propsOrArrayProps, props, methods, propName, index) {
+  ///описание наследуемого компонента		   
+  var parCont = this.description[parentContainerName];
+
+  if (parCont == undefined && this.description.virtualArrayComponents != undefined) {
+    parCont = this.description.virtualArrayComponents[parentContainerName];
+  } else if (parCont == undefined && this.description.fetchComponents != undefined) {
+    parCont = this.description.fetchComponents[parentContainerName];
+  }
+
+  if (parCont == undefined) console.log("error неправильно указано имя  наследуемого компонента в prop_extend");
+  var shareProps = parCont[propsOrArrayProps];
+  var isExtend = false;
+
+  for (var u = 0; u < shareProps.length; u++) {
+    var keyProp = shareProps[u];
+    if (_typeof(keyProp) == "object") keyProp = shareProps[u][0];
+
+    if (keyProp == propName) {
+      isExtend = true;
+      props[index] = shareProps[u];
+
+      if (propsOrArrayProps == "props" && parCont.methods[keyProp] != undefined) {
+        methods[keyProp] = parCont.methods[keyProp];
+      } else if (propsOrArrayProps == "arrayProps" && parCont.arrayMethods[keyProp] != undefined) {
+        methods[keyProp] = parCont.arrayMethods[keyProp];
+      }
+    }
+  }
+
+  if (!isExtend) {
+    console.log("error свойства " + propName + " в компоненте " + parentContainerName + " не найдено");
+    return false;
   }
 };
 //# sourceMappingURL=htmlix.js.map

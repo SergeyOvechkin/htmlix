@@ -26,19 +26,19 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 
          if(methods == undefined)methods = {};
 
-		 		 if(typeof props[i2] == "string"){
+		if(typeof props[i2] == "string"){
 
-			 			 	    var htmlLinkToProp = this.htmlLink.querySelector('[data-'+containerName+'-'+props[i2]+']');
+			 	var htmlLinkToProp = this.htmlLink.querySelector('[data-'+containerName+'-'+props[i2]+']');
 
-										if(htmlLinkToProp == undefined)htmlLinkToProp = this.htmlLink;			
+				if(htmlLinkToProp == undefined)htmlLinkToProp = this.htmlLink;			
 
-							this.props[ props[i2] ] = constructorProps(htmlLinkToProp, containerName,	props[i2], methods[ props[i2] ],
-																						this.pathToCоmponent,
-																						this,
-																						this.rootLink,
-																						newProps
-																					);	
-		 }else{
+				this.props[ props[i2] ] = constructorProps(htmlLinkToProp, containerName,	props[i2], methods[ props[i2] ],
+																this.pathToCоmponent,
+																this,
+																this.rootLink,
+																newProps
+															);	
+		}else{
 
 			     				 var string =  props[i2][0];
 
@@ -53,8 +53,15 @@ function Container(htmlLink, containerName,  props, methods, index, pathToContai
 									 this.methods[string] = methods[ string ].bind(this);
 									 continue;
 									 
+								 }else if(type == "extend"){
+									 
+									 var isTrue = this.rootLink.propExtend(props[i2][2], props[i2][3], props, methods, props[i2][0], i2);
+									 if(isTrue == false)continue;
+									 i2--;
+									 continue;
+								 
 								 }
-
+									 
 				 				 var  htmlLinkToProp = this.htmlLink;
 
 				 				 if(selector != ""){
