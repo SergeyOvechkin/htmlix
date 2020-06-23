@@ -21,27 +21,9 @@ PropVariant.prototype = Object.create(PropSubtype.prototype);
 
 Object.defineProperty(PropVariant.prototype, 'constructor', { 
     value: PropVariant, 
-    enumerable: false, // false, чтобы данное свойство не появлялось в цикле for in
+    enumerable: false,
     writable: true });
-/*
-PropVariant.prototype.component = function(){
 
-	return this.rootLink.state[this.pathToCоmponent];
-}
-PropVariant.prototype.removeAllChild = function(){	
-	
-	var children = this.htmlLink.children;
-	
-	var count = children.length;
-	
-	for(var p=0; p< count ; p++ ){
-	
-		children[0].remove();
-		
-	}
-	
-}
-*/
 PropVariant.prototype.getProp= function(value){
 	
 				var return_obg = {};

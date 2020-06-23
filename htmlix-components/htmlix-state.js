@@ -468,4 +468,114 @@ HTMLixState.prototype.containerExtend =  function(parentContainerName, props, me
 			   return false;
 		   }
   }
+  
+ HTMLixState.prototype.isEvent = function(type){
 
+		var isEv = false;
+
+	switch(type){
+
+				case'click':
+		isEv = 'click';
+		break;
+
+				case 'keydown':
+		isEv = 'keydown';
+		break;	
+
+				case'dblclick':
+		isEv = 'dblclick';
+		break;
+
+				case 'contextmenu':
+		isEv = 'contextmenu';
+		break;	
+
+		case'selectstart':
+		isEv = 'selectstart';
+		break;
+
+				case 'mousewheel':
+		isEv = 'mousewheel';
+		break;	
+
+				case'mousemove':
+		isEv = 'mousemove';
+		break;
+
+				case 'mouseout':
+		isEv = 'mouseout';
+		break;	
+
+				case'mouseover':
+		isEv = 'mouseover';
+		break;
+
+				case 'mouseup':
+		isEv = 'mouseup';
+		break;	
+
+				case'mousedown':
+		isEv = 'mousedown';
+		break;
+
+				case 'keypress':
+		isEv = 'keypress';
+		break;	
+
+		case'keyup':
+		isEv = 'keyup';
+		break;
+
+				case 'focus':
+		isEv = 'focus';
+		break;	
+
+				case'blur':
+		isEv = 'blur';
+		break;
+
+				case 'change':
+		isEv = 'change';
+		break;	
+
+				case 'reset':
+		isEv = 'reset';
+		break;	
+
+		case'select':
+		isEv = 'select';
+		break;
+
+				case 'submit':
+		isEv = 'submit';
+		break;	
+
+				case 'abort':
+		isEv = 'abort';
+		break;
+
+				case 'change':
+		isEv = 'change';
+		break;			
+	}
+
+	return isEv;
+}
+
+HTMLixState.prototype.isEmiter = function(emiterName){
+
+	var isEmiter = false;
+
+    for(var key123 in this.eventProps){		
+		if(key123 == emiterName){
+			isEmiter = key123;
+		}
+	}
+
+			return  isEmiter;
+}
+HTMLixState.prototype.$$ = function(emiterName){
+	
+	return this.eventProps[emiterName];
+}

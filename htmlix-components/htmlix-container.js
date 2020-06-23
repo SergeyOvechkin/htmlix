@@ -155,3 +155,11 @@ Container.prototype.component = function(){
 		
 	return this.rootLink.state[this.pathToCоmponent];
 }
+Container.prototype.$ = function(){
+	
+	return this.rootLink;
+}
+Container.prototype.$$ = function(eventPropName){
+	
+	return this.rootLink.eventProps[eventPropName];
+}

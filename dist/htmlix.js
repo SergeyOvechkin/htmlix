@@ -202,6 +202,14 @@ HTMLixArray.prototype.order = function (newOrderArr) {
     this.data[k].index = k;
   }
 };
+
+HTMLixArray.prototype.$ = function () {
+  return this.rootLink;
+};
+
+HTMLixArray.prototype.$$ = function (eventPropName) {
+  return this.rootLink.eventProps[eventPropName];
+};
 function Container(htmlLink, containerName, props, methods, index, pathToContainer, rootLink, isRunonCreatedContainer, newProps) {
   this.htmlLink = htmlLink;
   this.rootLink = rootLink;
@@ -323,6 +331,14 @@ Container.prototype.getAllProps = function (properties) {
 Container.prototype.component = function () {
   return this.rootLink.state[this.pathToCоmponent];
 };
+
+Container.prototype.$ = function () {
+  return this.rootLink;
+};
+
+Container.prototype.$$ = function (eventPropName) {
+  return this.rootLink.eventProps[eventPropName];
+};
 function HTMLixRouter(state, routes) {
   var namePathInRoutes = "";
   var _templateVar = false;
@@ -357,10 +373,8 @@ function HTMLixRouter(state, routes) {
       var word2 = pathArray.slice(-1)[0]; //поиск последнего слова в маршруте чтобы убрать пустую строку
 
       if (pathArray.length > 2 && word2 == "") {
-        //word2 = pathArrayFind.slice(-2)[0];
         pathArray.pop();
-      } //console.log(pathArrayFind);
-
+      }
 
       var searchInword = false;
       var searchInwordCount = {};
@@ -375,11 +389,11 @@ function HTMLixRouter(state, routes) {
 
         if (pathArrayFind[y][0] == ":") {
           isParam = true;
-          paramWord[y] = y; //console.log(paramWord+" param word "+ pathArrayFind[y]);
+          paramWord[y] = y;
         }
       }
       /*
-      		if(word[word.length-1] == "*"){
+      if(word[word.length-1] == "*"){
       				searchInword = true;
       	}
       */
@@ -399,9 +413,7 @@ function HTMLixRouter(state, routes) {
         } else if (isParam == true && paramWord[i] != undefined) {
           count++;
         }
-      } //console.log(count+" - "+pathArrayFind.length);
-      //console.log(pathArrayFind); console.log(pathArray);
-
+      }
 
       if (isCountSerchСoincide == false) {
         if (pathArrayFind.length == count) {
@@ -483,7 +495,7 @@ function HTMLixRouter(state, routes) {
 
         }
 
-        if (this.htmlLink[key] == undefined || this.htmlLink[key] == null) this.htmlLink[key] = document.querySelector("[data-" + key + "]"); //console.log(this.htmlLink[key]);
+        if (this.htmlLink[key] == undefined || this.htmlLink[key] == null) this.htmlLink[key] = document.querySelector("[data-" + key + "]"); //console.log(this.htmlLink[key]);								
       }
 
       for (var key in this.routes[nameArrComp].routComponent) {
@@ -522,7 +534,8 @@ function HTMLixRouter(state, routes) {
   routerObj.findRouters(); // stateWithRoutes.router.component = stateWithRoutes.state[routes[namePathInRoutes].routComponent];  
 
   return stateWithRoutes;
-}
+} ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 function EventEmiter(eventName, prop, listeners, listenersEventMethods, behavior, rootLink) {
   this.listeners = listeners;
@@ -574,8 +587,16 @@ EventEmiter.prototype.setEventProp = function (prop) {
   this.emit();
 };
 
+EventEmiter.prototype.set = function (prop) {
+  this.setEventProp(prop);
+};
+
 EventEmiter.prototype.getEventProp = function () {
   return this.prop;
+};
+
+EventEmiter.prototype.get = function (prop) {
+  this.getEventProp(prop);
 };
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -608,9 +629,9 @@ function constructorProps(htmlLink, keyData1, keyData2, eventMethod, pathToConta
     return new PropGroup(htmlLink, propType, keyData1, keyData2, pathToContainer, parentContainer, rootLink, newProps);
   } else if (propType == "group-mix") {
     return new PropGroupMix(htmlLink, propType, keyData1, keyData2, pathToContainer, parentContainer, rootLink, newProps);
-  } else if (eventMethod != undefined && isEmiter(propType, rootLink) != false) {
+  } else if (eventMethod != undefined && rootLink.isEmiter(propType) != false) {
     return new PropEventEmiter(htmlLink, propType, keyData2, eventMethod, pathToContainer, parentContainer, rootLink);
-  } else if (eventMethod != undefined && isEvent(propType) != false) {
+  } else if (eventMethod != undefined && rootLink.isEvent(propType) != false) {
     return new PropStandartEvent(htmlLink, propType, keyData2, eventMethod, pathToContainer, parentContainer, rootLink);
   } else {
     return new PropCommon(htmlLink, propType);
@@ -640,6 +661,18 @@ function PropSubtype(htmlLink, propType, propName, pathToComponent, parentCompon
 
 PropSubtype.prototype.component = function () {
   return this.rootLink.state[this.pathToCоmponent];
+};
+
+PropSubtype.prototype.props = function (propName) {
+  return this.parent.props[propName];
+};
+
+PropSubtype.prototype.$$ = function (eventPropName) {
+  return this.rootLink.eventProps[eventPropName];
+};
+
+PropSubtype.prototype.$ = function () {
+  return this.rootLink;
 };
 
 PropSubtype.prototype.removeAllChild = function () {
@@ -787,110 +820,6 @@ PropCommon.prototype.isAttr = function (type) {
 
   return isAttr;
 };
-
-function isEmiter(emiterName, rootLink_p) {
-  var isEmiter = false;
-
-  for (var key123 in rootLink_p.eventProps) {
-    if (key123 == emiterName) {
-      isEmiter = key123;
-    }
-  }
-
-  return isEmiter;
-}
-
-function isEvent(type) {
-  var isEv = false;
-
-  switch (type) {
-    case 'click':
-      isEv = 'click';
-      break;
-
-    case 'keydown':
-      isEv = 'keydown';
-      break;
-
-    case 'dblclick':
-      isEv = 'dblclick';
-      break;
-
-    case 'contextmenu':
-      isEv = 'contextmenu';
-      break;
-
-    case 'selectstart':
-      isEv = 'selectstart';
-      break;
-
-    case 'mousewheel':
-      isEv = 'mousewheel';
-      break;
-
-    case 'mousemove':
-      isEv = 'mousemove';
-      break;
-
-    case 'mouseout':
-      isEv = 'mouseout';
-      break;
-
-    case 'mouseover':
-      isEv = 'mouseover';
-      break;
-
-    case 'mouseup':
-      isEv = 'mouseup';
-      break;
-
-    case 'mousedown':
-      isEv = 'mousedown';
-      break;
-
-    case 'keypress':
-      isEv = 'keypress';
-      break;
-
-    case 'keyup':
-      isEv = 'keyup';
-      break;
-
-    case 'focus':
-      isEv = 'focus';
-      break;
-
-    case 'blur':
-      isEv = 'blur';
-      break;
-
-    case 'change':
-      isEv = 'change';
-      break;
-
-    case 'reset':
-      isEv = 'reset';
-      break;
-
-    case 'select':
-      isEv = 'select';
-      break;
-
-    case 'submit':
-      isEv = 'submit';
-      break;
-
-    case 'abort':
-      isEv = 'abort';
-      break;
-
-    case 'change':
-      isEv = 'change';
-      break;
-  }
-
-  return isEv;
-}
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function PropGroup(htmlLink, propType, keyData1, propName, pathToComponent, parentComponent, rootLink, newProps) {
@@ -912,25 +841,6 @@ Object.defineProperty(PropGroup.prototype, 'constructor', {
   // false, чтобы данное свойство не появлялось в цикле for in
   writable: true
 });
-/*
-PropGroup.prototype.component = function(){
-
-	return this.rootLink.state[this.pathToCоmponent];
-}
-PropGroup.prototype.removeAllChild = function(){	
-	
-	var children = this.htmlLink.children;
-	
-	var count = children.length;
-	
-	for(var p=0; p< count ; p++ ){
-	
-		children[0].remove();
-		
-	}
-	
-}
-*/
 
 PropGroup.prototype.getProp = function (value) {
   if (value == undefined) {
@@ -1477,28 +1387,8 @@ PropVariant.prototype = Object.create(PropSubtype.prototype);
 Object.defineProperty(PropVariant.prototype, 'constructor', {
   value: PropVariant,
   enumerable: false,
-  // false, чтобы данное свойство не появлялось в цикле for in
   writable: true
 });
-/*
-PropVariant.prototype.component = function(){
-
-	return this.rootLink.state[this.pathToCоmponent];
-}
-PropVariant.prototype.removeAllChild = function(){	
-	
-	var children = this.htmlLink.children;
-	
-	var count = children.length;
-	
-	for(var p=0; p< count ; p++ ){
-	
-		children[0].remove();
-		
-	}
-	
-}
-*/
 
 PropVariant.prototype.getProp = function (value) {
   var return_obg = {};
@@ -2056,5 +1946,113 @@ HTMLixState.prototype.propExtend = function (parentContainerName, propsOrArrayPr
     console.log("error свойства " + propName + " в компоненте " + parentContainerName + " не найдено");
     return false;
   }
+};
+
+HTMLixState.prototype.isEvent = function (type) {
+  var isEv = false;
+
+  switch (type) {
+    case 'click':
+      isEv = 'click';
+      break;
+
+    case 'keydown':
+      isEv = 'keydown';
+      break;
+
+    case 'dblclick':
+      isEv = 'dblclick';
+      break;
+
+    case 'contextmenu':
+      isEv = 'contextmenu';
+      break;
+
+    case 'selectstart':
+      isEv = 'selectstart';
+      break;
+
+    case 'mousewheel':
+      isEv = 'mousewheel';
+      break;
+
+    case 'mousemove':
+      isEv = 'mousemove';
+      break;
+
+    case 'mouseout':
+      isEv = 'mouseout';
+      break;
+
+    case 'mouseover':
+      isEv = 'mouseover';
+      break;
+
+    case 'mouseup':
+      isEv = 'mouseup';
+      break;
+
+    case 'mousedown':
+      isEv = 'mousedown';
+      break;
+
+    case 'keypress':
+      isEv = 'keypress';
+      break;
+
+    case 'keyup':
+      isEv = 'keyup';
+      break;
+
+    case 'focus':
+      isEv = 'focus';
+      break;
+
+    case 'blur':
+      isEv = 'blur';
+      break;
+
+    case 'change':
+      isEv = 'change';
+      break;
+
+    case 'reset':
+      isEv = 'reset';
+      break;
+
+    case 'select':
+      isEv = 'select';
+      break;
+
+    case 'submit':
+      isEv = 'submit';
+      break;
+
+    case 'abort':
+      isEv = 'abort';
+      break;
+
+    case 'change':
+      isEv = 'change';
+      break;
+  }
+
+  return isEv;
+};
+
+HTMLixState.prototype.isEmiter = function (emiterName) {
+  var isEmiter = false;
+
+  for (var key123 in this.eventProps) {
+    if (key123 == emiterName) {
+      isEmiter = key123;
+    }
+  }
+
+  return isEmiter;
+};
+
+HTMLixState.prototype.$$ = function (emiterName) {
+  return this.eventProps[emiterName];
 };
 //# sourceMappingURL=htmlix.js.map

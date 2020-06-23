@@ -245,3 +245,11 @@ HTMLixArray.prototype.order = function(newOrderArr){
 		this.data[k].index = k;
 	}
 }
+HTMLixArray.prototype.$ = function(){
+	
+	return this.rootLink;
+}
+HTMLixArray.prototype.$$ = function(eventPropName){
+	
+	return this.rootLink.eventProps[eventPropName];
+}

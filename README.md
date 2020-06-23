@@ -2019,6 +2019,17 @@ array:
 ```
 <a href="https://sergeyovechkin.github.io/tests/test-aux-methods/index.html">Полный код данного теста</a>
 
+## Сокращения 
+
+Для всех компонентов и свойств: 
+* `this.$$("emiter-name")` - сокращенный доступ к пользовательским событиям
+* `this.$$("emiter-name").set("prop")` - сокращенное название setEventProp
+* `this.$$("emiter-name").get("prop")` - сокращенное название getEventProp
+
+* `this.$()` - сокращенный доступ к корневому экземпляру приложения
+
+Только для свойств:
+* `this.props("propName")` - сокращенный доступ к свойству
 
 
 

@@ -8,7 +8,6 @@ function HTMLixRouter(state, routes){
         
 		if(! _templateVar)namePathInRoutes = findComponent(routes);
 
-
 //поиск соответствующего роута
 function findComponent(routes){
 
@@ -20,26 +19,18 @@ function findComponent(routes){
 
 
 									return urlPath;
-		}
-
-
-					var pathArray = urlPath.split("/");
+				}
+				var pathArray = urlPath.split("/");
 					
-				
-
 			for(var key in routes){
                     
 					var isCountSerchСoincide = true;
 					
 					var pathArrayFind = key.split("/");
-					
-					    
-							
+	
 						var word = pathArrayFind.slice(-1)[0];  //поиск последнего слова в маршруте чтобы проверить есть ли у него в конце знак *
 						var paramWord = {};
-						
-					
-						
+
 						if( pathArrayFind.length>2 && word == ""){
 							 word = pathArrayFind.slice(-2)[0];
 							 pathArrayFind.pop();
@@ -49,16 +40,13 @@ function findComponent(routes){
 							 pathArrayFind.pop();
 							isCountSerchСoincide = false;
 						}
-						
-				
-							
+												
 						var word2 = pathArray.slice(-1)[0];  //поиск последнего слова в маршруте чтобы убрать пустую строку
 						
 						if( pathArray.length>2 && word2 == ""){
-							 //word2 = pathArrayFind.slice(-2)[0];
+							
 							 pathArray.pop();
 						}
-							//console.log(pathArrayFind);
 						var searchInword = false;
 						
 						var searchInwordCount = {};
@@ -78,20 +66,15 @@ function findComponent(routes){
 								
 								isParam = true;
 								paramWord[y] = y;
-								
-								//console.log(paramWord+" param word "+ pathArrayFind[y]);
+
 							}
 						}
-
 						/*
-
 						if(word[word.length-1] == "*"){
 
 								searchInword = true;
 							}
 						*/
-						
-
 						var count = 0;
 
 					for(var i=0; i< pathArrayFind.length; i++ ){
@@ -116,35 +99,22 @@ function findComponent(routes){
 				
 											count++;
 									}
-
-						}
-						//console.log(count+" - "+pathArrayFind.length);
-						
-						//console.log(pathArrayFind); console.log(pathArray);
-						
+						}						
 			if(isCountSerchСoincide == false){
 				if(pathArrayFind.length == count){
 					
 					namePathInRoutes = key;
 					return key;
-				}
-				
+				}				
 			}								
 			if(pathArrayFind.length == count && pathArrayFind.length == pathArray.length){
 
 							namePathInRoutes = key;
-							
-
-				return key;
-
+							return key;
 			}
 		}		
 		return null;
 	}
-
-
-
-
 //поиск шаблона
 if(! _templateVar){
 	if(routes[namePathInRoutes] != undefined && routes[namePathInRoutes].templatePath != undefined){
@@ -187,14 +157,11 @@ if(! _templateVar){
 				delete state[key2]				  
 
 				  			  }
-
 	}
 }	
 	var stateWithRoutes = new HTMLixState(state);
 	
-	
-
-		var routerObj = {
+	var routerObj = {
 				routes:  routes,
 
 				htmlLink: {}, 
@@ -211,14 +178,11 @@ if(! _templateVar){
 						
 								   nameArrComp = this.matchRout(this.routes);
 
-
 										if(nameArrComp == null){
 
 												console.log("router error - не удается найти совпадающий rout для маршрута "+window.location.pathname)
-				                        }
-											
-					}
-					
+				                        }								
+					}				
 					for(var key in this.routes[nameArrComp].routComponent){
 						
 						//console.log(key);
@@ -239,11 +203,9 @@ if(! _templateVar){
 								this.countError = this.countError+1;
 							}
 							//console.log(key);
-						}
-						
+						}						
 						if(this.htmlLink[key] == undefined || this.htmlLink[key] == null)this.htmlLink[key]= document.querySelector("[data-"+key+"]");
-						//console.log(this.htmlLink[key]);
-								
+						//console.log(this.htmlLink[key]);								
 					}
 					for(var key in this.routes[nameArrComp].routComponent){
 						
@@ -253,15 +215,11 @@ if(! _templateVar){
 								
 								this.htmlLink[key]= this.component[ this.routes[nameArrComp].routComponent[keyRouter] ].htmlLink.querySelector("[data-"+key+"]");
 								
-								if(this.htmlLink[key] != undefined || this.htmlLink[key] != null) continue;
-								
-							}
-							
-						}
-						
+								if(this.htmlLink[key] != undefined || this.htmlLink[key] != null) continue;								
+							}							
+						}					
 						if(this.htmlLink[key] == undefined || this.htmlLink[key] == null) console.log("error в html коде не найден роутер data-"+key);
 					}
-
 			},
 			setHtml: function (nameArrComp){
 				
@@ -270,15 +228,10 @@ if(! _templateVar){
 						
 						var key2 = this.routes[nameArrComp].routComponent[key];
 						
-						
-				
 				        this.htmlLink[key].innerHTML = "";
 						this.htmlLink[key].appendChild(
 						this.component[key2].htmlLink);
-
-				}
-				
-				
+				}			
 			},
 			setRout: function(url, newComponent){
 				
@@ -289,10 +242,7 @@ if(! _templateVar){
 					url,
 					url
 			);
-
-
 				var nameArrComp = this.matchRout(this.routes);
-
 
 					if(nameArrComp == null){
 
@@ -302,10 +252,7 @@ if(! _templateVar){
 				this.setHtml(nameArrComp);
 
 		}
-
 	}
-
-		
 	    stateWithRoutes.router = routerObj;
 
 		stateWithRoutes.router.rootLink = stateWithRoutes;
@@ -318,7 +265,7 @@ if(! _templateVar){
 
 
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 function EventEmiter(eventName, prop, listeners, listenersEventMethods, behavior, rootLink){
@@ -335,10 +282,7 @@ function EventEmiter(eventName, prop, listeners, listenersEventMethods, behavior
 		this.behavior = behavior.bind(this);
 		this.rootLink = rootLink;
 	}
-
-
 }
-
 EventEmiter.prototype.addListener = function(htmlLinkToListener, eventMethod, eventName, nameListener){
 
 
@@ -348,7 +292,6 @@ EventEmiter.prototype.addListener = function(htmlLinkToListener, eventMethod, ev
 
 		this.listenersEventMethods[nameListener] = eventMethod;
 }
-
 EventEmiter.prototype.removeListener = function(htmlLinkToListener){
 
 			var index = null;
@@ -364,7 +307,6 @@ EventEmiter.prototype.removeListener = function(htmlLinkToListener){
 				delete this.listenersEventMethods[index];
 		delete this.listeners[index];
 }
-
 EventEmiter.prototype.emit = function(){
 	
 	    if(this.behavior != null){
@@ -379,21 +321,22 @@ EventEmiter.prototype.emit = function(){
 				this.listeners[key].dispatchEvent(this.event);
 
 			}
-
-	}
-
+}
 EventEmiter.prototype.setEventProp = function(prop){ 
 
 	this.prop = prop;
 
 		this.emit();
-
 }
-
+EventEmiter.prototype.set = function(prop){ 
+     this.setEventProp(prop)
+}
 EventEmiter.prototype.getEventProp = function(){ 
 
 		return this.prop;
-
+}
+EventEmiter.prototype.get = function(prop){ 
+     this.getEventProp(prop)
 }
 
 
