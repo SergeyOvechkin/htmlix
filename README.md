@@ -22,7 +22,7 @@
 
 
 <ul>
-<li><a href="https://sergeyovechkin.github.io/simple-cms/">htmlix api в SPA формате</a></li>
+<li><a href="https://sergeyovechkin.github.io/htmlix/">htmlix api в SPA формате</a></li>
 <li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>
 <li><a href="https://sergeyovechkin.github.io/tests/">тестовые приложения для htmlix</a></li>
 </ul>
