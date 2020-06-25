@@ -3,19 +3,19 @@
   "version": "1.0.0",
   "description": "**Htmlix** - яваскрипт фреймворк основанный на data- свойствах html документа.",
   "main": "htmlix.js",
-  "author": "",
+  "author": "sergey123ovechkin",
+  "license": "Apache License Version 2.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SergeyOvechkin/htmlix.js.git"
+    "url": "git+https://github.com/SergeyOvechkin/htmlix.git"
   },
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/SergeyOvechkin/htmlix.js/issues"
   },
-  "homepage": "https://github.com/SergeyOvechkin/htmlix.js#readme",
+  "homepage": "https://github.com/SergeyOvechkin/htmlix#readme",
   "dependencies": {
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
@@ -25,5 +25,6 @@
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "gulp-babel": "^8.0.0"
-  }
+  },
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
