@@ -203,12 +203,21 @@ HTMLixArray.prototype.order = function (newOrderArr) {
   }
 };
 
-HTMLixArray.prototype.$ = function () {
+HTMLixArray.prototype.$ = function (componentName) {
+  if (componentName != undefined) return this.rootLink.state[componentName];
   return this.rootLink;
 };
 
 HTMLixArray.prototype.$$ = function (eventPropName) {
   return this.rootLink.eventProps[eventPropName];
+};
+
+HTMLixArray.prototype.$methods = function (nameMethod) {
+  return this.rootLink.stateMethods[nameMethod];
+};
+
+HTMLixArray.prototype.$props = function (nameProp) {
+  return this.rootLink.stateProperties[nameProp];
 };
 function Container(htmlLink, containerName, props, methods, index, pathToContainer, rootLink, isRunonCreatedContainer, newProps) {
   this.htmlLink = htmlLink;
@@ -332,12 +341,21 @@ Container.prototype.component = function () {
   return this.rootLink.state[this.pathToCоmponent];
 };
 
-Container.prototype.$ = function () {
+Container.prototype.$ = function (componentName) {
+  if (componentName != undefined) return this.rootLink.state[componentName];
   return this.rootLink;
 };
 
 Container.prototype.$$ = function (eventPropName) {
   return this.rootLink.eventProps[eventPropName];
+};
+
+Container.prototype.$methods = function (nameMethod) {
+  return this.rootLink.stateMethods[nameMethod];
+};
+
+Container.prototype.$props = function (nameProp) {
+  return this.rootLink.stateProperties[nameProp];
 };
 function HTMLixRouter(state, routes) {
   var namePathInRoutes = "";
@@ -598,6 +616,23 @@ EventEmiter.prototype.getEventProp = function () {
 EventEmiter.prototype.get = function (prop) {
   this.getEventProp(prop);
 };
+
+EventEmiter.prototype.$ = function (componentName) {
+  if (componentName != undefined) return this.rootLink.state[componentName];
+  return this.rootLink;
+};
+
+EventEmiter.prototype.$$ = function (eventPropName) {
+  return this.rootLink.eventProps[eventPropName];
+};
+
+EventEmiter.prototype.$methods = function (nameMethod) {
+  return this.rootLink.stateMethods[nameMethod];
+};
+
+EventEmiter.prototype.$props = function (nameProp) {
+  return this.rootLink.stateProperties[nameProp];
+};
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function constructorProps(htmlLink, keyData1, keyData2, eventMethod, pathToContainer, parentContainer, rootLink, newProps) {
@@ -667,12 +702,25 @@ PropSubtype.prototype.props = function (propName) {
   return this.parent.props[propName];
 };
 
+PropSubtype.prototype.methods = function (nameAuxMethod) {
+  return this.parent.methods[nameAuxMethod];
+};
+
 PropSubtype.prototype.$$ = function (eventPropName) {
   return this.rootLink.eventProps[eventPropName];
 };
 
-PropSubtype.prototype.$ = function () {
+PropSubtype.prototype.$ = function (componentName) {
+  if (componentName != undefined) return this.rootLink.state[componentName];
   return this.rootLink;
+};
+
+PropSubtype.prototype.$methods = function (nameMethod) {
+  return this.rootLink.stateMethods[nameMethod];
+};
+
+PropSubtype.prototype.$props = function (nameProp) {
+  return this.rootLink.stateProperties[nameProp];
 };
 
 PropSubtype.prototype.removeAllChild = function () {

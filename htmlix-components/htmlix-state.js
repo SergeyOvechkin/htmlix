@@ -572,7 +572,6 @@ HTMLixState.prototype.isEmiter = function(emiterName){
 			isEmiter = key123;
 		}
 	}
-
 			return  isEmiter;
 }
 HTMLixState.prototype.$$ = function(emiterName){

@@ -155,11 +155,21 @@ Container.prototype.component = function(){
 		
 	return this.rootLink.state[this.pathToCоmponent];
 }
-Container.prototype.$ = function(){
+Container.prototype.$ = function(componentName){
+	
+	if(componentName != undefined)return this.rootLink.state[componentName];
 	
 	return this.rootLink;
 }
 Container.prototype.$$ = function(eventPropName){
 	
 	return this.rootLink.eventProps[eventPropName];
+}
+Container.prototype.$methods = function(nameMethod){
+	
+	return this.rootLink.stateMethods[nameMethod];	
+}
+Container.prototype.$props = function(nameProp){
+	
+	return this.rootLink.stateProperties[nameProp];	
 }

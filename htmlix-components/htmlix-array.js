@@ -245,11 +245,21 @@ HTMLixArray.prototype.order = function(newOrderArr){
 		this.data[k].index = k;
 	}
 }
-HTMLixArray.prototype.$ = function(){
+HTMLixArray.prototype.$ = function(componentName){
+	
+	if(componentName != undefined)return this.rootLink.state[componentName];
 	
 	return this.rootLink;
 }
 HTMLixArray.prototype.$$ = function(eventPropName){
 	
 	return this.rootLink.eventProps[eventPropName];
+}
+HTMLixArray.prototype.$methods = function(nameMethod){
+	
+	return this.rootLink.stateMethods[nameMethod];	
+}
+HTMLixArray.prototype.$props = function(nameProp){
+	
+	return this.rootLink.stateProperties[nameProp];	
 }

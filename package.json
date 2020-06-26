@@ -26,5 +26,7 @@
     "@babel/preset-env": "^7.9.6",
     "gulp-babel": "^8.0.0"
   },
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }

@@ -89,13 +89,27 @@ PropSubtype.prototype.props = function(propName){
 	
 	return this.parent.props[propName];
 }
+PropSubtype.prototype.methods = function(nameAuxMethod){
+	
+	return this.parent.methods[nameAuxMethod];
+}
 PropSubtype.prototype.$$ = function(eventPropName){
 	
 	return this.rootLink.eventProps[eventPropName];
 }
-PropSubtype.prototype.$ = function(){
+PropSubtype.prototype.$ = function(componentName){
+	
+	if(componentName != undefined)return this.rootLink.state[componentName];
 	
 	return this.rootLink;
+}
+PropSubtype.prototype.$methods = function(nameMethod){
+	
+	return this.rootLink.stateMethods[nameMethod];	
+}
+PropSubtype.prototype.$props = function(nameProp){
+	
+	return this.rootLink.stateProperties[nameProp];	
 }
 
 PropSubtype.prototype.removeAllChild = function(){	

@@ -340,6 +340,26 @@ EventEmiter.prototype.get = function(prop){
 }
 
 
+EventEmiter.prototype.$ = function(componentName){
+	
+	if(componentName != undefined)return this.rootLink.state[componentName];
+	
+	return this.rootLink;
+}
+EventEmiter.prototype.$$ = function(eventPropName){
+	
+	return this.rootLink.eventProps[eventPropName];
+}
+EventEmiter.prototype.$methods = function(nameMethod){
+	
+	return this.rootLink.stateMethods[nameMethod];	
+}
+EventEmiter.prototype.$props = function(nameProp){
+	
+	return this.rootLink.stateProperties[nameProp];	
+}
+
+
 
 
 
