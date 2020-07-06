@@ -213,11 +213,13 @@ HTMLixArray.prototype.$$ = function (eventPropName) {
 };
 
 HTMLixArray.prototype.$methods = function (nameMethod) {
-  return this.rootLink.stateMethods[nameMethod];
+  if (nameMethod != undefined) return this.rootLink.stateMethods[nameMethod];
+  return this.rootLink.stateMethods;
 };
 
 HTMLixArray.prototype.$props = function (nameProp) {
-  return this.rootLink.stateProperties[nameProp];
+  if (nameProp != undefined) return this.rootLink.stateProperties[nameProp];
+  return this.rootLink.stateProperties;
 };
 function Container(htmlLink, containerName, props, methods, index, pathToContainer, rootLink, isRunonCreatedContainer, newProps) {
   this.htmlLink = htmlLink;
@@ -351,11 +353,13 @@ Container.prototype.$$ = function (eventPropName) {
 };
 
 Container.prototype.$methods = function (nameMethod) {
-  return this.rootLink.stateMethods[nameMethod];
+  if (nameMethod != undefined) return this.rootLink.stateMethods[nameMethod];
+  return this.rootLink.stateMethods;
 };
 
 Container.prototype.$props = function (nameProp) {
-  return this.rootLink.stateProperties[nameProp];
+  if (nameProp != undefined) return this.rootLink.stateProperties[nameProp];
+  return this.rootLink.stateProperties;
 };
 function HTMLixRouter(state, routes) {
   var namePathInRoutes = "";
@@ -627,11 +631,13 @@ EventEmiter.prototype.$$ = function (eventPropName) {
 };
 
 EventEmiter.prototype.$methods = function (nameMethod) {
-  return this.rootLink.stateMethods[nameMethod];
+  if (nameMethod != undefined) return this.rootLink.stateMethods[nameMethod];
+  return this.rootLink.stateMethods;
 };
 
 EventEmiter.prototype.$props = function (nameProp) {
-  return this.rootLink.stateProperties[nameProp];
+  if (nameProp != undefined) return this.rootLink.stateProperties[nameProp];
+  return this.rootLink.stateProperties;
 };
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -692,6 +698,7 @@ function PropSubtype(htmlLink, propType, propName, pathToComponent, parentCompon
   this.rootLink = rootLink;
   this.prop = null;
   this.propName = propName;
+  if (_typeof(propName) == "object") this.propName = propName[0];
 }
 
 PropSubtype.prototype.component = function () {
@@ -716,11 +723,13 @@ PropSubtype.prototype.$ = function (componentName) {
 };
 
 PropSubtype.prototype.$methods = function (nameMethod) {
-  return this.rootLink.stateMethods[nameMethod];
+  if (nameMethod != undefined) return this.rootLink.stateMethods[nameMethod];
+  return this.rootLink.stateMethods;
 };
 
 PropSubtype.prototype.$props = function (nameProp) {
-  return this.rootLink.stateProperties[nameProp];
+  if (nameProp != undefined) return this.rootLink.stateProperties[nameProp];
+  return this.rootLink.stateProperties;
 };
 
 PropSubtype.prototype.removeAllChild = function () {
@@ -1646,6 +1655,22 @@ function HTMLixState(StateMap) {
   for (var key in StateMap) {
     if (key == "stateMethods") {
       this.stateMethods = StateMap[key];
+
+      for (var key56 in this.stateMethods) {
+        var context256 = this;
+
+        this.stateMethods[key56] = function () {
+          var fn = StateMap[key][key56];
+          return function () {
+            if (this.rootLink == undefined && this.description == undefined && this.state == undefined && this.htmlLink == undefined) {
+              return fn.apply(context256, arguments);
+            }
+
+            return fn.apply(this, arguments);
+          };
+        }();
+      }
+
       continue;
     }
 
@@ -1821,7 +1846,9 @@ HTMLixState.prototype.arrayInit = function (node, StateMap, key) {
 
 HTMLixState.prototype.verifyFetchComponents = function (divEl) {
   if (this.verifiTemplateVarComponents(divEl)) {
-    if (this.stateMethods != undefined && this.stateMethods.onLoadAll != undefined) this.stateMethods.onLoadAll.bind(this)();
+    if (this.stateMethods != undefined && this.stateMethods.onLoadAll != undefined) this.stateMethods.onLoadAll
+    /*.bind(this)*/
+    ();
   }
 }; //проверяет что созданы все виртуальные массивы после создания всех компонентов с опцией templateVar
 

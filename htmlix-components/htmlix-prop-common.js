@@ -12,7 +12,6 @@ function constructorProps(htmlLink, keyData1, keyData2, eventMethod, pathToConta
 			  
 			  return new PropCommon(htmlLink, propType,  parentContainer, keyData2[0]);
 		  }
-
 	    }else if(keyData2.search("data") == 0){
 			
 			propType = "data";
@@ -77,8 +76,9 @@ function PropSubtype(htmlLink, propType, propName,  pathToComponent, parentCompo
 	  	this.pathToCоmponent = pathToComponent; 
 		this.parent = parentComponent; 
 		this.rootLink = rootLink;
-		this.prop = null;
+		this.prop = null;		
 		this.propName = propName;	
+		if(typeof propName == "object")this.propName = propName[0];
 
 }
 PropSubtype.prototype.component = function(){
@@ -105,11 +105,15 @@ PropSubtype.prototype.$ = function(componentName){
 }
 PropSubtype.prototype.$methods = function(nameMethod){
 	
-	return this.rootLink.stateMethods[nameMethod];	
+	if(nameMethod != undefined)return this.rootLink.stateMethods[nameMethod];
+
+     return this.rootLink.stateMethods;	
 }
 PropSubtype.prototype.$props = function(nameProp){
 	
-	return this.rootLink.stateProperties[nameProp];	
+	if(nameProp != undefined)return this.rootLink.stateProperties[nameProp];	
+	
+	return this.rootLink.stateProperties;
 }
 
 PropSubtype.prototype.removeAllChild = function(){	

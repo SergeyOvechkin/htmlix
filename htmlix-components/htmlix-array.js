@@ -257,9 +257,13 @@ HTMLixArray.prototype.$$ = function(eventPropName){
 }
 HTMLixArray.prototype.$methods = function(nameMethod){
 	
-	return this.rootLink.stateMethods[nameMethod];	
+	if(nameMethod != undefined)return this.rootLink.stateMethods[nameMethod];
+
+     return this.rootLink.stateMethods;	
 }
 HTMLixArray.prototype.$props = function(nameProp){
 	
-	return this.rootLink.stateProperties[nameProp];	
+	if(nameProp != undefined)return this.rootLink.stateProperties[nameProp];	
+	
+	return this.rootLink.stateProperties;
 }

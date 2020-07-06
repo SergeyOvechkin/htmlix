@@ -25,6 +25,25 @@ function HTMLixState(StateMap){
 		if(key == "stateMethods"){ 
 		
 			this.stateMethods = StateMap[key];
+			
+			for(var key56 in this.stateMethods){
+				
+                var context256 = this;
+				
+				this.stateMethods[key56] = function(){ 
+				
+				    var fn = StateMap[key][key56];			
+				    							     
+				    return function(){	
+
+                    if(this.rootLink == undefined  && this.description == undefined && this.state == undefined && this.htmlLink == undefined ){
+						
+						return fn.apply(context256, arguments); 				
+					}												
+					return fn.apply(this, arguments); 					
+				}				
+			   }()
+			}			
 			continue;
 		}		
 		if(key == 'stateProperties'){
@@ -259,7 +278,7 @@ HTMLixState.prototype.verifyFetchComponents = function(divEl){
 	
 	if( this.verifiTemplateVarComponents(divEl) ){
 
-       		if(this.stateMethods != undefined && this.stateMethods.onLoadAll != undefined)this.stateMethods.onLoadAll.bind(this)();
+       		if(this.stateMethods != undefined && this.stateMethods.onLoadAll != undefined)this.stateMethods.onLoadAll/*.bind(this)*/();
 	}
 }
 //проверяет что созданы все виртуальные массивы после создания всех компонентов с опцией templateVar
