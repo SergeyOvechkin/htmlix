@@ -80,7 +80,6 @@ function PropSubtype(htmlLink, propType, propName,  pathToComponent, parentCompo
 		this.propName = propName;	
 		if(typeof propName == "object")this.propName = propName[0];
 
-
 }
 PropSubtype.prototype.component = function(){
 

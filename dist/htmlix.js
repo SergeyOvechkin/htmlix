@@ -1957,7 +1957,9 @@ HTMLixState.prototype.containerExtend = function (parentContainerName, props, me
 
   if (parCont == undefined && this.description.virtualArrayComponents != undefined) {
     parCont = this.description.virtualArrayComponents[parentContainerName];
-  } else if (parCont == undefined && this.description.fetchComponents != undefined) {
+  }
+
+  if (parCont == undefined && this.description.fetchComponents != undefined) {
     parCont = this.description.fetchComponents[parentContainerName];
   }
 
@@ -1993,7 +1995,9 @@ HTMLixState.prototype.propExtend = function (parentContainerName, propsOrArrayPr
 
   if (parCont == undefined && this.description.virtualArrayComponents != undefined) {
     parCont = this.description.virtualArrayComponents[parentContainerName];
-  } else if (parCont == undefined && this.description.fetchComponents != undefined) {
+  }
+
+  if (parCont == undefined && this.description.fetchComponents != undefined) {
     parCont = this.description.fetchComponents[parentContainerName];
   }
 
