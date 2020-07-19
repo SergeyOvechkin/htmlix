@@ -56,7 +56,7 @@ HTMLixArray.prototype.add = function (properties, insertLocation) {
 
   if (this.selector != undefined) {
     htmlLink = htmlLink.querySelector(this.selector);
-    if (htmlLink == null || htmlLink == undefined) console.log("error - не удается найти селектор " + this.selector + " для массива " + this.pathToComponent);
+    if (htmlLink == null) console.log("error - не удается найти селектор " + this.selector + " для массива " + this.pathToComponent);
   }
 
   if (insertLocation == undefined || insertLocation == "and") {
@@ -180,7 +180,7 @@ HTMLixArray.prototype.order = function (newOrderArr) {
 
   if (this.selector != undefined) {
     htmlLink = htmlLink.querySelector(this.selector);
-    if (htmlLink == null || htmlLink == undefined) console.log("error - не удается найти селектор " + this.selector + " для массива " + this.pathToComponent);
+    if (htmlLink == null) console.log("error - не удается найти селектор " + this.selector + " для массива " + this.pathToComponent);
   }
 
   if (newOrderArr.length != this.data.length) {
