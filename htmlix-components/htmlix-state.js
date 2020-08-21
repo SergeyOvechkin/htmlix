@@ -223,8 +223,10 @@ HTMLixState.prototype.arrayInit = function(node, StateMap, key){
 
 																htmlLinkToProp = this.state[key].htmlLink.querySelector(selector);
 
-																if(htmlLinkToProp == undefined)console.log("error не возможно найти селектор для свойства "+selector+" массива "+key+" проверьте правильность селектора");
-																continue;
+																if(htmlLinkToProp == undefined || htmlLinkToProp == null){
+																	console.log("error не возможно найти селектор для свойства "+selector+" массива "+key+" проверьте правильность селектора");
+																	continue;
+																}	
 
 														}			 
 							this.state[key]["props"][ string ] = constructorProps(htmlLinkToProp, key,	StateMap[key]["arrayProps"][t], 
