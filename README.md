@@ -22,6 +22,7 @@
 
 
 <ul>
+<li><a href="https://github.com/SergeyOvechkin/collage_n/">Collage_n онлайн редактор для создания коллажей и спрайтов из картинок</a></li>
 <li><a href="https://sergeyovechkin.github.io/simple-cms/">htmlix api в SPA формате</a></li>
 <li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>
 <li><a href="https://github.com/SergeyOvechkin/tests/">тестовые приложения для htmlix</a></li>
