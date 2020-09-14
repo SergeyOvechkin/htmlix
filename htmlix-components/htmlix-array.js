@@ -236,11 +236,11 @@ HTMLixArray.prototype.order = function(newOrderArr){
 		newData.push(this.data[newOrderArr[i]]);
 	}
 	this.data = newData;
-	this.htmlLink.innerHTML = "";
+	htmlLink.innerHTML = "";
 	
 	for(var k=0; k<this.data.length; k++){
 		
-		this.htmlLink.appendChild(this.data[k].htmlLink);
+		htmlLink.appendChild(this.data[k].htmlLink);
 		
 		this.data[k].index = k;
 	}
