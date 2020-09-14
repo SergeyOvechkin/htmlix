@@ -600,3 +600,15 @@ HTMLixState.prototype.$$ = function(emiterName){
 	
 	return this.eventProps[emiterName];
 }
+HTMLixState.prototype.$methods = function(nameMethod){
+	
+	if(nameMethod != undefined)return this.stateMethods[nameMethod];
+
+     return this.stateMethods;	
+}
+HTMLixState.prototype.$props = function(nameProp){
+	
+	if(nameProp != undefined)return this.stateProperties[nameProp];	
+	
+	return this.stateProperties;
+}

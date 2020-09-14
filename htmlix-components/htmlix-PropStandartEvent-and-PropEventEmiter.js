@@ -118,7 +118,9 @@ PropStandartEvent.prototype.removeProp= function(value){
 }		
 
 PropStandartEvent.prototype.disableEvent = function(value){
-
+        if(value == undefined){
+			value = this.type;
+		}
 		if(this.events[value] != undefined){
 
 				if(this[value+'disable'] != undefined){
@@ -137,7 +139,9 @@ PropStandartEvent.prototype.disableEvent = function(value){
 
 	}
 PropStandartEvent.prototype.enableEvent = function(value){
-
+        if(value == undefined){
+			value = this.type;
+		}
 		if(this.events[value] != undefined){
 
 				if(this[value+'disable'] == undefined){

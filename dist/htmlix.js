@@ -195,10 +195,10 @@ HTMLixArray.prototype.order = function (newOrderArr) {
   }
 
   this.data = newData;
-  htmlLink.innerHTML = "";
+  this.htmlLink.innerHTML = "";
 
   for (var k = 0; k < this.data.length; k++) {
-    htmlLink.appendChild(this.data[k].htmlLink);
+    this.htmlLink.appendChild(this.data[k].htmlLink);
     this.data[k].index = k;
   }
 };
@@ -1399,6 +1399,10 @@ PropStandartEvent.prototype.removeProp = function (value) {
 };
 
 PropStandartEvent.prototype.disableEvent = function (value) {
+  if (value == undefined) {
+    value = this.type;
+  }
+
   if (this.events[value] != undefined) {
     if (this[value + 'disable'] != undefined) {
       return;
@@ -1412,6 +1416,10 @@ PropStandartEvent.prototype.disableEvent = function (value) {
 };
 
 PropStandartEvent.prototype.enableEvent = function (value) {
+  if (value == undefined) {
+    value = this.type;
+  }
+
   if (this.events[value] != undefined) {
     if (this[value + 'disable'] == undefined) {
       return;
@@ -2136,5 +2144,15 @@ HTMLixState.prototype.isEmiter = function (emiterName) {
 
 HTMLixState.prototype.$$ = function (emiterName) {
   return this.eventProps[emiterName];
+};
+
+HTMLixState.prototype.$methods = function (nameMethod) {
+  if (nameMethod != undefined) return this.stateMethods[nameMethod];
+  return this.stateMethods;
+};
+
+HTMLixState.prototype.$props = function (nameProp) {
+  if (nameProp != undefined) return this.stateProperties[nameProp];
+  return this.stateProperties;
 };
 //# sourceMappingURL=htmlix.js.map
